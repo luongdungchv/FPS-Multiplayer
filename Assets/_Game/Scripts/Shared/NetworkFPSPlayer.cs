@@ -9,6 +9,8 @@ using NetworkPlayer = Kigor.Networking.NetworkPlayer;
 public partial class NetworkFPSPlayer : NetworkPlayer
 {
     [SerializeField] private float moveSpd, mouseSen;
+    [SerializeField] protected Transform headTransform, camHolder;
+    [SerializeField] private MeshRenderer bodyMesh;
 
 
     private TickScheduler tickScheduler => this.room.Rule.TickScheduler;

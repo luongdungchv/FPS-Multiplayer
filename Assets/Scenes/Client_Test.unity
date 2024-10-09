@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 121723588}
   - component: {fileID: 121723587}
+  - component: {fileID: 121723589}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -152,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ff93c1954474cc40a5a38d4ed70c237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkPlayerPrefab: {fileID: 6804445156385012598, guid: dab2f43dfff429449bf6696af11ee3e7,
+  networkPlayerPrefab: {fileID: -102130023810790693, guid: 177ac621b3fdbba43bb7a532714b4503,
     type: 3}
   tickSchedulerPrefab: {fileID: -5978668057080476923, guid: aa99aaa8fa95dd240b1fa94ea41f12a6,
     type: 3}
@@ -174,6 +175,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &121723589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121723586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8217eca4f72f3164982e3f8f65f5e21a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &214030136
 GameObject:
   m_ObjectHideFlags: 0

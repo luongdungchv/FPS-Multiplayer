@@ -12,6 +12,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     protected partial void Awake()
     {
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
+        pendingInputPacket = new FPSInputPacket();
     }
     protected partial void Update()
     {
@@ -20,20 +21,21 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
         pendingInputPacket.shoot = Input.GetMouseButtonDown(0);
 
-        pendingInputPacket.cameraAngle = cameraController.transform.eulerAngles.x;
+        pendingInputPacket.mouseX = Input.GetAxis("Mouse X");
+        pendingInputPacket.mouseY = Input.GetAxis("Mouse Y");
     }
     protected partial void TickUpdate()
     {
         this.SendInput();
-        this.PerformMovement();
         this.PerformRotation();
+        this.PerformMovement();
 
         var state = new FPSPlayerState(){
             position = transform.position,
             horizontalRotation = transform.eulerAngles.y,
         };
 
-        var vertRot = this.cameraController.transform.eulerAngles.x;
+        var vertRot = this.headTransform.transform.eulerAngles.x;
         if(vertRot > 180)
             vertRot -= 360;
         state.verticalRotation = vertRot;
@@ -46,6 +48,21 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         this.tickScheduler.RegisterTickCallback(this.TickUpdate);
         NetworkHandleClient.Instance.OnReconcilePacketReceived += this.ServerReconciliation;
+
+        this.cameraController.transform.SetParent(this.camHolder);
+        this.cameraController.transform.localPosition = Vector3.zero;
+        this.cameraController.transform.localEulerAngles = Vector3.zero;
+
+        this.RecursivelyDisableRenderer(this.transform);
+    }
+    private void RecursivelyDisableRenderer(Transform root){
+        var renderer = root.GetComponent<Renderer>();
+        if(renderer != null)
+            renderer.enabled = false;
+        for (int i = 0; i < root.childCount; i++)
+        {
+            RecursivelyDisableRenderer(root.GetChild(i));   
+        }    
     }
     private void SendInput()
     {
@@ -69,20 +86,33 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     private void PerformRotation()
     {
-        var mouseX = Input.GetAxis("Mouse X");
-        var mouseY = Input.GetAxis("Mouse Y");
+        var mouseX = pendingInputPacket.mouseX;
+        var mouseY = pendingInputPacket.mouseY;
         
         var currentRot = transform.eulerAngles;
         currentRot.y += mouseX * this.mouseSen;
 
-        (this.cameraController as FPSCameraController).PerformVerticalRotation(mouseY, this.mouseSen);
+        this.PerformHeadRotation(mouseY, mouseSen);
 
+        transform.eulerAngles = currentRot;
+    }
+
+    private void PerformHeadRotation(float amount, float sensitivity){
+        var currentRot = headTransform.localEulerAngles;
+        var mouseY = amount * sensitivity;
+        Debug.Log(mouseY);
+
+        if(currentRot.x > 180)
+            currentRot.x -= 360;
+        currentRot.x -= mouseY;
+        currentRot.x = Mathf.Clamp(currentRot.x, -90f, 90f);
+
+        headTransform.localEulerAngles = currentRot;
     }
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
         var savedState = this.statesBuffer[tick];
-        Debug.Log((tick, state.position, state.rotation));
 
         if (!FPSPlayerState.IsEqual(savedState, state))
         {
@@ -92,7 +122,11 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             ThreadManager.ExecuteOnMainThread(() =>
             {
                 this.transform.position = state.position;
-                this.transform.eulerAngles = state.rotation;
+
+                var currentRot = this.transform.eulerAngles;
+                currentRot.y = state.horizontalRotation;
+
+                this.transform.eulerAngles = currentRot;
             });
         }
     }
@@ -112,8 +146,7 @@ public struct FPSPlayerState
 
     public static bool IsEqual(FPSPlayerState a, FPSPlayerState b)
     {
-        bool posCheck = (a.position - b.position).sqrMagnitude <= 0.01f;
-        bool rotCheck = (a.rotation - b.rotation).sqrMagnitude <= 0.01f;
-        return posCheck && rotCheck;
+        bool posCheck = (a.position - b.position).sqrMagnitude <= 0.05f;
+        return posCheck;
     }
 }

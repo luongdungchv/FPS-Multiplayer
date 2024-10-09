@@ -50,8 +50,8 @@ public class UIManager : MonoBehaviour
             if (player.Name == NetworkClientInfoHolder.Instance.playerName)
             {
                 player.SetAsLocalPlayer(true);
-                var cameraController = GameObject.FindObjectOfType<ClientCameraController>();
-                cameraController.SetTargetPlayer(player);
+                //var cameraController = GameObject.FindObjectOfType<ClientCameraController>();
+                //cameraController.SetTargetPlayer(player);
                 //(player as FPSPlayer).SetCameraController(cameraController);
                 uiCam.gameObject.SetActive(false);
             }

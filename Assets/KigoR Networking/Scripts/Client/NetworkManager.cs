@@ -22,9 +22,6 @@ namespace Kigor.Networking
             Application.targetFrameRate = 60;
         }
         
-        private void Update(){
-            ThreadManager.Update();
-        }
         
         public NetworkPlayer SpawnPlayer(){
             var player = Instantiate(networkPlayerPrefab);

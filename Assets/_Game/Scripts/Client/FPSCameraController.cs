@@ -8,14 +8,15 @@ public class FPSCameraController : NetworkCamera
     [SerializeField] private Vector2 threshold;
 
     public void PerformVerticalRotation(float amount, float sensitivity){
-        var currentRot = transform.eulerAngles;
+        var currentRot = transform.localEulerAngles;
         var mouseY = amount * sensitivity;
+        Debug.Log(mouseY);
 
         if(currentRot.x > 180)
             currentRot.x -= 360;
         currentRot.x -= mouseY;
         currentRot.x = Mathf.Clamp(currentRot.x, threshold.x, threshold.y);
 
-        transform.eulerAngles = currentRot;
+        transform.localEulerAngles = currentRot;
     }
 }
