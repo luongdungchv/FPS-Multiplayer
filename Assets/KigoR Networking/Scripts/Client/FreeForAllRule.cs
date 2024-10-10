@@ -33,6 +33,7 @@ namespace Kigor.Networking
             this.players = initialPlayers;
 
             foreach(var i in initialPlayers) Debug.Log((i.Key, i.Value));
+            Debug.Log(pendingProcessState);
             foreach(var i in pendingProcessState.playerIDList) Debug.Log(i);
 
             if (pendingProcessState == null) return;
