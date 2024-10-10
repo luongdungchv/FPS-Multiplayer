@@ -806,7 +806,7 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Server: CLIENT_BUILD
+    Server: SERVER_BUILD
     Standalone: CLIENT_BUILD
   additionalCompilerArguments: {}
   platformArchitecture: {}
