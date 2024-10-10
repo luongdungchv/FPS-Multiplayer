@@ -43,8 +43,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     private void PerformMovement(FPSInputPacket packet)
     {
-        var lookDir = transform.forward;
-        var rightDir = transform.right;
+        var lookDir = new Vector3(packet.moveDir.x, 0, packet.moveDir.y);
+        var rightDir = new Vector3(lookDir.z, 0, -lookDir.x);
 
         var x = packet.movement.x;
         var y = packet.movement.y;
@@ -56,15 +56,17 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     }
 
     private void PerformRotation(FPSInputPacket packet){
-        var mouseX = packet.mouseX;
-        var mouseY = packet.mouseY;
+        var characterAngle = Mathf.Atan2(packet.moveDir.x, packet.moveDir.y) * Mathf.Rad2Deg;
+        var cameraAngle = packet.cameraAngle;
         
         var currentRot = transform.eulerAngles;
-        currentRot.y += mouseX * this.mouseSen;
-
-        this.PerformHeadRotation(mouseY, mouseSen);
-
+        currentRot.y = characterAngle;
         transform.eulerAngles = currentRot;
+
+        var currentHeadRot = headTransform.localEulerAngles;
+        currentHeadRot.x = cameraAngle;
+        headTransform.localEulerAngles = currentHeadRot;
+
     }
     private void PerformHeadRotation(float amount, float sensitivity){
         var currentRot = headTransform.localEulerAngles;

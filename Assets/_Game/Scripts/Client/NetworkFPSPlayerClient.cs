@@ -20,9 +20,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         pendingInputPacket.movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
         pendingInputPacket.shoot = Input.GetMouseButtonDown(0);
-
-        pendingInputPacket.mouseX = Input.GetAxis("Mouse X");
-        pendingInputPacket.mouseY = Input.GetAxis("Mouse Y");
     }
     protected partial void TickUpdate()
     {
@@ -67,13 +64,15 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     private void SendInput()
     {
         pendingInputPacket.tick = (byte)this.tickScheduler.CurrentTick;
+        pendingInputPacket.moveDir = new Vector2(transform.forward.x, transform.forward.z);
+        pendingInputPacket.cameraAngle = headTransform.eulerAngles.x;
         NetworkTransport.Instance.SendPacketUDP(pendingInputPacket);
     }
 
     private void PerformMovement()
     {
         var lookDir = transform.forward;
-        var rightDir = transform.right;
+        var rightDir = new Vector3(lookDir.z, 0, -lookDir.x);
 
         var x = pendingInputPacket.movement.x;
         var y = pendingInputPacket.movement.y;
@@ -86,8 +85,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     private void PerformRotation()
     {
-        var mouseX = pendingInputPacket.mouseX;
-        var mouseY = pendingInputPacket.mouseY;
+        var mouseX = Input.GetAxis("Mouse X");
+        var mouseY = Input.GetAxis("Mouse Y");
         
         var currentRot = transform.eulerAngles;
         currentRot.y += mouseX * this.mouseSen;
@@ -112,23 +111,23 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
-        var savedState = this.statesBuffer[tick];
+        // var savedState = this.statesBuffer[tick];
 
-        if (!FPSPlayerState.IsEqual(savedState, state))
-        {
-            this.room.Rule.TickScheduler.SetTick(tick);
-            statesBuffer[tick] = state;
+        // if (!FPSPlayerState.IsEqual(savedState, state))
+        // {
+        //     this.room.Rule.TickScheduler.SetTick(tick);
+        //     statesBuffer[tick] = state;
 
-            ThreadManager.ExecuteOnMainThread(() =>
-            {
-                this.transform.position = state.position;
+        //     ThreadManager.ExecuteOnMainThread(() =>
+        //     {
+        //         this.transform.position = state.position;
 
-                var currentRot = this.transform.eulerAngles;
-                currentRot.y = state.horizontalRotation;
+        //         // var currentRot = this.transform.eulerAngles;
+        //         // currentRot.y = state.horizontalRotation;
 
-                this.transform.eulerAngles = currentRot;
-            });
-        }
+        //         // this.transform.eulerAngles = currentRot;
+        //     });
+        // }
     }
 
     private void OnDestroy(){

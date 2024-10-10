@@ -22,7 +22,8 @@ namespace Kigor.Networking
         public bool jump;
         public bool shoot;
         public byte tick;
-        public float mouseX, mouseY;
+        public Vector2 moveDir;
+        public float cameraAngle;
 
         public override void DecodeMessage(byte[] msg)
         {
@@ -32,8 +33,9 @@ namespace Kigor.Networking
             shoot = msg[6] == 1;
             tick = msg[7];
 
-            mouseX = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 8));
-            mouseY = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 10));             
+            moveDir.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 8));
+            cameraAngle = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 10));
+            moveDir.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 12));             
         }
 
         public override byte[] EncodeData()
@@ -46,8 +48,9 @@ namespace Kigor.Networking
             listByte.Add((byte)(jump ? 1 : 0));
             listByte.Add((byte)(shoot ? 1 : 0));
             listByte.Add(tick);
-            listByte.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(mouseX)));
-            listByte.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(mouseY)));
+            listByte.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(moveDir.x)));
+            listByte.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(cameraAngle)));
+            listByte.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(moveDir.y)));
             return listByte.ToArray();
         }
     }

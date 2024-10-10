@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: 
   id: 0
-  moveSpd: 6
+  moveSpd: 3
   mouseSen: 1
   headTransform: {fileID: 4481506205641230355}
   camHolder: {fileID: 0}
