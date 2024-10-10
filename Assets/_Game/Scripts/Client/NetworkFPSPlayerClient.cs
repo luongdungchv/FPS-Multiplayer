@@ -111,23 +111,23 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
-        // var savedState = this.statesBuffer[tick];
+        var savedState = this.statesBuffer[tick];
 
-        // if (!FPSPlayerState.IsEqual(savedState, state))
-        // {
-        //     this.room.Rule.TickScheduler.SetTick(tick);
-        //     statesBuffer[tick] = state;
+        if (!FPSPlayerState.IsEqual(savedState, state))
+        {
+            this.room.Rule.TickScheduler.SetTick(tick);
+            statesBuffer[tick] = state;
 
-        //     ThreadManager.ExecuteOnMainThread(() =>
-        //     {
-        //         this.transform.position = state.position;
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                this.transform.position = state.position;
 
-        //         // var currentRot = this.transform.eulerAngles;
-        //         // currentRot.y = state.horizontalRotation;
+                // var currentRot = this.transform.eulerAngles;
+                // currentRot.y = state.horizontalRotation;
 
-        //         // this.transform.eulerAngles = currentRot;
-        //     });
-        // }
+                // this.transform.eulerAngles = currentRot;
+            });
+        }
     }
 
     private void OnDestroy(){
@@ -145,7 +145,7 @@ public struct FPSPlayerState
 
     public static bool IsEqual(FPSPlayerState a, FPSPlayerState b)
     {
-        bool posCheck = (a.position - b.position).sqrMagnitude <= 0.05f;
+        bool posCheck = (a.position - b.position).sqrMagnitude <= 0.001f;
         return posCheck;
     }
 }
