@@ -51,5 +51,7 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "FPS-Multiplayer.sln"
+    "dotnet.defaultSolution": "FPS-Multiplayer.sln",
+    "dotnet.preferCSharpExtension": true,
+    "dotnet.server.useOmnisharp": true
 }
