@@ -73,23 +73,7 @@ namespace Kigor.Networking
 
             if (players == null || players.Count == 0) return;
 
-            try
-            {
-                ThreadManager.ExecuteOnMainThread(() =>
-                {
-                    for (int i = 0; i < pendingProcessState.playerIDList.Count; i++)
-                    {
-                        var player = this.players[i];
-                        player.SetID(pendingProcessState.playerIDList[i]);
-                        player.transform.position = pendingProcessState.playerPositionList[i];
-                        player.transform.eulerAngles = pendingProcessState.playerRotationList[i];
-                    }
-                });
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
+            
         }
 
         private void RoomStateReceivedCallback(RoomStatePacket packet){

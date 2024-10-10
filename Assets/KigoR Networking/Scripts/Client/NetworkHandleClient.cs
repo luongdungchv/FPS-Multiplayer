@@ -175,9 +175,7 @@ namespace Kigor.Networking
             }
             Debug.Log(packet.playerPositionList[0]);
             
-            this.OnRoomStateInitialized += Test;
             this.OnRoomStateInitialized?.Invoke(packet);
-            this.OnRoomStateInitialized -= Test;
         }
         private void Test(PacketData data){
             Debug.Log("ditmemay");
