@@ -240,7 +240,6 @@ namespace Kigor.Networking
                     byteList.AddRange(Encoding.ASCII.GetBytes(name));
                     byteList.Add(254);
                 }
-
             byteList.Insert(0, (byte)byteList.Count);
             return byteList.ToArray();
         }

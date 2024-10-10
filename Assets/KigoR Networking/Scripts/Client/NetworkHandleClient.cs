@@ -33,7 +33,7 @@ namespace Kigor.Networking
                 { PacketType.UDP_CONNECTION_INFO, this.HandleServerUDPInfoPacket },
                 { PacketType.ROOM_STATE, this.HandleInitialRoomStatePacket},
                 { PacketType.PLAYER_LEAVE, this.HandlePlayerLeavePacket},
-                
+
             };
             this.udpHandleMap = new Dictionary<PacketType, UnityAction<byte[]>>{
                 {PacketType.LOCAL_PLAYER_STATE, this.HandleReconcilePacket},
@@ -92,41 +92,42 @@ namespace Kigor.Networking
                 Debug.Log("game start");
                 SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive).completed += (op) =>
                 {
-                    try
+                    DL.Utils.CoroutineUtils.Invoke(NetworkManager.Instance, () =>
                     {
-                        var loadedScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
-                        packet.playerNameList.ForEach(x => Debug.Log(x));
-
-                        room.SetScene(loadedScene);
-                        room.SetRule(rule);
-
-                        var tickScheduler = NetworkManager.Instance.CreateTickScheduler();
-                        SceneManager.MoveGameObjectToScene(tickScheduler.gameObject, loadedScene);
-                        rule.SetTickScheduler(tickScheduler);
-
-                        for (int i = 0; i < packet.playerNameList.Count; i++)
+                        try
                         {
-                            var name = packet.playerNameList[i];
-                            var player = NetworkManager.Instance.SpawnPlayer();
-                            SceneManager.MoveGameObjectToScene(player.gameObject, SceneManager.GetSceneAt(SceneManager.sceneCount - 1));
+                            var loadedScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
+                            packet.playerNameList.ForEach(x => Debug.Log(x));
 
-                            player.SetName(name);
-                            player.SetID(i);
-                            player.SetRoom(room);
+                            room.SetScene(loadedScene);
+                            room.SetRule(rule);
 
-                            room.AddPlayer(player, i);
+                            var tickScheduler = NetworkManager.Instance.CreateTickScheduler();
+                            SceneManager.MoveGameObjectToScene(tickScheduler.gameObject, loadedScene);
+                            rule.SetTickScheduler(tickScheduler);
+
+                            for (int i = 0; i < packet.playerNameList.Count; i++)
+                            {
+                                var name = packet.playerNameList[i];
+                                var player = NetworkManager.Instance.SpawnPlayer();
+                                SceneManager.MoveGameObjectToScene(player.gameObject, SceneManager.GetSceneAt(SceneManager.sceneCount - 1));
+
+                                player.SetName(name);
+                                player.SetID(i);
+                                player.SetRoom(room);
+
+                                room.AddPlayer(player, i);
+                            }
+
+                            rule.Initialize(room.PlayerList, loadedScene);
+
+                            this.OnGameStart?.Invoke(loadedScene, room);
                         }
-
-                        rule.Initialize(room.PlayerList, loadedScene);
-
-                        this.OnGameStart?.Invoke(loadedScene, room);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError(ex);
-                    }
-
-
+                        catch (Exception ex)
+                        {
+                            Debug.LogError(ex);
+                        }
+                    }, 1);
                 };
             });
         }
@@ -174,10 +175,11 @@ namespace Kigor.Networking
                 Debug.Log(e);
             }
             Debug.Log(packet.playerPositionList[0]);
-            
+
             this.OnRoomStateInitialized?.Invoke(packet);
         }
-        private void Test(PacketData data){
+        private void Test(PacketData data)
+        {
             Debug.Log("ditmemay");
         }
         private void HandlePlayerLeavePacket(byte[] msg)
@@ -196,7 +198,8 @@ namespace Kigor.Networking
 
             this.OnPlayerLeave?.Invoke(packet.playerID);
         }
-        private void HandleReconcilePacket(byte[] msg){
+        private void HandleReconcilePacket(byte[] msg)
+        {
             var packet = new LocalPlayerStatePacket();
             Debug.Log("Reconcile packet received");
             packet.DecodeMessage(msg);
