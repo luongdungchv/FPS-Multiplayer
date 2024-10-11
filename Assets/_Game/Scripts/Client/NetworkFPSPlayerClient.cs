@@ -9,6 +9,10 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     private NetworkCamera cameraController => NetworkCamera.Instance;
     private FPSInputPacket pendingInputPacket;
     private FPSPlayerState[] statesBuffer;
+
+    private float currentJump;
+    private bool inAir;
+
     protected partial void Awake()
     {
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
@@ -18,8 +22,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         if (!this.IsLocalPlayer) return;
         pendingInputPacket.movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
-        pendingInputPacket.shoot = Input.GetMouseButtonDown(0);
+        if(!pendingInputPacket.jump) pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
+        if(!pendingInputPacket.shoot) pendingInputPacket.shoot = Input.GetMouseButtonDown(0);
     }
     protected partial void TickUpdate()
     {
@@ -27,15 +31,23 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.PerformRotation();
         this.PerformMovement();
 
-        var state = new FPSPlayerState(){
+        if(pendingInputPacket.jump){
+            this.PerformJump();
+        }
+
+        //Debug.Log(this.GroundCheck());
+
+        var state = new FPSPlayerState()
+        {
             position = transform.position,
             horizontalRotation = transform.eulerAngles.y,
         };
 
         var vertRot = this.headTransform.transform.eulerAngles.x;
-        if(vertRot > 180)
+        if (vertRot > 180)
             vertRot -= 360;
         state.verticalRotation = vertRot;
+        state.init = true;
 
         this.statesBuffer[this.tickScheduler.CurrentTick] = state;
 
@@ -52,14 +64,15 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
         this.RecursivelyDisableRenderer(this.transform);
     }
-    private void RecursivelyDisableRenderer(Transform root){
+    private void RecursivelyDisableRenderer(Transform root)
+    {
         var renderer = root.GetComponent<Renderer>();
-        if(renderer != null)
+        if (renderer != null)
             renderer.enabled = false;
         for (int i = 0; i < root.childCount; i++)
         {
-            RecursivelyDisableRenderer(root.GetChild(i));   
-        }    
+            RecursivelyDisableRenderer(root.GetChild(i));
+        }
     }
     private void SendInput()
     {
@@ -78,16 +91,19 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         var y = pendingInputPacket.movement.y;
 
         var moveDir = lookDir * y + rightDir * x;
-        var velocity = moveDir.normalized * moveSpd;
+        var moveVelocity = moveDir.normalized * moveSpd;
 
-        transform.position += velocity * this.tickScheduler.TickDeltaTime;
+        var jumpVel = pendingInputPacket.jump ? Vector3.up * jumpSpd : Vector3.zero;
+
+        transform.position += (moveVelocity + jumpVel) * this.tickScheduler.TickDeltaTime;
+        this.PerformVerticalMovement();
     }
 
     private void PerformRotation()
     {
         var mouseX = Input.GetAxis("Mouse X");
         var mouseY = Input.GetAxis("Mouse Y");
-        
+
         var currentRot = transform.eulerAngles;
         currentRot.y += mouseX * this.mouseSen;
 
@@ -96,12 +112,36 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         transform.eulerAngles = currentRot;
     }
 
-    private void PerformHeadRotation(float amount, float sensitivity){
+    private bool GroundCheck(out Vector3 groundPos)
+    {
+        var currentCheck = Physics.Raycast(groundCheckPoint.position, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
+        groundPos = hitInfo.point;
+        // foreach(var tick in this.tickScheduler.GetLastTicks(3)){
+        //     var state = this.statesBuffer[tick];
+        //     if(!state.init) continue;
+        //     var checkPos = (groundCheckPoint.position + state.position + groundCheckPoint.localPosition) / 2;
+        //     Debug.Log(checkPos);
+        //     currentCheck = currentCheck || Physics.Raycast(checkPos, Vector3.down, 0.1f, this.groundMask);
+        // }
+        var lastState = this.statesBuffer[this.tickScheduler.GetLastTicks(1)[0]];
+        if(lastState.init){
+            var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
+            var check = Physics.Linecast(lastGroundPos, groundCheckPoint.position, out hitInfo, this.groundMask); 
+            //Debug.Log((groundCheckPoint.position.y, lastGroundPos.y, check));
+            if(check){
+                currentCheck = currentCheck || check;
+                groundPos = hitInfo.point;
+            }
+        } 
+        return currentCheck;
+    }
+
+    private void PerformHeadRotation(float amount, float sensitivity)
+    {
         var currentRot = headTransform.localEulerAngles;
         var mouseY = amount * sensitivity;
-        Debug.Log(mouseY);
 
-        if(currentRot.x > 180)
+        if (currentRot.x > 180)
             currentRot.x -= 360;
         currentRot.x -= mouseY;
         currentRot.x = Mathf.Clamp(currentRot.x, -90f, 90f);
@@ -109,28 +149,56 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         headTransform.localEulerAngles = currentRot;
     }
 
-    public void ServerReconciliation(int tick, FPSPlayerState state)
+    private void PerformJump()
     {
-        var savedState = this.statesBuffer[tick];
-
-        if (!FPSPlayerState.IsEqual(savedState, state))
+        if (!inAir)
         {
-            this.room.Rule.TickScheduler.SetTick(tick);
-            statesBuffer[tick] = state;
-
-            ThreadManager.ExecuteOnMainThread(() =>
+            this.inAir = true;
+            this.currentJump = this.jumpSpd;
+        }
+        pendingInputPacket.jump = false;
+    }
+    private void PerformVerticalMovement()
+    {
+        if (inAir)
+        {
+            this.currentJump -= gravity * this.tickScheduler.TickDeltaTime;
+            var vel = Vector3.up * currentJump;
+            transform.position += Vector3.up * currentJump;
+            var groundCheck = this.GroundCheck(out var groundPos);
+            if (currentJump < 0 && groundCheck)
             {
-                this.transform.position = state.position;
-
-                // var currentRot = this.transform.eulerAngles;
-                // currentRot.y = state.horizontalRotation;
-
-                // this.transform.eulerAngles = currentRot;
-            });
+                this.inAir = false;
+                this.currentJump = 0;
+                transform.position = groundPos + Vector3.up * (this.height + 0.001f);
+                Debug.Log($"Ground Check: {groundCheck}, {transform.position}");
+            }
         }
     }
 
-    private void OnDestroy(){
+    public void ServerReconciliation(int tick, FPSPlayerState state)
+    {
+        // var savedState = this.statesBuffer[tick];
+
+        // if (!FPSPlayerState.IsEqual(savedState, state))
+        // {
+        //     this.room.Rule.TickScheduler.SetTick(tick);
+        //     statesBuffer[tick] = state;
+
+        //     ThreadManager.ExecuteOnMainThread(() =>
+        //     {
+        //         this.transform.position = state.position;
+
+        //         // var currentRot = this.transform.eulerAngles;
+        //         // currentRot.y = state.horizontalRotation;
+
+        //         // this.transform.eulerAngles = currentRot;
+        //     });
+        // }
+    }
+
+    private void OnDestroy()
+    {
         NetworkHandleClient.Instance.OnReconcilePacketReceived -= this.ServerReconciliation;
     }
 #endif
@@ -142,6 +210,7 @@ public struct FPSPlayerState
     public float horizontalRotation, verticalRotation;
 
     public Vector2 rotation => new Vector2(horizontalRotation, verticalRotation);
+    public bool init;
 
     public static bool IsEqual(FPSPlayerState a, FPSPlayerState b)
     {

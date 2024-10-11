@@ -5,6 +5,7 @@ using Kigor.Networking;
 using UnityEngine;
 using UnityEngine.Events;
 
+// Tick start with 1
 public class TickScheduler : MonoBehaviour
 {
     public static int MAX_TICK = 256;
@@ -45,14 +46,29 @@ public class TickScheduler : MonoBehaviour
         timeCounter += Time.deltaTime;
         if (timeCounter > tickInterval)
         {
-            var tickCount = timeCounter / tickInterval;
+            int tickCount = (int)(timeCounter / tickInterval);
             for (int i = 0; i < tickCount; i++)
             {
                 currentTick++;
-                if(currentTick >= MAX_TICK) currentTick = 1;
+                if (currentTick >= MAX_TICK) currentTick = 1;
                 this.OnTickProcessed?.Invoke();
             }
             this.timeCounter = this.timeCounter % tickInterval;
         }
+    }
+
+    public List<int> GetLastTicks(int count)
+    {
+        var result = new List<int>();
+        for (int i = 1; i <= count; i++)
+        {
+            var tick = this.currentTick - i;
+            if (tick < 1)
+            {
+                tick = MAX_TICK + tick - 1;
+            }
+            result.Add(tick);
+        }
+        return result;
     }
 }

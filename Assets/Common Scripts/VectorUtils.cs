@@ -50,6 +50,12 @@ public static class VectorUtils
         return vector3 + direction;
     }
 
+    public static void ForceSet(this Vector3 input, float? x = null, float? y = null, float? z = null){
+        if(x != null) input.x = (float)x;
+        if(y != null) input.y = (float)y;
+        if(z != null) input.z = (float)z;
+    }
+
 
     public static Vector2 Set(this Vector2 vector2, float? x = null, float? y = null)
     {
@@ -82,7 +88,9 @@ public static class VectorUtils
         return new Vector2(vector3.z, vector3.y);
     }
     
-    
+    public static Vector3 Multiply(Vector3 a, Vector3 b){
+        return new Vector3(a.x * b.x, a.y * b.y, a.x * b.z);
+    }
         
 
     public static Vector3 CircularInterpolate(Vector3 from, Vector3 to, Vector3 linePoint, Vector3 lineDir, float value){
@@ -96,7 +104,7 @@ public static class VectorUtils
         Vector3 b = linePoint + centerToTo.normalized * lineDirLength / Mathf.Abs(Mathf.Cos(angleTo)) - cutPoint;
 
         var angle = Mathf.Lerp(0, Vector3.Angle(a, b), value);
-        
+                
         var cross = Vector3.Cross(a, b).normalized;
         var dot = Vector3.Dot(cross, lineDir.normalized);
         if(dot < 0) angle = -angle;
@@ -115,4 +123,5 @@ public static class VectorUtils
         Vector3 rotatedPoint = rotation * translatedPoint;
         return rotatedPoint + linePoint;
     }
+
 }
