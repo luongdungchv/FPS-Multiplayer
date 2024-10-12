@@ -41,6 +41,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4991928342630073526}
   - component: {fileID: 4397426610974970784}
+  - component: {fileID: 3073252296201660322}
+  - component: {fileID: -557688070636684734}
   m_Layer: 0
   m_Name: Network Player Server 2
   m_TagString: Untagged
@@ -79,17 +81,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: 
   id: 0
-  moveSpd: 7
-  mouseSen: 1
-  jumpSpd: 2
-  gravity: 6
-  headTransform: {fileID: 4481506205641230355}
-  camHolder: {fileID: 0}
   groundCheckPoint: {fileID: 7905729786983176488}
   bodyMesh: {fileID: 0}
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &3073252296201660322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852545721822174941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9b794960933dcd4b9ca84f640a3a3ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpd: 6
+  mouseSen: 1
+  jumpSpd: 2
+  gravity: 6
+--- !u!114 &-557688070636684734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852545721822174941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb1881e17361b274ca73344b29f26e82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headTransform: {fileID: 4481506205641230355}
 --- !u!1 &6507353759073275861
 GameObject:
   m_ObjectHideFlags: 0

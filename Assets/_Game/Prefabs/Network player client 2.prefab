@@ -1258,6 +1258,8 @@ GameObject:
   - component: {fileID: 1631225205749234132}
   - component: {fileID: 9180404065626471281}
   - component: {fileID: -102130023810790693}
+  - component: {fileID: -3020026373791323627}
+  - component: {fileID: -837050009114449528}
   m_Layer: 3
   m_Name: Network player client 2
   m_TagString: Untagged
@@ -1370,17 +1372,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: 
   id: 0
-  moveSpd: 7
-  mouseSen: 1
-  jumpSpd: 2
-  gravity: 6
-  headTransform: {fileID: 2910723984026904940}
-  camHolder: {fileID: 2910723984026904940}
   groundCheckPoint: {fileID: 7683970779755489490}
   bodyMesh: {fileID: 1631225205749234132}
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &-3020026373791323627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075961886019792728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9b794960933dcd4b9ca84f640a3a3ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpd: 6
+  mouseSen: 1
+  jumpSpd: 2
+  gravity: 6
+--- !u!114 &-837050009114449528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075961886019792728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb1881e17361b274ca73344b29f26e82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headTransform: {fileID: 2910723984026904940}
 --- !u!1 &2287045006002814751
 GameObject:
   m_ObjectHideFlags: 0

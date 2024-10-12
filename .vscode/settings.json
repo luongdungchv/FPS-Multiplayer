@@ -52,6 +52,6 @@
         "Temp/": true
     },
     "dotnet.defaultSolution": "FPS.sln",
-    "dotnet.preferCSharpExtension": true,
-    "dotnet.server.useOmnisharp": true
+    "dotnet.preferCSharpExtension": false,
+    "dotnet.server.useOmnisharp": false
 }
