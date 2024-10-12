@@ -175,6 +175,7 @@ namespace Kigor.Networking
         }
         public void StartReceivingUDP()
         {
+            Debug.Log("start");
             this.udpSocket.BeginReceive(new AsyncCallback(UdpReceiveCallback), null);
         }
 

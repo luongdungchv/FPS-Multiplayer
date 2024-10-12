@@ -80,6 +80,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         pendingInputPacket.moveDir = new Vector2(transform.forward.x, transform.forward.z);
         pendingInputPacket.cameraAngle = Avatar.HeadTransform.eulerAngles.x;
         NetworkTransport.Instance.SendPacketUDP(pendingInputPacket);
+        Debug.Log(pendingInputPacket.tick);
     }
 
     public bool GroundCheck(out Vector3 groundPos)

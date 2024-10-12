@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using Kigor.Networking;
 using UnityEngine;
+using UnityEngine.Events;
 
 public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 {
 #if SERVER_BUILD
     private FPSInputPacket pendingInputPacket;
+    private Queue<UnityAction> pendingTickUpdate;
     private int lastProcessedTick = -1;
 
     protected partial void Awake()
     {
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
+        this.pendingTickUpdate = new Queue<UnityAction>();
         Debug.Log(statesBuffer[0].init);
 
     }
@@ -25,7 +28,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     }
     protected partial void TickUpdate()
     {
-        if (pendingInputPacket == null) return;
+        // if (pendingInputPacket == null) return;
         // lock (pendingInputPacket)
         // {
         //     this.Controller.PerformRotation(pendingInputPacket);
@@ -43,12 +46,14 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         //     lastProcessedTick = pendingInputPacket.tick;
         //     this.pendingInputPacket = null;
         // }
+        if (pendingTickUpdate.Count > 0)
+        {
+            pendingTickUpdate.Dequeue().Invoke();
+        }
     }
 
     public override void Initialize(SocketWrapper socket, NetworkGameRoom room, int id)
     {
-        base.Initialize(socket, room, id);
-
         base.Initialize(socket, room, id);
 
         this.msgHandler.Add(PacketType.FPS_INPUT_PACKET, this.HandleInputPacket);
@@ -76,6 +81,22 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
             lastProcessedTick = packet.tick;
         });
+        // this.pendingTickUpdate.Enqueue(() =>
+        // {
+        //     this.Controller.PerformRotation(packet);
+        //     this.Controller.PerformMovement(packet);
+        //     this.Controller.PerformVerticalMovement(packet);
+
+        //     if (packet.jump)
+        //     {
+        //         this.Controller.PerformJump(packet);
+        //     }
+
+        //     this.SendReconcilePacket(packet.tick);
+        //     this.WriteStateToBuffer(packet);
+
+        //     lastProcessedTick = packet.tick;
+        // });
 
     }
 
@@ -96,7 +117,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.statesBuffer[packet.tick] = state;
     }
 
-    
+
 
     public bool GroundCheck(int tick, out Vector3 groundPos)
     {
@@ -105,14 +126,14 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         groundPos = hitInfo.point;
 
         var lastTick = this.lastProcessedTick;
-        if(lastTick == -1) return false;
+        if (lastTick == -1) return false;
 
         var lastState = this.statesBuffer[lastTick];
         if (lastState.init)
         {
             var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
             var check = physicsScene.Raycast(lastGroundPos, groundCheckPoint.position - lastGroundPos, out hitInfo, (groundCheckPoint.position - lastGroundPos).magnitude + 0.1f, this.groundMask);
-            Debug.Log((groundCheckPoint.position.y, lastGroundPos.y, check, tick, lastTick));
+            //Debug.Log((groundCheckPoint.position.y, lastGroundPos.y, check, tick, lastTick));
             if (check)
             {
                 currentCheck = currentCheck || check;
