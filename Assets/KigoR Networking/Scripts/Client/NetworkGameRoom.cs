@@ -14,6 +14,7 @@ namespace Kigor.Networking
 
         public int RoomID => this.roomID;
         public NetworkGameRule Rule => this.rule;   
+        public PhysicsScene PhysicsScene => this.scene.GetPhysicsScene();
 
         public void SetRoomID(int id)
         {

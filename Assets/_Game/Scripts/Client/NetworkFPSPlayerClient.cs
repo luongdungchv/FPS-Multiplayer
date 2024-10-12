@@ -8,10 +8,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 #if CLIENT_BUILD
     private NetworkCamera cameraController => NetworkCamera.Instance;
     private FPSInputPacket pendingInputPacket;
-    private FPSPlayerState[] statesBuffer;
-
-    private float currentJump;
-    private bool inAir;
 
     protected partial void Awake()
     {
@@ -112,30 +108,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         transform.eulerAngles = currentRot;
     }
 
-    private bool GroundCheck(out Vector3 groundPos)
-    {
-        var currentCheck = Physics.Raycast(groundCheckPoint.position, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
-        groundPos = hitInfo.point;
-        // foreach(var tick in this.tickScheduler.GetLastTicks(3)){
-        //     var state = this.statesBuffer[tick];
-        //     if(!state.init) continue;
-        //     var checkPos = (groundCheckPoint.position + state.position + groundCheckPoint.localPosition) / 2;
-        //     Debug.Log(checkPos);
-        //     currentCheck = currentCheck || Physics.Raycast(checkPos, Vector3.down, 0.1f, this.groundMask);
-        // }
-        var lastState = this.statesBuffer[this.tickScheduler.GetLastTicks(1)[0]];
-        if(lastState.init){
-            var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
-            var check = Physics.Linecast(lastGroundPos, groundCheckPoint.position, out hitInfo, this.groundMask); 
-            //Debug.Log((groundCheckPoint.position.y, lastGroundPos.y, check));
-            if(check){
-                currentCheck = currentCheck || check;
-                groundPos = hitInfo.point;
-            }
-        } 
-        return currentCheck;
-    }
-
     private void PerformHeadRotation(float amount, float sensitivity)
     {
         var currentRot = headTransform.localEulerAngles;
@@ -178,23 +150,23 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
-        // var savedState = this.statesBuffer[tick];
+        var savedState = this.statesBuffer[tick];
 
-        // if (!FPSPlayerState.IsEqual(savedState, state))
-        // {
-        //     this.room.Rule.TickScheduler.SetTick(tick);
-        //     statesBuffer[tick] = state;
+        if (!FPSPlayerState.IsEqual(savedState, state))
+        {
+            this.room.Rule.TickScheduler.SetTick(tick);
+            statesBuffer[tick] = state;
 
-        //     ThreadManager.ExecuteOnMainThread(() =>
-        //     {
-        //         this.transform.position = state.position;
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                this.transform.position = state.position;
 
-        //         // var currentRot = this.transform.eulerAngles;
-        //         // currentRot.y = state.horizontalRotation;
+                // var currentRot = this.transform.eulerAngles;
+                // currentRot.y = state.horizontalRotation;
 
-        //         // this.transform.eulerAngles = currentRot;
-        //     });
-        // }
+                // this.transform.eulerAngles = currentRot;
+            });
+        }
     }
 
     private void OnDestroy()
