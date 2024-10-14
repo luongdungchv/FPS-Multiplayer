@@ -14,6 +14,12 @@ public partial class PlayerController
     }
     protected partial void Update()
     {
+        var dir = (this.Player.Position - this.transform.position);
+        var dist = dir.sqrMagnitude;
+        if(dist < 0.009f) return;
+        dir.Normalize();
+
+        transform.position += dir * this.moveSpd * Time.deltaTime;
     }
 
     public void PerformMovement(FPSInputPacket packet)
@@ -29,7 +35,8 @@ public partial class PlayerController
 
         var jumpVel = packet.jump ? Vector3.up * jumpSpd : Vector3.zero;
 
-        transform.position += (moveVelocity + jumpVel) * this.Player.TickScheduler.TickDeltaTime;
+        //transform.position += (moveVelocity + jumpVel) * this.Player.TickScheduler.TickDeltaTime;
+        this.Player.Position += (moveVelocity + jumpVel) * this.Player.TickScheduler.TickDeltaTime;
         this.PerformVerticalMovement();
     }
 
@@ -73,14 +80,14 @@ public partial class PlayerController
         {
             this.currentJump -= gravity * this.Player.TickScheduler.TickDeltaTime;
             var vel = Vector3.up * currentJump;
-            transform.position += Vector3.up * currentJump;
+            this.Player.Position += Vector3.up * currentJump;
             var groundCheck = this.Player.GroundCheck(out var groundPos);
             if (currentJump < 0 && groundCheck)
             {
                 this.inAir = false;
                 this.currentJump = 0;
-                transform.position = groundPos + Vector3.up * (this.Player.Height + 0.001f);
-                Debug.Log($"Ground Check: {groundCheck}, {transform.position}");
+                this.Player.Position = groundPos + Vector3.up * (this.Player.Height + 0.001f);
+                //Debug.Log($"Ground Check: {groundCheck}, {transform.position}");
             }
         }
     }

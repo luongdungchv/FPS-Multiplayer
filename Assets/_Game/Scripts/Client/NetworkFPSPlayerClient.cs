@@ -2,18 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Kigor.Networking;
+using UnityEngine.UIElements;
 
 public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 {
 #if CLIENT_BUILD
     private NetworkCamera cameraController => NetworkCamera.Instance;
+    public Vector3 Position {
+        get => currentState.position;
+        set => currentState.position = value;
+    }
     private FPSInputPacket pendingInputPacket;
     private int lastTick = -1;
+    
+    private FPSPlayerState currentState;
 
     protected partial void Awake()
     {
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
         pendingInputPacket = new FPSInputPacket();
+    }
+    private void Start(){
+        this.currentState.position = transform.position;
     }
     protected partial void Update()
     {
@@ -36,7 +46,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
         var state = new FPSPlayerState()
         {
-            position = transform.position,
+            position = Position,
             horizontalRotation = transform.eulerAngles.y,
         };
 
@@ -117,13 +127,13 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             ThreadManager.ExecuteOnMainThread(() =>
             {
                 this.transform.position = state.position;
-
-                // var currentRot = this.transform.eulerAngles;
-                // currentRot.y = state.horizontalRotation;
-
-                // this.transform.eulerAngles = currentRot;
+                this.Position = state.position;
             });
         }
+    }
+
+    public void SetStatePosition(Vector3 position){
+        this.currentState.position = position;
     }
 
     private void OnDestroy()
@@ -133,6 +143,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 #endif
 }
 
+[System.Serializable]
 public struct FPSPlayerState
 {
     public Vector3 position;
