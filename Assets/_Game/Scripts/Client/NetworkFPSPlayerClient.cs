@@ -8,13 +8,14 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 {
 #if CLIENT_BUILD
     private NetworkCamera cameraController => NetworkCamera.Instance;
-    public Vector3 Position {
+    public Vector3 Position
+    {
         get => currentState.position;
         set => currentState.position = value;
     }
     private FPSInputPacket pendingInputPacket;
     private int lastTick = -1;
-    
+
     private FPSPlayerState currentState;
 
     protected partial void Awake()
@@ -22,7 +23,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
         pendingInputPacket = new FPSInputPacket();
     }
-    private IEnumerator Start(){
+    private IEnumerator Start()
+    {
         yield return new WaitForSeconds(0);
         this.currentState.position = transform.position;
     }
@@ -33,10 +35,11 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         if (!pendingInputPacket.jump) pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
         if (!pendingInputPacket.shoot) pendingInputPacket.shoot = Input.GetMouseButtonDown(0);
 
-        //this.Controller.PerformMovement(pendingInputPacket);
-        // if(Input.GetKeyDown(KeyCode.Space)){
-        //     this.Controller.PerformJump(pendingInputPacket);
-        // }
+        this.Controller.PerformMovement(pendingInputPacket);
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            this.Controller.PerformJump(pendingInputPacket);
+        }
     }
     protected partial void TickUpdate()
     {
@@ -118,12 +121,30 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         return currentCheck;
     }
 
+    public bool SmoothGroundCheck(out Vector3 groundPos)
+    {
+        var currentCheck = Physics.Raycast(groundCheckPoint.position, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
+        groundPos = hitInfo.point;
+        //var lastTick = this.TickScheduler.GetLastTicks(1)[0];
+        var lastState = this.statesBuffer[lastTick];
+        if (lastState.init)
+        {
+            var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
+            var check = Physics.Raycast(lastGroundPos, groundCheckPoint.position - lastGroundPos, out hitInfo, (groundCheckPoint.position - lastGroundPos).magnitude + 0.1f, this.groundMask);
+            if (check)
+            {
+                currentCheck = currentCheck || check;
+                groundPos = hitInfo.point;
+            }
+        }
+        return currentCheck;
+    }
 
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
         var savedState = this.statesBuffer[tick];
-        if(!savedState.init) return;
+        if (!savedState.init) return;
 
         if (!FPSPlayerState.IsEqual(savedState, state))
         {
@@ -144,7 +165,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         }
     }
 
-    public void SetStatePosition(Vector3 position){
+    public void SetStatePosition(Vector3 position)
+    {
         this.currentState.position = position;
     }
 
@@ -169,7 +191,8 @@ public struct FPSPlayerState
         bool posCheck = (a.position - b.position).sqrMagnitude <= 0.021f;
         return posCheck;
     }
-    public static float Difference(FPSPlayerState a, FPSPlayerState b){
+    public static float Difference(FPSPlayerState a, FPSPlayerState b)
+    {
         return (a.position - b.position).sqrMagnitude;
     }
 }

@@ -111,9 +111,7 @@ public partial class PlayerController
             this.currentJump -= gravity * this.Player.TickScheduler.TickDeltaTime;
             var vel = Vector3.up * currentJump;
             // transform.position += Vector3.up * currentJump;
-            Debug.Log(this.Player.Position.y);
             this.Player.Position += Vector3.up * currentJump * this.Player.TickScheduler.TickDeltaTime;
-            Debug.Log(this.Player.Position.y);
             var groundCheck = this.Player.GroundCheck(out var groundPos);
             
             if (currentJump < 0 && groundCheck)
@@ -133,7 +131,7 @@ public partial class PlayerController
             this.smoothCurrentJump -= gravity * Time.deltaTime;
             var vel = Vector3.up * smoothCurrentJump;
             transform.position += Vector3.up * smoothCurrentJump * Time.deltaTime;
-            var groundCheck = this.Player.GroundCheck(out var groundPos);
+            var groundCheck = this.Player.SmoothGroundCheck(out var groundPos);
             if (smoothCurrentJump < 0 && groundCheck)
             {
                 this.smoothInAir = false;
