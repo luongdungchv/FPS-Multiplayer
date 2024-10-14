@@ -31,18 +31,22 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         pendingInputPacket.movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         if (!pendingInputPacket.jump) pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
         if (!pendingInputPacket.shoot) pendingInputPacket.shoot = Input.GetMouseButtonDown(0);
+
+        // this.Controller.PerformMovement(pendingInputPacket);
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     this.Controller.PerformJump(pendingInputPacket);
+        // }
     }
     protected partial void TickUpdate()
     {
-        this.Controller.PerformRotation();
-        this.Controller.PerformMovement(pendingInputPacket);
+        this.Controller.PerformTickRotation();
+        this.Controller.PerformTickMovement(pendingInputPacket);
 
         if (pendingInputPacket.jump)
         {
-            this.Controller.PerformJump(pendingInputPacket);
+            this.Controller.PerformTickJump(pendingInputPacket);
         }
-
-        //Debug.Log(this.GroundCheck());
 
         var state = new FPSPlayerState()
         {
@@ -90,7 +94,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         pendingInputPacket.moveDir = new Vector2(transform.forward.x, transform.forward.z);
         pendingInputPacket.cameraAngle = Avatar.HeadTransform.eulerAngles.x;
         NetworkTransport.Instance.SendPacketUDP(pendingInputPacket);
-        Debug.Log(pendingInputPacket.tick);
     }
 
     public bool GroundCheck(out Vector3 groundPos)
