@@ -2,18 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Kigor.Networking;
+using Unity.VisualScripting;
 
 public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 {
 #if CLIENT_BUILD
     private NetworkCamera cameraController => NetworkCamera.Instance;
+    public Vector3 Position {
+        get => this.currentState.position;
+        set => this.currentState.position = value;
+    }
     private FPSInputPacket pendingInputPacket;
     private int lastTick = -1;
+
+    [SerializeField] private FPSPlayerState currentState;
+
 
     protected partial void Awake()
     {
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
         pendingInputPacket = new FPSInputPacket();
+    }
+
+    private IEnumerator Start(){
+        yield return new WaitForSeconds(0);
+        this.currentState.position = transform.position;
     }
     protected partial void Update()
     {
@@ -80,7 +93,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         pendingInputPacket.moveDir = new Vector2(transform.forward.x, transform.forward.z);
         pendingInputPacket.cameraAngle = Avatar.HeadTransform.eulerAngles.x;
         NetworkTransport.Instance.SendPacketUDP(pendingInputPacket);
-        Debug.Log(pendingInputPacket.tick);
     }
 
     public bool GroundCheck(out Vector3 groundPos)
@@ -93,7 +105,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         {
             var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
             var check = Physics.Raycast(lastGroundPos, groundCheckPoint.position - lastGroundPos, out hitInfo, (groundCheckPoint.position - lastGroundPos).magnitude + 0.1f, this.groundMask);
-            Debug.Log((groundCheckPoint.position.y, lastGroundPos.y, check, TickScheduler.CurrentTick, lastTick));
             if (check)
             {
                 currentCheck = currentCheck || check;
@@ -116,7 +127,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
-                this.transform.position = state.position;
+                //this.transform.position = state.position;
+                this.Position = state.position;
 
                 // var currentRot = this.transform.eulerAngles;
                 // currentRot.y = state.horizontalRotation;
@@ -133,6 +145,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 #endif
 }
 
+[System.Serializable]
 public struct FPSPlayerState
 {
     public Vector3 position;
@@ -143,7 +156,7 @@ public struct FPSPlayerState
 
     public static bool IsEqual(FPSPlayerState a, FPSPlayerState b)
     {
-        bool posCheck = (a.position - b.position).sqrMagnitude <= 0.01f;
+        bool posCheck = (a.position - b.position).sqrMagnitude <= 0.02f;
         return posCheck;
     }
     public static float Difference(FPSPlayerState a, FPSPlayerState b){
