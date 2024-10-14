@@ -20,6 +20,10 @@ public partial class NetworkFPSPlayer : NetworkPlayer
     private PlayerAvatar Avatar => this.GetComponent<PlayerAvatar>();
     private PlayerController Controller => this.GetComponent<PlayerController>();
 
+    private Vector3 GetGroundCheckPoint(Vector3 parentPos){
+        return parentPos + VectorUtils.Multiply(groundCheckPoint.localPosition, groundCheckPoint.localScale);
+    }
+
     protected partial void Awake();
     protected partial void Update();
     protected partial void TickUpdate();

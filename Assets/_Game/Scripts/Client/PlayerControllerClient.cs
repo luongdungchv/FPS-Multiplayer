@@ -37,13 +37,12 @@ public partial class PlayerController
         var moveDir = lookDir * y + rightDir * x;
         var moveVelocity = moveDir.normalized * moveSpd;
 
-        var jumpVel = packet.jump ? Vector3.up * jumpSpd : Vector3.zero;
+        //var jumpVel = packet.jump ? Vector3.up * jumpSpd : Vector3.zero;
 
         //transform.position += (moveVelocity + jumpVel) * this.Player.TickScheduler.TickDeltaTime;
-        this.Player.Position += (moveVelocity + jumpVel) * this.Player.TickScheduler.TickDeltaTime;
-        Debug.Log(Vector3.Distance(this.Player.Position, this.transform.position));
+        this.Player.Position += (moveVelocity) * this.Player.TickScheduler.TickDeltaTime;
+        this.PerformTickVerticalMovement(packet.tick);
         this.transform.position = this.Player.Position;
-        this.PerformTickVerticalMovement();
     }
 
     public void PerformMovement(FPSInputPacket packet)
@@ -105,21 +104,25 @@ public partial class PlayerController
             this.smoothCurrentJump = this.jumpSpd;
         }
     }
-    public void PerformTickVerticalMovement()
+    public void PerformTickVerticalMovement(int tick)
     {
         if (inAir)
         {
             this.currentJump -= gravity * this.Player.TickScheduler.TickDeltaTime;
             var vel = Vector3.up * currentJump;
-            this.Player.Position += Vector3.up * currentJump;
+            // transform.position += Vector3.up * currentJump;
+            Debug.Log(this.Player.Position.y);
+            this.Player.Position += Vector3.up * currentJump * this.Player.TickScheduler.TickDeltaTime;
+            Debug.Log(this.Player.Position.y);
             var groundCheck = this.Player.GroundCheck(out var groundPos);
+            
             if (currentJump < 0 && groundCheck)
             {
                 this.inAir = false;
                 this.currentJump = 0;
                 this.Player.Position = groundPos + Vector3.up * (this.Player.Height + 0.001f);
+                Debug.Log($"Ground Check: {groundCheck}, {transform.position}");
             }
-            transform.position = this.Player.Position;
         }
     }
 
@@ -129,7 +132,7 @@ public partial class PlayerController
         {
             this.smoothCurrentJump -= gravity * Time.deltaTime;
             var vel = Vector3.up * smoothCurrentJump;
-            transform.position += Vector3.up * smoothCurrentJump;
+            transform.position += Vector3.up * smoothCurrentJump * Time.deltaTime;
             var groundCheck = this.Player.GroundCheck(out var groundPos);
             if (smoothCurrentJump < 0 && groundCheck)
             {

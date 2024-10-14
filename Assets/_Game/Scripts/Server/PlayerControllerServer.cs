@@ -62,7 +62,7 @@ public partial class PlayerController
         {
             this.currentJump -= gravity * this.TickScheduler.TickDeltaTime;
             var vel = Vector3.up * currentJump;
-            transform.position += Vector3.up * currentJump;
+            transform.position += Vector3.up * currentJump * this.TickScheduler.TickDeltaTime;
             var groundCheck = this.Player.GroundCheck(packet.tick, out var groundPos);
             if (currentJump < 0 && groundCheck)
             {

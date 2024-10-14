@@ -81,6 +81,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: 
   id: 0
+  currentState:
+    position: {x: 0, y: 0, z: 0}
+    horizontalRotation: 0
+    verticalRotation: 0
+    init: 0
   groundCheckPoint: {fileID: 7905729786983176488}
   bodyMesh: {fileID: 0}
   groundMask:
@@ -100,8 +105,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpd: 6
   mouseSen: 1
-  jumpSpd: 2
-  gravity: 6
+  jumpSpd: 16
+  gravity: 40
+  inAir: 0
 --- !u!114 &-557688070636684734
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -79,6 +79,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             this.SendReconcilePacket(packet.tick);
             this.WriteStateToBuffer(packet);
 
+            Debug.Log((packet.tick, this.statesBuffer[packet.tick].position));
+
             lastProcessedTick = packet.tick;
         });
         // this.pendingTickUpdate.Enqueue(() =>

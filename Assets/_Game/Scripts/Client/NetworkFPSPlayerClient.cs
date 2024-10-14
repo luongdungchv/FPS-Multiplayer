@@ -22,7 +22,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
         pendingInputPacket = new FPSInputPacket();
     }
-    private void Start(){
+    private IEnumerator Start(){
+        yield return new WaitForSeconds(0);
         this.currentState.position = transform.position;
     }
     protected partial void Update()
@@ -32,9 +33,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         if (!pendingInputPacket.jump) pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
         if (!pendingInputPacket.shoot) pendingInputPacket.shoot = Input.GetMouseButtonDown(0);
 
-        // this.Controller.PerformMovement(pendingInputPacket);
-        // if (Input.GetKeyDown(KeyCode.Space))
-        // {
+        //this.Controller.PerformMovement(pendingInputPacket);
+        // if(Input.GetKeyDown(KeyCode.Space)){
         //     this.Controller.PerformJump(pendingInputPacket);
         // }
     }
@@ -45,6 +45,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
         if (pendingInputPacket.jump)
         {
+            Debug.Log("Start jump: " + TickScheduler.CurrentTick + " " + transform.position.y);
             this.Controller.PerformTickJump(pendingInputPacket);
         }
 
@@ -98,15 +99,16 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     public bool GroundCheck(out Vector3 groundPos)
     {
-        var currentCheck = Physics.Raycast(groundCheckPoint.position, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
+        var castPoint = this.GetGroundCheckPoint(Position);
+        var currentCheck = Physics.Raycast(castPoint, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
         groundPos = hitInfo.point;
         //var lastTick = this.TickScheduler.GetLastTicks(1)[0];
         var lastState = this.statesBuffer[lastTick];
         if (lastState.init)
         {
-            var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
-            var check = Physics.Raycast(lastGroundPos, groundCheckPoint.position - lastGroundPos, out hitInfo, (groundCheckPoint.position - lastGroundPos).magnitude + 0.1f, this.groundMask);
-            Debug.Log((groundCheckPoint.position.y, lastGroundPos.y, check, TickScheduler.CurrentTick, lastTick));
+            var lastGroundPos = this.GetGroundCheckPoint(lastState.position);
+            var check = Physics.Raycast(lastGroundPos, castPoint - lastGroundPos, out hitInfo, (castPoint - lastGroundPos).magnitude + 0.1f, this.groundMask);
+            Debug.Log((Position.y, castPoint.y, lastGroundPos.y));
             if (check)
             {
                 currentCheck = currentCheck || check;
@@ -115,6 +117,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         }
         return currentCheck;
     }
+
+
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
@@ -125,12 +129,17 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         {
             this.room.Rule.TickScheduler.SetTick(tick);
             statesBuffer[tick] = state;
-            Debug.Log("Conflict: " + (tick, FPSPlayerState.Difference(state, savedState)));
+            Debug.Log("Conflict: " + (tick, savedState.position, state.position));
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
-                this.transform.position = state.position;
+                //this.transform.position = state.position;
                 this.Position = state.position;
+
+                // var currentRot = this.transform.eulerAngles;
+                // currentRot.y = state.horizontalRotation;
+
+                // this.transform.eulerAngles = currentRot;
             });
         }
     }
@@ -157,7 +166,7 @@ public struct FPSPlayerState
 
     public static bool IsEqual(FPSPlayerState a, FPSPlayerState b)
     {
-        bool posCheck = (a.position - b.position).sqrMagnitude <= 0.01f;
+        bool posCheck = (a.position - b.position).sqrMagnitude <= 0.021f;
         return posCheck;
     }
     public static float Difference(FPSPlayerState a, FPSPlayerState b){
