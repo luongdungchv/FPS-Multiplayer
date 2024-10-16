@@ -9,7 +9,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 #if SERVER_BUILD
     private FPSInputPacket pendingInputPacket;
     private Queue<UnityAction> pendingTickUpdate;
-    private int lastProcessedTick = -1;
 
     protected partial void Awake()
     {
@@ -20,7 +19,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     }
     protected partial void Update()
     {
-
+        this.currentState.position = transform.position;
     }
     protected void Start()
     {
@@ -28,24 +27,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     }
     protected partial void TickUpdate()
     {
-        // if (pendingInputPacket == null) return;
-        // lock (pendingInputPacket)
-        // {
-        //     this.Controller.PerformRotation(pendingInputPacket);
-        //     this.Controller.PerformMovement(pendingInputPacket);
-        //     this.Controller.PerformVerticalMovement(pendingInputPacket);
-
-        //     if (pendingInputPacket.jump)
-        //     {
-        //         this.Controller.PerformJump(pendingInputPacket);
-        //     }
-
-        //     this.SendReconcilePacket(pendingInputPacket.tick);
-        //     this.WriteStateToBuffer(pendingInputPacket);
-
-        //     lastProcessedTick = pendingInputPacket.tick;
-        //     this.pendingInputPacket = null;
-        // }
         if (pendingTickUpdate.Count > 0)
         {
             pendingTickUpdate.Dequeue().Invoke();
@@ -68,6 +49,10 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         ThreadManager.ExecuteOnMainThread(() =>
         {
             this.Controller.PerformRotation(packet);
+
+            currentState.position = transform.position;
+            currentState.horizontalRotation = transform.eulerAngles.y;
+
             this.Controller.PerformMovement(packet);
             this.Controller.PerformVerticalMovement(packet);
 
@@ -79,26 +64,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             this.SendReconcilePacket(packet.tick);
             this.WriteStateToBuffer(packet);
 
-            Debug.Log((packet.tick, this.statesBuffer[packet.tick].position));
-
-            lastProcessedTick = packet.tick;
+            lastTick = packet.tick;
         });
-        // this.pendingTickUpdate.Enqueue(() =>
-        // {
-        //     this.Controller.PerformRotation(packet);
-        //     this.Controller.PerformMovement(packet);
-        //     this.Controller.PerformVerticalMovement(packet);
-
-        //     if (packet.jump)
-        //     {
-        //         this.Controller.PerformJump(packet);
-        //     }
-
-        //     this.SendReconcilePacket(packet.tick);
-        //     this.WriteStateToBuffer(packet);
-
-        //     lastProcessedTick = packet.tick;
-        // });
 
     }
 
@@ -116,6 +83,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         state.verticalRotation = vertRot;
         state.init = true;
 
+        this.currentState = state;
+
         this.statesBuffer[packet.tick] = state;
     }
 
@@ -127,7 +96,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         var currentCheck = physicsScene.Raycast(groundCheckPoint.position, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
         groundPos = hitInfo.point;
 
-        var lastTick = this.lastProcessedTick;
+        var lastTick = this.lastTick;
         if (lastTick == -1) return false;
 
         var lastState = this.statesBuffer[lastTick];

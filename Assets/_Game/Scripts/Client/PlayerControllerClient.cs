@@ -119,7 +119,8 @@ public partial class PlayerController
             {
                 this.inAir = false;
                 this.currentJump = 0;
-                this.Player.Position = groundPos + Vector3.up * (this.Player.Height + 0.001f);
+                this.Player.Position = groundPos;
+                // + Vector3.up * (this.Player.Height + 0.001f);
                 Debug.Log($"Ground Check: {groundCheck}, {transform.position}");
             }
         }

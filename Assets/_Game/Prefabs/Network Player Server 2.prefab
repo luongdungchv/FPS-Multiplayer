@@ -43,6 +43,8 @@ GameObject:
   - component: {fileID: 4397426610974970784}
   - component: {fileID: 3073252296201660322}
   - component: {fileID: -557688070636684734}
+  - component: {fileID: -7819060101961444805}
+  - component: {fileID: -3082704008919809769}
   m_Layer: 0
   m_Name: Network Player Server 2
   m_TagString: Untagged
@@ -81,11 +83,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: 
   id: 0
-  currentState:
-    position: {x: 0, y: 0, z: 0}
-    horizontalRotation: 0
-    verticalRotation: 0
-    init: 0
   groundCheckPoint: {fileID: 7905729786983176488}
   bodyMesh: {fileID: 0}
   groundMask:
@@ -121,6 +118,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   headTransform: {fileID: 4481506205641230355}
+--- !u!136 &-7819060101961444805
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852545721822174941}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-3082704008919809769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852545721822174941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75ce14aa1a6ebea45b1f335e962e50c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  raycastBufferSize: 6
+  mask:
+    serializedVersion: 2
+    m_Bits: 64
+  slopeAngle: 45
 --- !u!1 &6507353759073275861
 GameObject:
   m_ObjectHideFlags: 0

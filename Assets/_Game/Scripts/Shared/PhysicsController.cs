@@ -12,35 +12,77 @@ public partial class PhysicsController : MonoBehaviour
     private RaycastHit[] raycastBuffer;
     private int raycastCount;
 
-    private void Awake(){
+    private void Awake()
+    {
         raycastBuffer = new RaycastHit[raycastBufferSize];
     }
 
-    public bool DetectCollision(out Vector3 hitNormal, out bool touchGround, out Vector3 groundPos){
+    public bool DetectCollision(out Vector3 hitNormal, out bool touchGround, out Vector3 groundPos)
+    {
         var lastState = this.Player.GetLastState(out bool found);
 
         hitNormal = Vector3.zero;
         touchGround = false;
         groundPos = Vector3.zero;
 
-        if(lastState.init){
+        if (lastState.init)
+        {
             var (top, bot) = this.Player.GetCapsuleEnds(lastState.position);
-            var dir = (this.Player.Position - lastState.position);
+            var dir = this.Player.Position - lastState.position;
             var physicsScene = this.Player.CurrentPhysicsScene;
             var detected = physicsScene.CapsuleCast(top, bot, this.Player.CapsuleRadius, dir, raycastBuffer, dir.magnitude + 0.1f, this.mask);
-            if(detected == 0) return false;
-            if(detected > 0){
-                for(int i = 0; i < detected; i++){
+
+            // Debug.Log((this.Player.Position, lastState.position));        
+
+            if (detected == 0) return false;
+            if (detected > 0)
+            {
+                for (int i = 0; i < detected; i++)
+                {
                     var hitInfo = raycastBuffer[i];
                     hitNormal += hitInfo.normal;
                     var angle = 90 - Vector3.Angle(Vector3.up, hitInfo.normal);
-                    if(angle > this.slopeAngle){
+                    if (angle > this.slopeAngle)
+                    {
                         touchGround = true;
-                        groundPos = hitInfo.point;
+                        groundPos = lastState.position + dir * hitInfo.distance;
                     }
-                }   
+                }
             }
         }
+        return true;
+    }
+
+    public bool DetectCollision(Vector3 startPos, Vector3 endPos, out Vector3 hitNormal, out bool touchGround, out Vector3 groundPos)
+    {
+        hitNormal = Vector3.zero;
+        touchGround = false;
+        groundPos = Vector3.zero;
+
+
+        var (top, bot) = this.Player.GetCapsuleEnds(startPos);
+        var dir = endPos - startPos;
+        var physicsScene = this.Player.CurrentPhysicsScene;
+        var detected = physicsScene.CapsuleCast(top, bot, this.Player.CapsuleRadius, dir, raycastBuffer, dir.magnitude + 0.1f, this.mask);
+
+        // Debug.Log((this.Player.Position, lastState.position));        
+
+        if (detected == 0) return false;
+        if (detected > 0)
+        {
+            for (int i = 0; i < detected; i++)
+            {
+                var hitInfo = raycastBuffer[i];
+                hitNormal += hitInfo.normal;
+                var angle = 90 - Vector3.Angle(Vector3.up, hitInfo.normal);
+                if (angle > this.slopeAngle)
+                {
+                    touchGround = true;
+                    groundPos = startPos + dir * hitInfo.distance;
+                }
+            }
+        }
+
         return true;
     }
 

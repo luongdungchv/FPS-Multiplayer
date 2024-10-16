@@ -28,6 +28,8 @@ public partial class NetworkFPSPlayer : NetworkPlayer
     private Vector3 CapsuleBottom => transform.position - Vector3.up * this.GetComponent<CapsuleCollider>().height / 2 * transform.localScale.y;
     public float CapsuleRadius => Mathf.Max(transform.localScale.x, transform.localScale.z) * this.GetComponent<CapsuleCollider>().radius;
 
+    private int lastTick = -1;
+
     public Vector3 Position
     {
         get => currentState.position;

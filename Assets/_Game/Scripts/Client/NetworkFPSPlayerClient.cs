@@ -10,7 +10,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     private NetworkCamera cameraController => NetworkCamera.Instance;
     
     private FPSInputPacket pendingInputPacket;
-    private int lastTick = -1;
+    private FPSPlayerState lastSmoothState;
 
     protected partial void Awake()
     {
@@ -34,6 +34,12 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         {
             this.Controller.PerformJump(pendingInputPacket);
         }
+
+        lastSmoothState = new FPSPlayerState()
+        {
+            position = transform.position,
+            horizontalRotation = transform.eulerAngles.y,
+        };
     }
     protected partial void TickUpdate()
     {
@@ -117,23 +123,30 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     
 
+    // public bool SmoothGroundCheck(out Vector3 groundPos)
+    // {
+    //     var currentCheck = Physics.Raycast(groundCheckPoint.position, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
+    //     groundPos = hitInfo.point;
+    //     //var lastTick = this.TickScheduler.GetLastTicks(1)[0];
+    //     var lastState = this.statesBuffer[lastTick];
+    //     if (lastState.init)
+    //     {
+    //         var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
+    //         var check = Physics.Raycast(lastGroundPos, groundCheckPoint.position - lastGroundPos, out hitInfo, (groundCheckPoint.position - lastGroundPos).magnitude + 0.1f, this.groundMask);
+    //         if (check)
+    //         {
+    //             currentCheck = currentCheck || check;
+    //             groundPos = hitInfo.point;
+    //         }
+    //     }
+    //     return currentCheck;
+    // }
     public bool SmoothGroundCheck(out Vector3 groundPos)
     {
-        var currentCheck = Physics.Raycast(groundCheckPoint.position, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
-        groundPos = hitInfo.point;
-        //var lastTick = this.TickScheduler.GetLastTicks(1)[0];
-        var lastState = this.statesBuffer[lastTick];
-        if (lastState.init)
-        {
-            var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
-            var check = Physics.Raycast(lastGroundPos, groundCheckPoint.position - lastGroundPos, out hitInfo, (groundCheckPoint.position - lastGroundPos).magnitude + 0.1f, this.groundMask);
-            if (check)
-            {
-                currentCheck = currentCheck || check;
-                groundPos = hitInfo.point;
-            }
-        }
-        return currentCheck;
+        var startPos = lastSmoothState.position;
+        var endPos = transform.position;
+        var collide = this.PhysicsController.DetectCollision(startPos, endPos, out var hitNormal, out var groundCheck, out groundPos);
+        return groundCheck;
     }
 
 

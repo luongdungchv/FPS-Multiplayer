@@ -63,12 +63,15 @@ public partial class PlayerController
             this.currentJump -= gravity * this.TickScheduler.TickDeltaTime;
             var vel = Vector3.up * currentJump;
             transform.position += Vector3.up * currentJump * this.TickScheduler.TickDeltaTime;
-            var groundCheck = this.Player.GroundCheck(packet.tick, out var groundPos);
+            this.Player.Position = transform.position;
+            //var groundCheck = this.Player.GroundCheck(packet.tick, out var groundPos);
+            var collide = this.PhysicsController.DetectCollision(out var hitNormal, out var groundCheck, out var groundPos);
             if (currentJump < 0 && groundCheck)
             {
                 this.inAir = false;
                 this.currentJump = 0;
-                transform.position = groundPos + Vector3.up * (this.Player.Height + 0.001f);
+                //transform.position = groundPos + Vector3.up * (this.Player.Height + 0.001f);
+                transform.position = groundPos;
                 Debug.Log($"Ground Check: {groundCheck}, {transform.position}");
             }
         }
