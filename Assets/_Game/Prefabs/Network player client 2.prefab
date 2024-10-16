@@ -1392,7 +1392,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpd: 6
-  mouseSen: 100
+  mouseSen: 1
   jumpSpd: 16
   gravity: 40
   inAir: 0

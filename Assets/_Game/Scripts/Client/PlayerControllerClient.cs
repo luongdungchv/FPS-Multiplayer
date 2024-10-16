@@ -67,6 +67,33 @@ public partial class PlayerController
         var mouseX = Input.GetAxis("Mouse X") * this.Player.TickScheduler.TickDeltaTime;
         var mouseY = Input.GetAxis("Mouse Y") * this.Player.TickScheduler.TickDeltaTime;
 
+        // var currentRot = transform.eulerAngles;
+        // currentRot.y += mouseX * this.mouseSen;
+
+        // this.PerformHeadRotation(mouseY, mouseSen);
+
+        // transform.eulerAngles = currentRot;
+
+        this.Player.HorizontalRotation += mouseX * mouseSen;
+        this.PerformTickHeadRotation(mouseY, mouseSen);
+
+        transform.eulerAngles = transform.eulerAngles.Set(y: this.Player.HorizontalRotation);
+        this.Avatar.HeadTransform.eulerAngles = Avatar.HeadTransform.eulerAngles.Set(x: this.Player.VerticalRotation);
+    }
+
+    
+    public void PerformTickHeadRotation(float amount, float sensitivity){
+        var mouseY = amount * sensitivity;
+        if(this.Player.VerticalRotation > 180)
+            this.Player.VerticalRotation -= 360;
+        this.Player.VerticalRotation -= mouseY;
+        this.Player.VerticalRotation = Mathf.Clamp(this.Player.VerticalRotation, -90f, 90f);
+    }
+
+    public void PerformRotation(){
+        var mouseX = Input.GetAxis("Mouse X");
+        var mouseY = Input.GetAxis("Mouse Y");
+
         var currentRot = transform.eulerAngles;
         currentRot.y += mouseX * this.mouseSen;
 

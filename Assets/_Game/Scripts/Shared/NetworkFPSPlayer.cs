@@ -36,6 +36,15 @@ public partial class NetworkFPSPlayer : NetworkPlayer
         set => currentState.position = value;
     }
 
+    public float HorizontalRotation{
+        get => this.currentState.horizontalRotation;
+        set => this.currentState.horizontalRotation = value;
+    }
+    public float VerticalRotation{
+        get => this.currentState.verticalRotation;
+        set => this.currentState.verticalRotation = value;
+    }
+
     private Vector3 GetGroundCheckPoint(Vector3 parentPos)
     {
         return parentPos + VectorUtils.Multiply(groundCheckPoint.localPosition, groundCheckPoint.localScale);
@@ -47,7 +56,7 @@ public partial class NetworkFPSPlayer : NetworkPlayer
 
     public (Vector3, Vector3) GetCapsuleEnds(Vector3 center)
     {
-        var offset = Vector3.up * this.GetComponent<CapsuleCollider>().height / 2 * transform.localScale.y;
+        var offset = Vector3.up * (this.GetComponent<CapsuleCollider>().height / 2 * transform.localScale.y - this.CapsuleRadius);
         return (center + offset, center - offset);
     }
 

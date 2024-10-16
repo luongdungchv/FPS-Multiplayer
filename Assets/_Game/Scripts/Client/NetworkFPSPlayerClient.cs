@@ -21,6 +21,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         yield return new WaitForSeconds(0);
         this.currentState.position = transform.position;
+        this.currentState.horizontalRotation = transform.eulerAngles.y;
+        this.currentState.verticalRotation = transform.eulerAngles.x;
     }
     protected partial void Update()
     {
@@ -29,6 +31,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         if (!pendingInputPacket.jump) pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
         if (!pendingInputPacket.shoot) pendingInputPacket.shoot = Input.GetMouseButtonDown(0);
 
+        this.Controller.PerformRotation();
         this.Controller.PerformMovement(pendingInputPacket);
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -43,7 +46,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     }
     protected partial void TickUpdate()
     {
-        this.Controller.PerformTickRotation();
+        //this.Controller.PerformTickRotation();
         this.Controller.PerformTickMovement(pendingInputPacket);
 
         if (pendingInputPacket.jump)
