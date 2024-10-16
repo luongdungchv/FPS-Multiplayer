@@ -10,6 +10,7 @@ public partial class PlayerController : MonoBehaviour
     private NetworkFPSPlayer Player => this.GetComponent<NetworkFPSPlayer>();
     private PlayerAvatar Avatar => this.GetComponent<PlayerAvatar>();
     private TickScheduler TickScheduler => this.Player.TickScheduler;
+    private PhysicsController PhysicsController => this.GetComponent<PhysicsController>();
 
     private float currentJump;
     [SerializeField] private bool inAir;

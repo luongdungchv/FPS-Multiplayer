@@ -18,6 +18,7 @@ namespace Kigor.Networking
         }
 
         public void SetID(int id) => this.id = id;
+        public PhysicsScene CurrentPhysicsScene => this.room.PhysicsScene;
 #if CLIENT_BUILD
         private bool isLocalPlayer;
         public static NetworkPlayer localPlayer;

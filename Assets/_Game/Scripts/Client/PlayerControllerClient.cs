@@ -112,7 +112,8 @@ public partial class PlayerController
             var vel = Vector3.up * currentJump;
             // transform.position += Vector3.up * currentJump;
             this.Player.Position += Vector3.up * currentJump * this.Player.TickScheduler.TickDeltaTime;
-            var groundCheck = this.Player.GroundCheck(out var groundPos);
+            //var groundCheck = this.Player.GroundCheck(out var groundPos);
+            var collide = this.PhysicsController.DetectCollision(out var hitNormal, out var groundCheck, out var groundPos);
             
             if (currentJump < 0 && groundCheck)
             {
