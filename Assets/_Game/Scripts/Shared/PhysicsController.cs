@@ -13,7 +13,8 @@ public partial class PhysicsController : MonoBehaviour
     private RaycastHit[] raycastBuffer;
     private Vector3[] hitNormalsBuffer;
     private int raycastCount;
-    [SerializeField] private float distToGround;
+    private float distToGround;
+    private float minSlopeDot;
 
     private void Awake()
     {
@@ -22,6 +23,7 @@ public partial class PhysicsController : MonoBehaviour
 
         var radius = this.Player.CapsuleRadius;
         this.distToGround = radius / Mathf.Cos(this.slopeAngle * Mathf.Deg2Rad) - radius;
+        this.minSlopeDot = Mathf.Cos((90 - slopeAngle) * Mathf.Deg2Rad);
     }
 
     public bool DetectCollision(out Vector3 hitNormal, out bool touchGround, out Vector3 touchPos)
@@ -116,7 +118,10 @@ public partial class PhysicsController : MonoBehaviour
                 {
                     var hitInfo = raycastBuffer[i];
                     if(hitInfo.normal.normalized == -dir.normalized) continue;
-                    hitNormalsBuffer[i] = hitInfo.normal;
+                    var normal = (Vector3.Dot(hitInfo.normal.normalized, Vector3.up) < minSlopeDot) ? 
+                        hitInfo.normal.normalized : 
+                        hitInfo.normal.Set(y: 0).normalized;
+                    hitNormalsBuffer[i] = normal;
                     var angle = 90 - Vector3.Angle(Vector3.up, hitInfo.normal);
                     if (angle > this.slopeAngle)
                     {
