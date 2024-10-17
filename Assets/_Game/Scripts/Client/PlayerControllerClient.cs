@@ -73,11 +73,34 @@ public partial class PlayerController
         var y = packet.movement.y;
 
         var moveDir = lookDir * y + rightDir * x;
-        var moveVelocity = moveDir.normalized * moveSpd;
+        var vel = moveDir.normalized * moveSpd * Time.deltaTime;
 
-        var jumpVel = packet.jump ? Vector3.up * jumpSpd : Vector3.zero;
+        if(!this.smoothInAir) vel = this.PhysicsController.GetMoveVector(vel);
+        vel += this.PerformTickVerticalMovement(packet.tick);
 
-        transform.position += (moveVelocity + jumpVel) * Time.deltaTime;
+        var lastPos = this.Player.Position;
+        this.Player.Position += vel;
+
+        var hitNormals = this.PhysicsController.DetectCollision(out int hitCount, out var touchGround, out var groundPos);
+        Debug.Log(hitCount);
+        if(hitCount > 0){
+            if(this.currentJump < 0 && touchGround && this.inAir){
+                this.inAir = false;
+                this.currentJump = 0;
+                this.Player.Position = groundPos;
+            }
+            for(int i = 0; i < hitCount; i++){
+                var normal = hitNormals[i];
+                var cross = Vector3.Cross(normal, vel);
+                //Debug.Log(normal);
+                vel = Vector3.Cross(cross, normal);
+                lastPos += vel;
+            }
+            this.Player.Position = lastPos;
+        }
+
+
+        transform.position += vel;
         this.PerformVerticalMovement(packet);
     }
 

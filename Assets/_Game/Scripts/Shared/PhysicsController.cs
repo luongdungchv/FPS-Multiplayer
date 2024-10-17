@@ -13,8 +13,8 @@ public partial class PhysicsController : MonoBehaviour
     private RaycastHit[] raycastBuffer;
     private Vector3[] hitNormalsBuffer;
     private int raycastCount;
-    private float distToGround;
-    private float minSlopeDot;
+    [SerializeField] private float distToGround;
+    [SerializeField] private float minSlopeDot;
 
     private void Awake()
     {
@@ -22,8 +22,8 @@ public partial class PhysicsController : MonoBehaviour
         this.hitNormalsBuffer = new Vector3[raycastBufferSize];
 
         var radius = this.Player.CapsuleRadius;
-        this.distToGround = radius / Mathf.Cos(this.slopeAngle * Mathf.Deg2Rad) - radius;
-        this.minSlopeDot = Mathf.Cos((90 - slopeAngle) * Mathf.Deg2Rad);
+        this.distToGround = radius / Mathf.Cos(this.slopeAngle * Mathf.Deg2Rad) - radius + 0.1f;
+        this.minSlopeDot = Mathf.Cos(slopeAngle * Mathf.Deg2Rad);
     }
 
     public bool DetectCollision(out Vector3 hitNormal, out bool touchGround, out Vector3 touchPos)
@@ -118,9 +118,11 @@ public partial class PhysicsController : MonoBehaviour
                 {
                     var hitInfo = raycastBuffer[i];
                     if(hitInfo.normal.normalized == -dir.normalized) continue;
-                    var normal = (Vector3.Dot(hitInfo.normal.normalized, Vector3.up) < minSlopeDot) ? 
+                    var canMoveOnSlope = Vector3.Dot(hitInfo.normal.normalized, Vector3.up) > minSlopeDot;
+                    var normal = canMoveOnSlope ? 
                         hitInfo.normal.normalized : 
                         hitInfo.normal.Set(y: 0).normalized;
+                    Debug.Log((canMoveOnSlope, normal, hitInfo.normal, hitInfo.collider));
                     hitNormalsBuffer[i] = normal;
                     var angle = 90 - Vector3.Angle(Vector3.up, hitInfo.normal);
                     if (angle > this.slopeAngle)
@@ -139,7 +141,6 @@ public partial class PhysicsController : MonoBehaviour
         if(isGround){
             var tangent = Vector3.Cross(hitInfo.normal, velocity);
             var vel = Vector3.Cross(tangent, hitInfo.normal);
-            Debug.Log(vel.normalized * velocity.magnitude);
             return vel.normalized * velocity.magnitude;
         }
         return velocity;
