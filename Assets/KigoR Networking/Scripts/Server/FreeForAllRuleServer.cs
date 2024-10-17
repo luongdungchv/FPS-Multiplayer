@@ -49,7 +49,7 @@ namespace Kigor.Networking
 
                 var x = Random.Range(0f, 20f);
                 var z = Random.Range(0f, 20f);
-                var pos = new Vector3(x, 0, z);
+                var pos = new Vector3(0, 0, 0);
                 player.transform.position = pos;
 
                 packet.playerPositionList.Add(player.transform.position);

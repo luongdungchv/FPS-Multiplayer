@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Kigor.Networking;
-
+using System.Linq;
 public partial class PlayerController
 {
 #if CLIENT_BUILD
@@ -37,11 +37,30 @@ public partial class PlayerController
         var moveDir = lookDir * y + rightDir * x;
         var moveVelocity = moveDir.normalized * moveSpd;
 
-        //var jumpVel = packet.jump ? Vector3.up * jumpSpd : Vector3.zero;
+        var vel = moveVelocity * this.Player.TickScheduler.TickDeltaTime;
+        if(!this.inAir) vel = this.PhysicsController.GetMoveVector(vel);
+        vel += this.PerformTickVerticalMovement(packet.tick);
 
-        //transform.position += (moveVelocity + jumpVel) * this.Player.TickScheduler.TickDeltaTime;
-        this.Player.Position += (moveVelocity) * this.Player.TickScheduler.TickDeltaTime;
-        this.PerformTickVerticalMovement(packet.tick);
+        var lastPos = this.Player.Position;
+        this.Player.Position += vel;
+
+        var hitNormals = this.PhysicsController.DetectCollision(out int hitCount, out var touchGround, out var groundPos);
+        if(hitCount > 0){
+            if(this.currentJump < 0 && touchGround && this.inAir){
+                this.inAir = false;
+                this.currentJump = 0;
+                this.Player.Position = groundPos;
+            }
+
+            for(int i = 0; i < hitCount; i++){
+                var normal = hitNormals[i];
+                var cross = Vector3.Cross(normal, vel);
+                vel = Vector3.Cross(cross, normal);
+                lastPos += vel;
+            }
+            this.Player.Position = lastPos;
+        }
+        
         this.transform.position = this.Player.Position;
     }
 
@@ -66,13 +85,6 @@ public partial class PlayerController
     {
         var mouseX = Input.GetAxis("Mouse X") * this.Player.TickScheduler.TickDeltaTime;
         var mouseY = Input.GetAxis("Mouse Y") * this.Player.TickScheduler.TickDeltaTime;
-
-        // var currentRot = transform.eulerAngles;
-        // currentRot.y += mouseX * this.mouseSen;
-
-        // this.PerformHeadRotation(mouseY, mouseSen);
-
-        // transform.eulerAngles = currentRot;
 
         this.Player.HorizontalRotation += mouseX * mouseSen;
         this.PerformTickHeadRotation(mouseY, mouseSen);
@@ -131,26 +143,18 @@ public partial class PlayerController
             this.smoothCurrentJump = this.jumpSpd;
         }
     }
-    public void PerformTickVerticalMovement(int tick)
+    public Vector3 PerformTickVerticalMovement(int tick)
     {
         if (inAir)
         {
             this.currentJump -= gravity * this.Player.TickScheduler.TickDeltaTime;
             var vel = Vector3.up * currentJump;
             // transform.position += Vector3.up * currentJump;
-            this.Player.Position += Vector3.up * currentJump * this.Player.TickScheduler.TickDeltaTime;
+            //this.Player.Position += Vector3.up * currentJump * this.Player.TickScheduler.TickDeltaTime;
             //var groundCheck = this.Player.GroundCheck(out var groundPos);
-            var collide = this.PhysicsController.DetectCollision(out var hitNormal, out var groundCheck, out var groundPos);
-            
-            if (currentJump < 0 && groundCheck)
-            {
-                this.inAir = false;
-                this.currentJump = 0;
-                this.Player.Position = groundPos;
-                // + Vector3.up * (this.Player.Height + 0.001f);
-                Debug.Log($"Ground Check: {groundCheck}, {transform.position}");
-            }
+            return Vector3.up * currentJump * this.Player.TickScheduler.TickDeltaTime;
         }
+        return Vector3.zero;
     }
 
     public void PerformVerticalMovement(FPSInputPacket packet)
