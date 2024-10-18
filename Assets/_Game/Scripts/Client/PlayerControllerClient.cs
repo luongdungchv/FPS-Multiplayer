@@ -43,22 +43,16 @@ public partial class PlayerController
         if (!this.inAir) vel = this.PhysicsController.GetMoveVector(this.Player.Position, vel, out currentGround);
         vel += this.PerformTickVerticalMovement(packet.tick);
 
-        //this.Player.Position = (Player.Position + currentGround) / 2;
-        //Debug.Log((Player.Position, currentGround, packet.tick));
         var lastPos = this.Player.Position;
         this.Player.Position += vel;
 
         var hitNormals = this.PhysicsController.DetectCollision(lastPos, Player.Position, out int hitCount, out var touchGround, out var groundPos, out var touchPos, packet.tick);
-        //if(inAir) Debug.Log((lastPos, Player.Position, hitCount));
         if (hitCount > 0)
         {
-            //lastPos = touchPos;
-            if(inAir) Debug.Log((hitNormals[0], Player.Position - lastPos, Vector3.Dot(Player.Position - lastPos, hitNormals[0]), packet.tick));
             if (this.currentJump < 0 && touchGround && this.inAir)
             {
                 this.inAir = false;
                 this.currentJump = 0;
-                //this.Player.Position = groundPos;
                 Debug.Log((groundPos,lastPos, Player.Position));
                 lastPos = groundPos;
             }
@@ -91,23 +85,18 @@ public partial class PlayerController
         var ground = Vector3.zero;
         if (!this.smoothInAir) vel = this.PhysicsController.GetMoveVector(transform.position, vel, out ground);
         vel += this.PerformVerticalMovement(packet);
-        //if(vel != Vector3.zero) Debug.Log(vel); 
 
-        var lastPos = (transform.position + ground) / 2;
+        var lastPos = transform.position;
         transform.position += vel;
-        //this.Player.Position += vel;
 
         var hitNormals = this.PhysicsController.DetectCollision(lastPos, transform.position, out int hitCount, out var touchGround, out var groundPos, out var firstTouchPos);
         if (hitCount > 0)
         {
-            //lastPos = firstTouchPos;
             if (this.smoothCurrentJump < 0 && touchGround && this.smoothInAir)
             {
                 this.smoothInAir = false;
                 this.smoothCurrentJump = 0;
-                //transform.position = groundPos;
                 lastPos = groundPos;
-                
             }
 
             for (int i = 0; i < hitCount; i++)

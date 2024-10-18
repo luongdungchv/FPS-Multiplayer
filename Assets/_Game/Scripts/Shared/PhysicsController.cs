@@ -160,7 +160,6 @@ public partial class PhysicsController : MonoBehaviour
             for (int i = 0; i < tmpCount; i++)
             {
                 var hitInfo = raycastBuffer[i];
-                Debug.Log((i, hitInfo.normal, dir, Vector3.Dot(hitInfo.normal, dir),tick));
                 var canMoveOnSlope = Vector3.Dot(hitInfo.normal.normalized, Vector3.up) > minSlopeDot;
                 if(Vector3.Dot(hitInfo.normal, dir.normalized) > 0) Debug.Log("Damn!  " + (dir, hitInfo.normal, hitInfo.collider.gameObject));
                 if (hitInfo.normal.normalized == -dir.normalized && hitInfo.distance == 0){
@@ -179,6 +178,7 @@ public partial class PhysicsController : MonoBehaviour
                 {
                     touchGround = true;
                     groundPos = touchPos;
+                    Debug.Log((groundPos, dir));
                 }
                 if(i == 0) firstTouchPos = touchPos;
             }
