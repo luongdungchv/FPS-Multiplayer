@@ -95,12 +95,14 @@ public partial class PhysicsController : MonoBehaviour
         return true;
     }
 
-    public Vector3[] DetectCollision(out int collisionCount, out bool touchGround, out Vector3 groundPos){
+    public Vector3[] DetectCollision(out int collisionCount, out bool touchGround, out Vector3 groundPos, out Vector3 firstTouchPos)
+    {
         var lastState = this.Player.GetLastState(out bool found);
 
         touchGround = false;
         collisionCount = 0;
         groundPos = Vector3.zero;
+        firstTouchPos = Vector3.zero;
 
         if (lastState.init)
         {
@@ -117,32 +119,86 @@ public partial class PhysicsController : MonoBehaviour
                 for (int i = 0; i < collisionCount; i++)
                 {
                     var hitInfo = raycastBuffer[i];
-                    if(hitInfo.normal.normalized == -dir.normalized) continue;
+                    if (hitInfo.normal.normalized == -dir.normalized && hitInfo.distance == 0) continue;
                     var canMoveOnSlope = Vector3.Dot(hitInfo.normal.normalized, Vector3.up) > minSlopeDot;
-                    var normal = canMoveOnSlope ? 
-                        hitInfo.normal.normalized : 
+                    var normal = canMoveOnSlope ?
+                        hitInfo.normal.normalized :
                         hitInfo.normal.Set(y: 0).normalized;
                     Debug.Log((canMoveOnSlope, normal, hitInfo.normal, hitInfo.collider));
                     hitNormalsBuffer[i] = normal;
                     var angle = 90 - Vector3.Angle(Vector3.up, hitInfo.normal);
+                    var touchPos = lastState.position + dir * hitInfo.distance;
                     if (angle > this.slopeAngle)
                     {
                         touchGround = true;
-                        groundPos = lastState.position + dir * hitInfo.distance;
+                        groundPos = touchPos;
                     }
+                    if(i == 0) firstTouchPos = touchPos;
                 }
             }
         }
         return this.hitNormalsBuffer;
     }
 
-    public Vector3 GetMoveVector(Vector3 velocity){
-        var isGround = Physics.Raycast(groundCheckPoint.position, Vector3.down, out var hitInfo, this.distToGround, this.groundMask);
-        if(isGround){
+    public Vector3[] DetectCollision(Vector3 start, Vector3 end, out int collisionCount, out bool touchGround, out Vector3 groundPos, out Vector3 firstTouchPos, int tick = -2)
+    {
+        touchGround = false;
+        groundPos = Vector3.zero;
+        firstTouchPos = start;
+
+        var (top, bot) = this.Player.GetCapsuleEnds(start);
+        var dir =  end - start;
+        var physicsScene = this.Player.CurrentPhysicsScene;
+        var tmpCount = physicsScene.CapsuleCast(top, bot, this.Player.CapsuleRadius, dir.normalized, raycastBuffer, dir.magnitude + 0.1f, this.mask);
+        collisionCount = tmpCount;
+
+        var skip = 0;
+
+        if (tmpCount <= 0) return null;
+        if (tmpCount > 0)
+        {
+            for (int i = 0; i < tmpCount; i++)
+            {
+                var hitInfo = raycastBuffer[i];
+                Debug.Log((i, hitInfo.normal, dir, Vector3.Dot(hitInfo.normal, dir),tick));
+                var canMoveOnSlope = Vector3.Dot(hitInfo.normal.normalized, Vector3.up) > minSlopeDot;
+                if(Vector3.Dot(hitInfo.normal, dir.normalized) > 0) Debug.Log("Damn!  " + (dir, hitInfo.normal, hitInfo.collider.gameObject));
+                if (hitInfo.normal.normalized == -dir.normalized && hitInfo.distance == 0){
+                    collisionCount--;
+                    skip++;
+                    continue;
+                };
+                var normal = canMoveOnSlope ?
+                    hitInfo.normal.normalized :
+                    hitInfo.normal.Set(y: 0).normalized;
+                hitNormalsBuffer[i - skip] = normal;
+
+                var angle = 90 - Vector3.Angle(Vector3.up, normal);
+                var touchPos = start + dir.normalized * hitInfo.distance;
+                if (angle > this.slopeAngle)
+                {
+                    touchGround = true;
+                    groundPos = touchPos;
+                }
+                if(i == 0) firstTouchPos = touchPos;
+            }
+        }
+
+        return this.hitNormalsBuffer;
+    }
+
+    public Vector3 GetMoveVector(Vector3 center, Vector3 velocity, out Vector3 groundPos)
+    {
+        groundPos = center;
+        var castPoint = center + VectorUtils.Multiply(transform.localScale, groundCheckPoint.localPosition);
+        var check = this.Player.CurrentPhysicsScene.Raycast(castPoint, Vector3.down, out var hitInfo, this.distToGround, this.groundMask);
+        if(check){
             var tangent = Vector3.Cross(hitInfo.normal, velocity);
             var vel = Vector3.Cross(tangent, hitInfo.normal);
+            groundPos = center + Vector3.down * hitInfo.distance;
             return vel.normalized * velocity.magnitude;
         }
+        
         return velocity;
     }
 }

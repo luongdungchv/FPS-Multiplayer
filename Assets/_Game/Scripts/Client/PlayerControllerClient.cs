@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Kigor.Networking;
 using System.Linq;
+using Unity.VisualScripting;
 public partial class PlayerController
 {
 #if CLIENT_BUILD
     private float smoothCurrentJump;
-    private bool smoothInAir;
+    [SerializeField] private bool smoothInAir;
     protected partial void Awake()
     {
     }
@@ -38,21 +39,33 @@ public partial class PlayerController
         var moveVelocity = moveDir.normalized * moveSpd;
 
         var vel = moveVelocity * this.Player.TickScheduler.TickDeltaTime;
-        if(!this.inAir) vel = this.PhysicsController.GetMoveVector(vel);
+        var currentGround = Vector3.zero;
+        if (!this.inAir) vel = this.PhysicsController.GetMoveVector(this.Player.Position, vel, out currentGround);
         vel += this.PerformTickVerticalMovement(packet.tick);
 
+        //this.Player.Position = (Player.Position + currentGround) / 2;
+        //Debug.Log((Player.Position, currentGround, packet.tick));
         var lastPos = this.Player.Position;
         this.Player.Position += vel;
 
-        var hitNormals = this.PhysicsController.DetectCollision(out int hitCount, out var touchGround, out var groundPos);
-        if(hitCount > 0){
-            if(this.currentJump < 0 && touchGround && this.inAir){
+        var hitNormals = this.PhysicsController.DetectCollision(lastPos, Player.Position, out int hitCount, out var touchGround, out var groundPos, out var touchPos, packet.tick);
+        //if(inAir) Debug.Log((lastPos, Player.Position, hitCount));
+        if (hitCount > 0)
+        {
+            //lastPos = touchPos;
+            if(inAir) Debug.Log((hitNormals[0], Player.Position - lastPos, Vector3.Dot(Player.Position - lastPos, hitNormals[0]), packet.tick));
+            if (this.currentJump < 0 && touchGround && this.inAir)
+            {
                 this.inAir = false;
                 this.currentJump = 0;
-                this.Player.Position = groundPos;
+                //this.Player.Position = groundPos;
+                Debug.Log((groundPos,lastPos, Player.Position));
+                lastPos = groundPos;
             }
+            
 
-            for(int i = 0; i < hitCount; i++){
+            for (int i = 0; i < hitCount; i++)
+            {
                 var normal = hitNormals[i];
                 var cross = Vector3.Cross(normal, vel);
                 vel = Vector3.Cross(cross, normal);
@@ -60,7 +73,7 @@ public partial class PlayerController
             }
             this.Player.Position = lastPos;
         }
-        
+
         this.transform.position = this.Player.Position;
     }
 
@@ -75,33 +88,38 @@ public partial class PlayerController
         var moveDir = lookDir * y + rightDir * x;
         var vel = moveDir.normalized * moveSpd * Time.deltaTime;
 
-        if(!this.smoothInAir) vel = this.PhysicsController.GetMoveVector(vel);
-        vel += this.PerformTickVerticalMovement(packet.tick);
+        var ground = Vector3.zero;
+        if (!this.smoothInAir) vel = this.PhysicsController.GetMoveVector(transform.position, vel, out ground);
+        vel += this.PerformVerticalMovement(packet);
+        //if(vel != Vector3.zero) Debug.Log(vel); 
 
-        var lastPos = this.Player.Position;
-        this.Player.Position += vel;
+        var lastPos = (transform.position + ground) / 2;
+        transform.position += vel;
+        //this.Player.Position += vel;
 
-        var hitNormals = this.PhysicsController.DetectCollision(out int hitCount, out var touchGround, out var groundPos);
-        Debug.Log(hitCount);
-        if(hitCount > 0){
-            if(this.currentJump < 0 && touchGround && this.inAir){
-                this.inAir = false;
-                this.currentJump = 0;
-                this.Player.Position = groundPos;
+        var hitNormals = this.PhysicsController.DetectCollision(lastPos, transform.position, out int hitCount, out var touchGround, out var groundPos, out var firstTouchPos);
+        if (hitCount > 0)
+        {
+            //lastPos = firstTouchPos;
+            if (this.smoothCurrentJump < 0 && touchGround && this.smoothInAir)
+            {
+                this.smoothInAir = false;
+                this.smoothCurrentJump = 0;
+                //transform.position = groundPos;
+                lastPos = groundPos;
+                
             }
-            for(int i = 0; i < hitCount; i++){
+
+            for (int i = 0; i < hitCount; i++)
+            {
                 var normal = hitNormals[i];
+                if (normal == Vector3.zero) continue;
                 var cross = Vector3.Cross(normal, vel);
-                //Debug.Log(normal);
                 vel = Vector3.Cross(cross, normal);
                 lastPos += vel;
             }
-            this.Player.Position = lastPos;
+            transform.position = lastPos;
         }
-
-
-        transform.position += vel;
-        this.PerformVerticalMovement(packet);
     }
 
     public void PerformTickRotation()
@@ -116,16 +134,18 @@ public partial class PlayerController
         this.Avatar.HeadTransform.eulerAngles = Avatar.HeadTransform.eulerAngles.Set(x: this.Player.VerticalRotation);
     }
 
-    
-    public void PerformTickHeadRotation(float amount, float sensitivity){
+
+    public void PerformTickHeadRotation(float amount, float sensitivity)
+    {
         var mouseY = amount * sensitivity;
-        if(this.Player.VerticalRotation > 180)
+        if (this.Player.VerticalRotation > 180)
             this.Player.VerticalRotation -= 360;
         this.Player.VerticalRotation -= mouseY;
         this.Player.VerticalRotation = Mathf.Clamp(this.Player.VerticalRotation, -90f, 90f);
     }
 
-    public void PerformRotation(){
+    public void PerformRotation()
+    {
         var mouseX = Input.GetAxis("Mouse X");
         var mouseY = Input.GetAxis("Mouse Y");
 
@@ -180,21 +200,16 @@ public partial class PlayerController
         return Vector3.zero;
     }
 
-    public void PerformVerticalMovement(FPSInputPacket packet)
+    public Vector3 PerformVerticalMovement(FPSInputPacket packet)
     {
         if (smoothInAir)
         {
             this.smoothCurrentJump -= gravity * Time.deltaTime;
-            var vel = Vector3.up * smoothCurrentJump;
-            transform.position += Vector3.up * smoothCurrentJump * Time.deltaTime;
-            var groundCheck = this.Player.SmoothGroundCheck(out var groundPos);
-            if (smoothCurrentJump < 0 && groundCheck)
-            {
-                this.smoothInAir = false;
-                this.smoothCurrentJump = 0;
-                transform.position = groundPos + Vector3.up * (this.Player.Height + 0.001f);
-            }
+            //transform.position += Vector3.up * smoothCurrentJump * Time.deltaTime;
+            //var groundCheck = this.Player.SmoothGroundCheck(out var groundPos);
+            return Vector3.up * smoothCurrentJump * Time.deltaTime;
         }
+        return Vector3.zero;
     }
 #endif
 }

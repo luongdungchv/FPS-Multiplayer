@@ -19,7 +19,7 @@ namespace Kigor.Networking
             NetworkGameRule.InitCreatorMap();
 
             Application.runInBackground = true;
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = -1;
         }
         
         

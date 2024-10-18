@@ -23,13 +23,13 @@ public class TestPhysicsCast : MonoBehaviour
     }
 
     [Sirenix.OdinInspector.Button]
-    private void TestCapsuleCast(){
+    private void TestCapsuleCast(float maxdist = 100){
         var radius = this.capsuleCollider.radius;
         var dist = capsuleCollider.height / 2 - radius;
         var top = transform.position + Vector3.up * dist;
         var bot = transform.position - Vector3.up * dist;
 
-        var hitList = Physics.CapsuleCastAll(top, bot, radius, transform.forward, 100);
+        var hitList = Physics.CapsuleCastAll(top, bot, radius, transform.forward, maxdist);
         foreach(var hitInfo in hitList){
             Debug.Log((hitInfo.point, hitInfo.distance));
         }

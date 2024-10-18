@@ -38,15 +38,14 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         //     this.Controller.PerformJump(pendingInputPacket);
         // }
 
-        // lastSmoothState = new FPSPlayerState()
-        // {
-        //     position = transform.position,
-        //     horizontalRotation = transform.eulerAngles.y,
-        // };
+        lastSmoothState = new FPSPlayerState()
+        {
+            position = transform.position,
+            horizontalRotation = transform.eulerAngles.y,
+        };
     }
     protected partial void TickUpdate()
     {
-        // this.Controller.PerformTickRotation();
         this.Controller.PerformTickMovement(pendingInputPacket);
 
         if (pendingInputPacket.jump)
@@ -148,7 +147,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         var startPos = lastSmoothState.position;
         var endPos = transform.position;
-        var collide = this.PhysicsController.DetectCollision(startPos, endPos, out var hitNormal, out var groundCheck, out groundPos);
+        var collide = this.PhysicsController.DetectCollision(startPos, endPos, out Vector3 hitNormal, out var groundCheck, out groundPos);
         return groundCheck;
     }
 
