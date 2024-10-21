@@ -64,7 +64,11 @@ namespace Kigor.Networking
                 {
                     this.DisposeRoom();
 
-                    SceneManager.UnloadSceneAsync(this.scene);
+                    SceneManager.UnloadSceneAsync(this.scene).completed += (op) =>
+                    {
+                        GC.Collect();
+                        SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
+                    };;
                 }
             });
         }
@@ -97,7 +101,7 @@ namespace Kigor.Networking
                     SceneManager.UnloadSceneAsync(this.scene).completed += (op) =>
                     {
                         GC.Collect();
-
+                        SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
                     };
                 });
                 Debug.Log("crash");

@@ -114,7 +114,7 @@ namespace Kigor.Networking
                 Debug.Log($"UDP Port: {packet.udpPort}");
                 socket.AddUDPRemoteEndpoint((socket.TCPSocket.Client.RemoteEndPoint as IPEndPoint).Address, (int)packet.udpPort);
                 var newRoom = this.cluster.WaitingRoomManager.AddWaitingRoom();
-                newRoom.SetMap("TestGameMap");
+                newRoom.SetMap("TestDM");
                 var newPlayer = newRoom.AddWaitingPlayer(socket, packet.playerName, true);
 
                 var udpInfoPacket = new UDPConnectionInfoPacket();

@@ -56,7 +56,7 @@ Shader "Custom/Gradient_3Colors_URP"
                 float4 c = lerp(_ColorBot, _ColorMid, i.uv.y / _Middle) * step(i.uv.y, _Middle);
                 c += lerp(_ColorMid, _ColorTop, (i.uv.y - _Middle) / (1 - _Middle)) * step(_Middle, i.uv.y);
                 c.a = 1;
-                return c;ddd
+                return c;
             }
             ENDHLSL
         }

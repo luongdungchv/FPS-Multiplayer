@@ -65,6 +65,7 @@ namespace Kigor.Networking
                 SceneManager.LoadSceneAsync(this.gameMap, loadParams).completed += (op) =>
                 {
                     var loadedScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
+                    SceneManager.SetActiveScene(loadedScene);
                     NetworkManager.Instance.AddScene(loadedScene);
                     var rule = NetworkGameRule.CreateRule(this.rule);
                     var gameRoom = this.cluster.GameRoomManager.AddRoom(loadedScene, rule);

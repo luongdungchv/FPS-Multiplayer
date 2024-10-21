@@ -30,7 +30,6 @@ namespace Kigor.Networking
             this.players = null;
             tickScheduler.UnregisterTickCallback(this.TickUpdate);
             this.tickScheduler = null;
-            Debug.Log("rule disposing");
         }
 
         public override void Initialize(Dictionary<int, NetworkPlayer> intialPlayers, Scene loadedScene)
@@ -49,7 +48,7 @@ namespace Kigor.Networking
 
                 var x = Random.Range(0f, 20f);
                 var z = Random.Range(0f, 20f);
-                var pos = new Vector3(0, 0, 0);
+                var pos = new Vector3(-11, 1, 23);
                 player.transform.position = pos;
 
                 packet.playerPositionList.Add(player.transform.position);

@@ -97,6 +97,7 @@ namespace Kigor.Networking
                         try
                         {
                             var loadedScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
+                            SceneManager.SetActiveScene(loadedScene);
                             packet.playerNameList.ForEach(x => Debug.Log(x));
 
                             room.SetScene(loadedScene);

@@ -165,13 +165,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
-                //this.transform.position = state.position;
                 this.Position = state.position;
-
-                // var currentRot = this.transform.eulerAngles;
-                // currentRot.y = state.horizontalRotation;
-
-                // this.transform.eulerAngles = currentRot;
             });
         }
     }

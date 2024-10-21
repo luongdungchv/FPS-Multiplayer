@@ -67,7 +67,10 @@ namespace Kigor.Networking
                 }
                 this.DisposeRoom();
                 NetworkManager.Instance.RemoveScene(this.scene);
-                SceneManager.UnloadSceneAsync(this.scene).completed += (op) => GC.Collect();
+                SceneManager.UnloadSceneAsync(this.scene).completed += (op) => {
+                    GC.Collect();
+                    SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
+                };
             });
         }
 
