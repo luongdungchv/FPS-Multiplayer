@@ -54,7 +54,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             currentState.horizontalRotation = transform.eulerAngles.y;
 
             this.Controller.PerformMovement(packet);
-            this.Controller.PerformVerticalMovement(packet);
+            //this.Controller.PerformVerticalMovement(packet);
 
             if (packet.jump)
             {

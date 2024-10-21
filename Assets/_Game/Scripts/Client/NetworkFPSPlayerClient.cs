@@ -154,26 +154,26 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
-        // var savedState = this.statesBuffer[tick];
-        // if (!savedState.init) return;
+        var savedState = this.statesBuffer[tick];
+        if (!savedState.init) return;
 
-        // if (!FPSPlayerState.IsEqual(savedState, state))
-        // {
-        //     this.room.Rule.TickScheduler.SetTick(tick);
-        //     statesBuffer[tick] = state;
-        //     Debug.Log("Conflict: " + (tick, savedState.position, state.position));
+        if (!FPSPlayerState.IsEqual(savedState, state))
+        {
+            this.room.Rule.TickScheduler.SetTick(tick);
+            statesBuffer[tick] = state;
+            Debug.Log("Conflict: " + (tick, savedState.position, state.position));
 
-        //     ThreadManager.ExecuteOnMainThread(() =>
-        //     {
-        //         //this.transform.position = state.position;
-        //         this.Position = state.position;
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                //this.transform.position = state.position;
+                this.Position = state.position;
 
-        //         // var currentRot = this.transform.eulerAngles;
-        //         // currentRot.y = state.horizontalRotation;
+                // var currentRot = this.transform.eulerAngles;
+                // currentRot.y = state.horizontalRotation;
 
-        //         // this.transform.eulerAngles = currentRot;
-        //     });
-        // }
+                // this.transform.eulerAngles = currentRot;
+            });
+        }
     }
 
     public void SetStatePosition(Vector3 position)

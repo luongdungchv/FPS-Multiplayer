@@ -153,11 +153,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75ce14aa1a6ebea45b1f335e962e50c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groundCheckPoint: {fileID: 7905729786983176488}
   raycastBufferSize: 6
   mask:
     serializedVersion: 2
     m_Bits: 64
-  slopeAngle: 45
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 64
+  slopeAngle: 30
+  distToGround: 0
+  minSlopeDot: 0
 --- !u!1 &6507353759073275861
 GameObject:
   m_ObjectHideFlags: 0

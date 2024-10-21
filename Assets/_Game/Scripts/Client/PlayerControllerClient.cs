@@ -8,7 +8,7 @@ public partial class PlayerController
 {
 #if CLIENT_BUILD
     private float smoothCurrentJump;
-    [SerializeField] private bool smoothInAir;
+    private bool smoothInAir;
     protected partial void Awake()
     {
     }

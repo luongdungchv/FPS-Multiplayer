@@ -21,16 +21,42 @@ public partial class PlayerController
 
     public void PerformMovement(FPSInputPacket packet)
     {
-        var lookDir = new Vector3(packet.moveDir.x, 0, packet.moveDir.y);
+        var lookDir = transform.forward;
         var rightDir = new Vector3(lookDir.z, 0, -lookDir.x);
 
         var x = packet.movement.x;
         var y = packet.movement.y;
 
         var moveDir = lookDir * y + rightDir * x;
-        var velocity = moveDir.normalized * moveSpd;
+        var vel = moveDir.normalized * moveSpd * this.TickScheduler.TickDeltaTime;
 
-        transform.position += velocity * this.TickScheduler.TickDeltaTime;
+        var ground = Vector3.zero;
+        if (!this.inAir) vel = this.PhysicsController.GetMoveVector(transform.position, vel, out ground);
+        vel += this.PerformVerticalMovement(packet);
+
+        var lastPos = transform.position;
+        transform.position += vel;
+
+        var hitNormals = this.PhysicsController.DetectCollision(lastPos, transform.position, out int hitCount, out var touchGround, out var groundPos, out var firstTouchPos);
+        if (hitCount > 0)
+        {
+            if (this.currentJump < 0 && touchGround && this.inAir)
+            {
+                this.inAir = false;
+                this.currentJump = 0;
+                lastPos = groundPos;
+            }
+
+            for (int i = 0; i < hitCount; i++)
+            {
+                var normal = hitNormals[i];
+                if (normal == Vector3.zero) continue;
+                var cross = Vector3.Cross(normal, vel);
+                vel = Vector3.Cross(cross, normal);
+                lastPos += vel;
+            }
+            transform.position = lastPos;
+        }
     }
 
     public void PerformRotation(FPSInputPacket packet)
@@ -56,25 +82,14 @@ public partial class PlayerController
         }
         packet.jump = false;
     }
-    public void PerformVerticalMovement(FPSInputPacket packet)
+    public Vector3 PerformVerticalMovement(FPSInputPacket packet)
     {
-        if (inAir)
+         if (inAir)
         {
             this.currentJump -= gravity * this.TickScheduler.TickDeltaTime;
-            var vel = Vector3.up * currentJump;
-            transform.position += Vector3.up * currentJump * this.TickScheduler.TickDeltaTime;
-            this.Player.Position = transform.position;
-            //var groundCheck = this.Player.GroundCheck(packet.tick, out var groundPos);
-            var collide = this.PhysicsController.DetectCollision(out Vector3 hitNormal, out var groundCheck, out var groundPos);
-            if (currentJump < 0 && groundCheck)
-            {
-                this.inAir = false;
-                this.currentJump = 0;
-                //transform.position = groundPos + Vector3.up * (this.Player.Height + 0.001f);
-                transform.position = groundPos;
-                Debug.Log($"Ground Check: {groundCheck}, {transform.position}");
-            }
+            return Vector3.up * currentJump * this.TickScheduler.TickDeltaTime;
         }
+        return Vector3.zero;
     }
 #endif
 }
