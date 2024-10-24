@@ -31,7 +31,7 @@ public class TestPhysicsCast : MonoBehaviour
 
         var hitList = Physics.CapsuleCastAll(top, bot, radius, transform.forward, maxdist);
         foreach(var hitInfo in hitList){
-            Debug.Log((hitInfo.point, hitInfo.distance));
+            Debug.Log((hitInfo.point, hitInfo.distance, hitInfo.normal));
         }
     }
 

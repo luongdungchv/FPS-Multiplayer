@@ -52,7 +52,7 @@ public partial class PlayerController
             {
                 this.inAir = false;
                 this.currentJump = 0;
-                Debug.Log((groundPos, lastPos, Player.Position));
+                //Debug.Log((groundPos, lastPos, Player.Position));
                 lastPos = groundPos;
             }
 
@@ -62,9 +62,12 @@ public partial class PlayerController
                 var factor = hitNormals[i].w;
                 if (normal == Vector3.zero) continue;
                 var cross = Vector3.Cross(normal, vel);
+                var oldVel = vel;
+                Debug.Log((lastPos, Player.Position, vel, normal));
                 vel = Vector3.Cross(cross, normal);
             }
             lastPos += vel;
+            
             this.Player.Position = lastPos;
         }
 
