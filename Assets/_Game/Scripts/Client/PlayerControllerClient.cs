@@ -48,7 +48,6 @@ public partial class PlayerController
         var hitNormals = this.PhysicsController.DetectCollision(lastPos, Player.Position, out int hitCount, out var touchGround, out var groundPos, out var touchPos, packet.tick);
         if (hitCount > 0)
         {
-            Debug.Log((currentJump, touchGround, inAir));
             if (this.currentJump < 0 && touchGround && this.inAir)
             {
                 this.inAir = false;
@@ -59,11 +58,13 @@ public partial class PlayerController
 
             for (int i = 0; i < hitCount; i++)
             {
-                var normal = hitNormals[i];
+                var normal = hitNormals[i].XYZ();
+                var factor = hitNormals[i].w;
+                if (normal == Vector3.zero) continue;
                 var cross = Vector3.Cross(normal, vel);
                 vel = Vector3.Cross(cross, normal);
-                lastPos += vel;
             }
+            lastPos += vel;
             this.Player.Position = lastPos;
         }
 
@@ -105,8 +106,9 @@ public partial class PlayerController
 
             for (int i = 0; i < hitCount; i++)
             {
-                var normal = hitNormals[i];
-                if (normal == Vector3.zero) continue;
+                var normal = hitNormals[i].XYZ();
+                var factor = hitNormals[i].w;
+                if (normal == Vector3.zero || factor == 1) continue;
                 var cross = Vector3.Cross(normal, vel);
                 vel = Vector3.Cross(cross, normal);
                 lastPos += vel;

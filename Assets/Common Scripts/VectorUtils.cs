@@ -44,6 +44,13 @@ public static class VectorUtils
                            y: y == null ? vector3.y : (float)y,
                            z: z == null ? vector3.z : (float)z);
     }
+    public static Vector4 Set(this Vector4 input, float? x = null, float? y = null, float? z = null, float? w = null)
+    {
+        return new Vector4(x: x == null ? input.x : (float)x,
+                           y: y == null ? input.y : (float)y,
+                           z: z == null ? input.z : (float)z,
+                           w: w == null ? input.w : (float)w);
+    }
 
     public static Vector3 Move(this Vector3 vector3, Vector3 direction)
     {
@@ -87,6 +94,13 @@ public static class VectorUtils
     {
         return new Vector2(vector3.z, vector3.y);
     }
+
+    public static Vector3 XYZ(this Vector4 input) => new Vector3(input.x, input.y, input.z);
+    public static Vector3 XZY(this Vector4 input) => new Vector3(input.x, input.z, input.y);
+    public static Vector3 YXZ(this Vector4 input) => new Vector3(input.y, input.x, input.z);
+    public static Vector3 YZX(this Vector4 input) => new Vector3(input.y, input.z, input.x);
+    public static Vector3 ZXY(this Vector4 input) => new Vector3(input.z, input.x, input.y);
+    public static Vector3 ZYX(this Vector4 input) => new Vector3(input.z, input.y, input.x);
     
     public static Vector3 Multiply(Vector3 a, Vector3 b){
         return new Vector3(a.x * b.x, a.y * b.y, a.x * b.z);

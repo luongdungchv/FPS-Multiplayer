@@ -11,7 +11,7 @@ public partial class PhysicsController : MonoBehaviour
     private NetworkFPSPlayer Player => this.GetComponent<NetworkFPSPlayer>();
 
     private RaycastHit[] raycastBuffer;
-    private Vector3[] hitNormalsBuffer;
+    private Vector4[] hitNormalsBuffer;
     private int raycastCount;
     [SerializeField] private float distToGround;
     [SerializeField] private float minSlopeDot;
@@ -19,7 +19,7 @@ public partial class PhysicsController : MonoBehaviour
     private void Awake()
     {
         raycastBuffer = new RaycastHit[raycastBufferSize];
-        this.hitNormalsBuffer = new Vector3[raycastBufferSize];
+        this.hitNormalsBuffer = new Vector4[raycastBufferSize];
 
         var radius = this.Player.CapsuleRadius;
         this.distToGround = radius / Mathf.Cos(this.slopeAngle * Mathf.Deg2Rad) - radius + 0.3f;
@@ -95,7 +95,7 @@ public partial class PhysicsController : MonoBehaviour
         return true;
     }
 
-    public Vector3[] DetectCollision(out int collisionCount, out bool touchGround, out Vector3 groundPos, out Vector3 firstTouchPos)
+    public Vector4[] DetectCollision(out int collisionCount, out bool touchGround, out Vector3 groundPos, out Vector3 firstTouchPos)
     {
         var lastState = this.Player.GetLastState(out bool found);
 
@@ -140,7 +140,7 @@ public partial class PhysicsController : MonoBehaviour
         return this.hitNormalsBuffer;
     }
 
-    public Vector3[] DetectCollision(Vector3 start, Vector3 end, out int collisionCount, out bool touchGround, out Vector3 groundPos, out Vector3 firstTouchPos, int tick = -2)
+    public Vector4[] DetectCollision(Vector3 start, Vector3 end, out int collisionCount, out bool touchGround, out Vector3 groundPos, out Vector3 firstTouchPos, int tick = -2)
     {
         touchGround = false;
         groundPos = Vector3.zero;
@@ -162,14 +162,21 @@ public partial class PhysicsController : MonoBehaviour
                 var hitInfo = raycastBuffer[i];
                 var canMoveOnSlope = Vector3.Dot(hitInfo.normal.normalized, Vector3.up) > minSlopeDot;
                 if(Vector3.Dot(hitInfo.normal, dir.normalized) > 0) Debug.Log("Damn!  " + (dir, hitInfo.normal, hitInfo.collider.gameObject));
+                
+                Vector4 normal = canMoveOnSlope ?
+                    hitInfo.normal.normalized :
+                    hitInfo.normal.Set(y: 0).normalized;
+                normal.w = 0;
                 if (hitInfo.normal.normalized == -dir.normalized && hitInfo.distance == 0){
                     collisionCount--;
                     skip++;
+                    Debug.Log((hitInfo.collider, dir));
                     continue;
+                    // //normal.w = 1;
+                    // var isGround = this.IsGrounded(start, out var groundCollider);
+                    // Debug.Log((groundCollider, hitInfo.collider));
+                    // if(isGround && groundCollider == hitInfo.collider) normal.w = 1;
                 };
-                var normal = canMoveOnSlope ?
-                    hitInfo.normal.normalized :
-                    hitInfo.normal.Set(y: 0).normalized;
                 hitNormalsBuffer[i - skip] = normal;
 
                 var angle = 90 - Vector3.Angle(Vector3.up, normal);
@@ -180,6 +187,7 @@ public partial class PhysicsController : MonoBehaviour
                     groundPos = touchPos;
                     Debug.Log((groundPos, dir));
                 }
+               
                 if(i == 0) firstTouchPos = touchPos;
             }
         }
@@ -204,6 +212,12 @@ public partial class PhysicsController : MonoBehaviour
     public bool IsGrounded(Vector3 center){
         var castPoint = this.GetCastPoint(center);
         var check = this.Player.CurrentPhysicsScene.Raycast(castPoint, Vector3.down, out var hitInfo, this.distToGround, this.groundMask);
+        return check;
+    }
+    public bool IsGrounded(Vector3 center, out Collider groundCollider){
+        var castPoint = this.GetCastPoint(center);
+        var check = this.Player.CurrentPhysicsScene.Raycast(castPoint, Vector3.down, out var hitInfo, this.distToGround, this.groundMask);
+        groundCollider = hitInfo.collider;
         return check;
     }
 
