@@ -163,21 +163,13 @@ public partial class PhysicsController : MonoBehaviour
                 var canMoveOnSlope = Vector3.Dot(hitInfo.normal.normalized, Vector3.up) > minSlopeDot;
                 if(Vector3.Dot(hitInfo.normal, dir.normalized) > 0) Debug.Log("Damn!  " + (dir, hitInfo.normal, hitInfo.collider.gameObject));
                 
-                // Vector4 normal = canMoveOnSlope ?
-                //     hitInfo.normal.normalized :
-                //     hitInfo.normal.Set(y: 0).normalized;
                 Vector4 normal = hitInfo.normal.normalized;
                 if(dir.y > 0) normal = hitInfo.normal.Set(y: 0).normalized;
                 normal.w = 0;
                 if (hitInfo.normal.normalized == -dir.normalized && hitInfo.distance == 0){
                     collisionCount--;
                     skip++;
-                    Debug.Log((hitInfo.collider, dir));
                     continue;
-                    // //normal.w = 1;
-                    // var isGround = this.IsGrounded(start, out var groundCollider);
-                    // Debug.Log((groundCollider, hitInfo.collider));
-                    // if(isGround && groundCollider == hitInfo.collider) normal.w = 1;
                 };
                 hitNormalsBuffer[i - skip] = normal;
 

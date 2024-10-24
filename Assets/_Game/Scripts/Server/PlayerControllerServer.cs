@@ -49,13 +49,20 @@ public partial class PlayerController
 
             for (int i = 0; i < hitCount; i++)
             {
-                var normal = hitNormals[i];
+                var normal = hitNormals[i].XYZ();
+                var factor = hitNormals[i].w;
                 if (normal == Vector3.zero) continue;
                 var cross = Vector3.Cross(normal, vel);
                 vel = Vector3.Cross(cross, normal);
-                lastPos += vel;
             }
+            lastPos += vel;
             transform.position = lastPos;
+        }
+
+        if (currentJump == 0 && !this.PhysicsController.IsGrounded(transform.position) && !inAir)
+        {
+            Debug.Log("start falling");
+            this.PerformFall();
         }
     }
 
@@ -72,6 +79,11 @@ public partial class PlayerController
         currentHeadRot.x = cameraAngle;
         Avatar.HeadTransform.localEulerAngles = currentHeadRot;
 
+    }
+
+    private void PerformFall(){
+        this.currentJump = 0;
+        this.inAir = true;
     }
     public void PerformJump(FPSInputPacket packet)
     {

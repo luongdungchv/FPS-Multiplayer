@@ -52,7 +52,6 @@ public partial class PlayerController
             {
                 this.inAir = false;
                 this.currentJump = 0;
-                //Debug.Log((groundPos, lastPos, Player.Position));
                 lastPos = groundPos;
             }
 
