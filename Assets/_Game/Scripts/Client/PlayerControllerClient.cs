@@ -39,8 +39,7 @@ public partial class PlayerController
         var moveVelocity = moveDir.normalized * moveSpd;
 
         var vel = moveVelocity * this.Player.TickScheduler.TickDeltaTime;
-        var currentGround = Vector3.zero;
-        if (!this.inAir) vel = this.PhysicsController.GetMoveVector(this.Player.Position, vel, out currentGround);
+        if (!this.inAir) vel = this.PhysicsController.GetMoveVector(this.Player.Position, vel, out var currentGround);
         vel += this.PerformTickVerticalMovement(packet.tick);
 
         var lastPos = this.Player.Position;
@@ -49,14 +48,14 @@ public partial class PlayerController
         var hitNormals = this.PhysicsController.DetectCollision(lastPos, Player.Position, out int hitCount, out var touchGround, out var groundPos, out var touchPos, packet.tick);
         if (hitCount > 0)
         {
+            Debug.Log((currentJump, touchGround, inAir));
             if (this.currentJump < 0 && touchGround && this.inAir)
             {
                 this.inAir = false;
                 this.currentJump = 0;
-                Debug.Log((groundPos,lastPos, Player.Position));
+                Debug.Log((groundPos, lastPos, Player.Position));
                 lastPos = groundPos;
             }
-            
 
             for (int i = 0; i < hitCount; i++)
             {
@@ -69,6 +68,11 @@ public partial class PlayerController
         }
 
         this.transform.position = this.Player.Position;
+
+        if (currentJump == 0 && !this.PhysicsController.IsGrounded(Player.Position) && !inAir)
+        {
+            this.PerformTickFall();
+        }
     }
 
     public void PerformMovement(FPSInputPacket packet)
@@ -166,6 +170,11 @@ public partial class PlayerController
             this.inAir = true;
             this.currentJump = this.jumpSpd;
         }
+    }
+    public void PerformTickFall()
+    {
+        this.currentJump = 0;
+        this.inAir = true;
     }
     public void PerformJump(FPSInputPacket packet)
     {

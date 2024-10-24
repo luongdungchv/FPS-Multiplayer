@@ -22,7 +22,7 @@ public partial class PhysicsController : MonoBehaviour
         this.hitNormalsBuffer = new Vector3[raycastBufferSize];
 
         var radius = this.Player.CapsuleRadius;
-        this.distToGround = radius / Mathf.Cos(this.slopeAngle * Mathf.Deg2Rad) - radius + 0.1f;
+        this.distToGround = radius / Mathf.Cos(this.slopeAngle * Mathf.Deg2Rad) - radius + 0.3f;
         this.minSlopeDot = Mathf.Cos(slopeAngle * Mathf.Deg2Rad);
     }
 
@@ -197,9 +197,19 @@ public partial class PhysicsController : MonoBehaviour
             var vel = Vector3.Cross(tangent, hitInfo.normal);
             groundPos = center + Vector3.down * hitInfo.distance;
             return vel.normalized * velocity.magnitude;
-        }
-        
+        }     
         return velocity;
+    }
+
+    public bool IsGrounded(Vector3 center){
+        var castPoint = this.GetCastPoint(center);
+        var check = this.Player.CurrentPhysicsScene.Raycast(castPoint, Vector3.down, out var hitInfo, this.distToGround, this.groundMask);
+        return check;
+    }
+
+    private Vector3 GetCastPoint(Vector3 center){
+        var result = center + VectorUtils.Multiply(transform.localScale, groundCheckPoint.localPosition) + Vector3.up * 0.2f;
+        return result;
     }
 }
 

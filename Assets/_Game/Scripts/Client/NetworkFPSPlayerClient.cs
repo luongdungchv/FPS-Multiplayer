@@ -32,11 +32,11 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         if (!pendingInputPacket.shoot) pendingInputPacket.shoot = Input.GetMouseButtonDown(0);
 
         this.Controller.PerformRotation();
-        this.Controller.PerformMovement(pendingInputPacket);
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            this.Controller.PerformJump(pendingInputPacket);
-        }
+        // this.Controller.PerformMovement(pendingInputPacket);
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     this.Controller.PerformJump(pendingInputPacket);
+        // }
 
         lastSmoothState = new FPSPlayerState()
         {
@@ -154,20 +154,20 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
-        var savedState = this.statesBuffer[tick];
-        if (!savedState.init) return;
+        // var savedState = this.statesBuffer[tick];
+        // if (!savedState.init) return;
 
-        if (!FPSPlayerState.IsEqual(savedState, state))
-        {
-            this.room.Rule.TickScheduler.SetTick(tick);
-            statesBuffer[tick] = state;
-            Debug.Log("Conflict: " + (tick, savedState.position, state.position));
+        // if (!FPSPlayerState.IsEqual(savedState, state))
+        // {
+        //     this.room.Rule.TickScheduler.SetTick(tick);
+        //     statesBuffer[tick] = state;
+        //     Debug.Log("Conflict: " + (tick, savedState.position, state.position));
 
-            ThreadManager.ExecuteOnMainThread(() =>
-            {
-                this.Position = state.position;
-            });
-        }
+        //     ThreadManager.ExecuteOnMainThread(() =>
+        //     {
+        //         this.Position = state.position;
+        //     });
+        // }
     }
 
     public void SetStatePosition(Vector3 position)
