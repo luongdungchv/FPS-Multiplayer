@@ -73,9 +73,7 @@ public partial class PhysicsController : MonoBehaviour
         var dir = endPos - startPos;
         var physicsScene = this.Player.CurrentPhysicsScene;
         var detected = physicsScene.CapsuleCast(top, bot, this.Player.CapsuleRadius, dir, raycastBuffer, dir.magnitude + 0.1f, this.mask);
-
-        // Debug.Log((this.Player.Position, lastState.position));        
-
+        
         if (detected == 0) return false;
         if (detected > 0)
         {

@@ -499,7 +499,7 @@ namespace Kigor.Networking
         }
         #endregion
 
-        public static PacketType 
+        public static PacketType
             JOIN_WAITING_ROOM = 0,
             JOIN_ROOM = 1,
             DISCONNECT = 2,
@@ -514,8 +514,7 @@ namespace Kigor.Networking
             INIT_ROOM = 11,
             PLAYER_LEAVE = 12,
             INPUT = 13,
-            LOCAL_PLAYER_STATE = 14
-        ;
-        
+            LOCAL_PLAYER_STATE = 14,
+            FPS_SHOOT = 15;
     }
 }

@@ -72,7 +72,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
         this.statesBuffer[this.TickScheduler.CurrentTick] = state;
         lastTick = this.TickScheduler.CurrentTick;
-        this.SendInput();
+        this.SendInputPacket();
         pendingInputPacket.jump = false;
 
     }
@@ -90,6 +90,11 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     }
     private void RecursivelyDisableRenderer(Transform root)
     {
+        if (root.name == "Gun Holder Local") return;
+        // if (root.name == "Gun Holder Other")
+        // {
+        //     root.gameObject.SetActive(false);
+        // }
         var renderer = root.GetComponent<Renderer>();
         if (renderer)
             renderer.enabled = false;
@@ -98,14 +103,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             RecursivelyDisableRenderer(root.GetChild(i));
         }
     }
-    private void SendInput()
-    {
-        pendingInputPacket.tick = (byte)this.TickScheduler.CurrentTick;
-        pendingInputPacket.moveDir = new Vector2(transform.forward.x, transform.forward.z);
-        pendingInputPacket.cameraAngle = Avatar.HeadTransform.eulerAngles.x;
-        NetworkTransport.Instance.SendPacketUDP(pendingInputPacket);
-    }
-
     public bool GroundCheck(out Vector3 groundPos)
     {
         var castPoint = this.GetGroundCheckPoint(Position);
@@ -158,25 +155,35 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
-        // var savedState = this.statesBuffer[tick];
-        // if (!savedState.init) return;
-        //
-        // if (!FPSPlayerState.IsEqual(savedState, state))
-        // {
-        //     this.room.Rule.TickScheduler.SetTick(tick);
-        //     statesBuffer[tick] = state;
-        //     Debug.Log("Conflict: " + (tick, savedState.position, state.position));
-        //
-        //     ThreadManager.ExecuteOnMainThread(() =>
-        //     {
-        //         this.Position = state.position;
-        //     });
-        // }
+        var savedState = this.statesBuffer[tick];
+        if (!savedState.init) return;
+        
+        if (!FPSPlayerState.IsEqual(savedState, state))
+        {
+            this.room.Rule.TickScheduler.SetTick(tick);
+            statesBuffer[tick] = state;
+            Debug.Log("Conflict: " + (tick, savedState.position, state.position));
+        
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                this.Position = state.position;
+            });
+        }
     }
 
-    public void SetStatePosition(Vector3 position)
+    private void SendInputPacket()
     {
-        this.currentState.position = position;
+        pendingInputPacket.tick = (byte)this.TickScheduler.CurrentTick;
+        pendingInputPacket.moveDir = new Vector2(transform.forward.x, transform.forward.z);
+        pendingInputPacket.cameraAngle = Avatar.HeadTransform.eulerAngles.x;
+        NetworkTransport.Instance.SendPacketUDP(pendingInputPacket);
+    }
+
+    private void SendShootPacket()
+    {
+        var packet = new FPSShootPacket();
+        packet.shootDir = NetworkCamera.Instance.transform.forward;
+        NetworkTransport.Instance.SendPacketTCP(packet);
     }
 
     private void OnDestroy()

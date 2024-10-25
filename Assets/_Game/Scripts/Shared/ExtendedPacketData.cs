@@ -91,4 +91,30 @@ namespace Kigor.Networking
             return listBytes.ToArray();
         }
     }
+
+    public class FPSShootPacket : PacketData
+    {
+        public override PacketType PacketType => PacketType.FPS_SHOOT;
+
+        public Vector3 shootDir;
+        
+        public override byte[] EncodeData()
+        {
+            var byteList = new List<byte>();
+            byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.shootDir.x)));
+            byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.shootDir.y)));
+            byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.shootDir.z)));
+            
+            byteList.Insert(0, (byte)byteList.Count);
+
+            return byteList.ToArray();
+        }
+
+        public override void DecodeMessage(byte[] msg)
+        {
+            this.shootDir.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 0));
+            this.shootDir.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 2));
+            this.shootDir.z = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 4));
+        }
+    }
 }
