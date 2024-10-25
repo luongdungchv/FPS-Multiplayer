@@ -68,6 +68,7 @@ namespace Kigor.Networking
                     {
                         GC.Collect();
                         SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
+                        UIManager.Instance.ShowMainMenu();
                     };;
                 }
             });

@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
         this.UIWaitingRoom.Init();
 
         NetworkHandleClient.Instance.OnGameStart += this.GameStartCallback;
-        NetworkHandleClient.Instance.OnPlayerLeave += this.LocalPlayerLeaveCallback;
+        // NetworkHandleClient.Instance.OnPlayerLeave += this.LocalPlayerLeaveCallback;
     }
 
     private void Update()
@@ -68,13 +68,20 @@ public class UIManager : MonoBehaviour
         });
     }
 
-    private void LocalPlayerLeaveCallback(int id){
-        ThreadManager.ExecuteOnMainThread(() =>
-        {
-            UIWaitingRoom.gameObject.SetActive(false);
-            UIJoinRoom.gameObject.SetActive(true);
-            uiCam.gameObject.SetActive(true);
-        });
+    public void ShowMainMenu()
+    {
+        UIWaitingRoom.gameObject.SetActive(false);
+        UIJoinRoom.gameObject.SetActive(true);
+        uiCam.gameObject.SetActive(true);
     }
+
+    // private void LocalPlayerLeaveCallback(int id){
+    //     ThreadManager.ExecuteOnMainThread(() =>
+    //     {
+    //         UIWaitingRoom.gameObject.SetActive(false);
+    //         UIJoinRoom.gameObject.SetActive(true);
+    //         uiCam.gameObject.SetActive(true);
+    //     });
+    // }
 #endif
 }
