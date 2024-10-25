@@ -1378,6 +1378,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+  smoothSpd: 10
 --- !u!114 &-3020026373791323627
 MonoBehaviour:
   m_ObjectHideFlags: 0

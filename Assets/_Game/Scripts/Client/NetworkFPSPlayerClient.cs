@@ -17,9 +17,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
         pendingInputPacket = new FPSInputPacket();
     }
-    private IEnumerator Start()
+    private void Start()
     {
-        yield return new WaitForSeconds(0);
         this.currentState.position = transform.position;
         this.currentState.horizontalRotation = transform.eulerAngles.y;
         this.currentState.verticalRotation = transform.eulerAngles.x;
@@ -43,6 +42,11 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             position = transform.position,
             horizontalRotation = transform.eulerAngles.y,
         };
+        var currentPos = transform.position;
+        currentPos.x = Mathf.Lerp(currentPos.x, this.Position.x, Time.deltaTime * this.smoothSpd);
+        currentPos.z = Mathf.Lerp(currentPos.z, this.Position.z, Time.deltaTime * this.smoothSpd);
+        currentPos.y = Mathf.Lerp(currentPos.y, this.Position.y, Time.deltaTime * (this.smoothSpd + 10));
+        this.transform.position = currentPos;
     }
     protected partial void TickUpdate()
     {
@@ -87,7 +91,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     private void RecursivelyDisableRenderer(Transform root)
     {
         var renderer = root.GetComponent<Renderer>();
-        if (renderer != null)
+        if (renderer)
             renderer.enabled = false;
         for (int i = 0; i < root.childCount; i++)
         {
@@ -116,7 +120,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             Debug.Log((Position.y, castPoint.y, lastGroundPos.y));
             if (check)
             {
-                currentCheck = currentCheck || check;
+                currentCheck = true;
                 groundPos = hitInfo.point;
             }
         }
@@ -154,20 +158,20 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
-        var savedState = this.statesBuffer[tick];
-        if (!savedState.init) return;
-
-        if (!FPSPlayerState.IsEqual(savedState, state))
-        {
-            this.room.Rule.TickScheduler.SetTick(tick);
-            statesBuffer[tick] = state;
-            Debug.Log("Conflict: " + (tick, savedState.position, state.position));
-
-            ThreadManager.ExecuteOnMainThread(() =>
-            {
-                this.Position = state.position;
-            });
-        }
+        // var savedState = this.statesBuffer[tick];
+        // if (!savedState.init) return;
+        //
+        // if (!FPSPlayerState.IsEqual(savedState, state))
+        // {
+        //     this.room.Rule.TickScheduler.SetTick(tick);
+        //     statesBuffer[tick] = state;
+        //     Debug.Log("Conflict: " + (tick, savedState.position, state.position));
+        //
+        //     ThreadManager.ExecuteOnMainThread(() =>
+        //     {
+        //         this.Position = state.position;
+        //     });
+        // }
     }
 
     public void SetStatePosition(Vector3 position)

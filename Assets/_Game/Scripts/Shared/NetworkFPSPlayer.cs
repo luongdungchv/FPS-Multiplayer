@@ -29,6 +29,7 @@ public partial class NetworkFPSPlayer : NetworkPlayer
     public float CapsuleRadius => Mathf.Max(transform.localScale.x, transform.localScale.z) * this.GetComponent<CapsuleCollider>().radius;
 
     private int lastTick = -1;
+    [SerializeField] private float smoothSpd;
 
     public Vector3 Position
     {

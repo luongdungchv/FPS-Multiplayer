@@ -48,11 +48,13 @@ public partial class PlayerController
         var hitNormals = this.PhysicsController.DetectCollision(lastPos, Player.Position, out int hitCount, out var touchGround, out var groundPos, out var touchPos, packet.tick);
         if (hitCount > 0)
         {
+            Debug.Log("Tt");
             if (this.currentJump < 0 && touchGround && this.inAir)
             {
                 this.inAir = false;
                 this.currentJump = 0;
                 lastPos = groundPos;
+                Debug.Log("ground touch");
             }
 
             for (int i = 0; i < hitCount; i++)
@@ -62,7 +64,6 @@ public partial class PlayerController
                 if (normal == Vector3.zero) continue;
                 var cross = Vector3.Cross(normal, vel);
                 var oldVel = vel;
-                Debug.Log((lastPos, Player.Position, vel, normal));
                 vel = Vector3.Cross(cross, normal);
             }
             lastPos += vel;
@@ -70,7 +71,7 @@ public partial class PlayerController
             this.Player.Position = lastPos;
         }
 
-        this.transform.position = this.Player.Position;
+        // this.transform.position = this.Player.Position;
 
         if (currentJump == 0 && !this.PhysicsController.IsGrounded(Player.Position) && !inAir)
         {
@@ -197,7 +198,7 @@ public partial class PlayerController
             // transform.position += Vector3.up * currentJump;
             //this.Player.Position += Vector3.up * currentJump * this.Player.TickScheduler.TickDeltaTime;
             //var groundCheck = this.Player.GroundCheck(out var groundPos);
-            return Vector3.up * currentJump * this.Player.TickScheduler.TickDeltaTime;
+            return Vector3.up * (this.currentJump * this.Player.TickScheduler.TickDeltaTime);
         }
         return Vector3.zero;
     }
