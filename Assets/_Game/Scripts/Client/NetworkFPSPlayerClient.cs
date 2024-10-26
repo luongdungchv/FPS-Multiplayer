@@ -28,20 +28,10 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         if (!this.IsLocalPlayer) return;
         pendingInputPacket.movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         if (!pendingInputPacket.jump) pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
-        if (!pendingInputPacket.shoot) pendingInputPacket.shoot = Input.GetMouseButtonDown(0);
+        if (!pendingInputPacket.shoot) pendingInputPacket.shoot = Input.GetMouseButton(0);
 
         this.Controller.PerformRotation();
-        // this.Controller.PerformMovement(pendingInputPacket);
-        // if (Input.GetKeyDown(KeyCode.Space))
-        // {
-        //     this.Controller.PerformJump(pendingInputPacket);
-        // }
 
-        lastSmoothState = new FPSPlayerState()
-        {
-            position = transform.position,
-            horizontalRotation = transform.eulerAngles.y,
-        };
         var currentPos = transform.position;
         currentPos.x = Mathf.Lerp(currentPos.x, this.Position.x, Time.deltaTime * this.smoothSpd);
         currentPos.z = Mathf.Lerp(currentPos.z, this.Position.z, Time.deltaTime * this.smoothSpd);
@@ -91,10 +81,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     private void RecursivelyDisableRenderer(Transform root)
     {
         if (root.name == "Gun Holder Local") return;
-        // if (root.name == "Gun Holder Other")
-        // {
-        //     root.gameObject.SetActive(false);
-        // }
+
         var renderer = root.GetComponent<Renderer>();
         if (renderer)
             renderer.enabled = false;
@@ -124,26 +111,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         return currentCheck;
     }
 
-    
-
-    // public bool SmoothGroundCheck(out Vector3 groundPos)
-    // {
-    //     var currentCheck = Physics.Raycast(groundCheckPoint.position, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
-    //     groundPos = hitInfo.point;
-    //     //var lastTick = this.TickScheduler.GetLastTicks(1)[0];
-    //     var lastState = this.statesBuffer[lastTick];
-    //     if (lastState.init)
-    //     {
-    //         var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
-    //         var check = Physics.Raycast(lastGroundPos, groundCheckPoint.position - lastGroundPos, out hitInfo, (groundCheckPoint.position - lastGroundPos).magnitude + 0.1f, this.groundMask);
-    //         if (check)
-    //         {
-    //             currentCheck = currentCheck || check;
-    //             groundPos = hitInfo.point;
-    //         }
-    //     }
-    //     return currentCheck;
-    // }
     public bool SmoothGroundCheck(out Vector3 groundPos)
     {
         var startPos = lastSmoothState.position;

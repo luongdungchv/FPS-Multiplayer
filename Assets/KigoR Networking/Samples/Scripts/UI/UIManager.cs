@@ -74,14 +74,5 @@ public class UIManager : MonoBehaviour
         UIJoinRoom.gameObject.SetActive(true);
         uiCam.gameObject.SetActive(true);
     }
-
-    // private void LocalPlayerLeaveCallback(int id){
-    //     ThreadManager.ExecuteOnMainThread(() =>
-    //     {
-    //         UIWaitingRoom.gameObject.SetActive(false);
-    //         UIJoinRoom.gameObject.SetActive(true);
-    //         uiCam.gameObject.SetActive(true);
-    //     });
-    // }
 #endif
 }

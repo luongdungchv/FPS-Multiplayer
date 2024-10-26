@@ -514,7 +514,6 @@ namespace Kigor.Networking
             INIT_ROOM = 11,
             PLAYER_LEAVE = 12,
             INPUT = 13,
-            LOCAL_PLAYER_STATE = 14,
-            FPS_SHOOT = 15;
+            LOCAL_PLAYER_STATE = 14;
     }
 }

@@ -11,5 +11,6 @@ namespace Kigor.Networking
         private NetworkPlayer owner;
         
         public void SetOwner(NetworkPlayer owner) => this.owner = owner;
+        public WeaponData Data => this.data;
     }
 }

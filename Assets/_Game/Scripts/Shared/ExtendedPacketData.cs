@@ -10,7 +10,9 @@ namespace Kigor.Networking
     {
         public static PacketType 
             FPS_INPUT_PACKET = 15,
-            FPS_RECONCILE_PACKET = 16
+            FPS_RECONCILE_PACKET = 16,
+            FPS_SHOOT = 17,
+            FPS_PLAYER_SHOT = 18
         ;
     }
 
@@ -115,6 +117,30 @@ namespace Kigor.Networking
             this.shootDir.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 0));
             this.shootDir.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 2));
             this.shootDir.z = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 4));
+        }
+    }
+
+    public class FPSPlayerShotPacket : PacketData
+    {
+        public override PacketType PacketType => PacketType.FPS_PLAYER_SHOT;
+        
+        public byte playerID;
+        public Vector3 hitPos;
+        
+        public override byte[] EncodeData()
+        {
+            var byteList = new List<byte>();
+            byteList.Add(playerID);
+            byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.hitPos.x)));
+            byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.hitPos.y)));
+            byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.hitPos.z)));
+            byteList.Insert(0, (byte)byteList.Count);
+            return byteList.ToArray();
+        }
+
+        public override void DecodeMessage(byte[] msg)
+        {
+            throw new NotImplementedException();
         }
     }
 }
