@@ -13,6 +13,7 @@ namespace Kigor.Networking
 
         public void HandleShootPacket(FPSShootPacket packet)
         {
+            Debug.Log("Shoot packet received from player: " + this.Player.PlayerID);
             var dir = packet.shootDir;
             var physicsScene = this.Player.CurrentPhysicsScene;
             var shootPos = NetworkCamera.Instance.transform.position;

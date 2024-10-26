@@ -33,6 +33,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         base.Initialize(socket, room, id);
 
         this.msgHandler.Add(PacketType.FPS_INPUT_PACKET, this.HandleInputPacket);
+        this.msgHandler.Add(PacketType.FPS_SHOOT, this.HandleShootPacket);
     }
     #region COMMAND_HANDLING
     private void HandleInputPacket(byte[] data)
@@ -66,7 +67,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         var packet = new FPSShootPacket();
         packet.DecodeMessage(data);
-        
+        this.WeaponController.HandleShootPacket(packet);
     }
     #endregion
 
