@@ -424,13 +424,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8394817899406092777}
+  - component: {fileID: 8614921828416799576}
   m_Layer: 0
   m_Name: AK47
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8394817899406092777
 Transform:
   m_ObjectHideFlags: 0
@@ -511,6 +512,21 @@ Transform:
   - {fileID: 5971957451566250532}
   m_Father: {fileID: 6766998083968254254}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8614921828416799576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 288965815764139158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a72431caf92641fdae14c841fd4f7b48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponEnum: 1
+  data: {fileID: 11400000, guid: 798a289803139f4498d69767f145c70e, type: 2}
+  weaponRoot: {fileID: 5699954707860125533}
 --- !u!1 &290746782981933275
 GameObject:
   m_ObjectHideFlags: 0
@@ -2685,6 +2701,7 @@ GameObject:
   - component: {fileID: -3020026373791323627}
   - component: {fileID: -837050009114449528}
   - component: {fileID: 1825368396947657146}
+  - component: {fileID: 5310755750314839709}
   m_Layer: 3
   m_Name: Network player client 2
   m_TagString: Untagged
@@ -2856,6 +2873,69 @@ MonoBehaviour:
   slopeAngle: 30
   distToGround: 0
   minSlopeDot: 0
+--- !u!114 &5310755750314839709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075961886019792728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1200234c6f040bb8da81313916afc71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 8614921828416799576}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: weaponMap
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[Kigor.Networking.WeaponEnum,
+        Assembly-CSharp],[Kigor.Networking.Weapon, Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Kigor.Networking.WeaponEnum,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  shootMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &2104030317530544665
 GameObject:
   m_ObjectHideFlags: 0

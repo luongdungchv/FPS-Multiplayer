@@ -9,8 +9,11 @@ namespace Kigor.Networking
         private Weapon currentWeapon => this.weaponMap[this.currentWeaponEnum];
         public partial void ChangeWeapon(WeaponEnum weapon)
         {
-            if(this.currentWeaponEnum == WeaponEnum.None) return;
-            currentWeapon.gameObject.SetActive(false);
+            Debug.Log("Weapon changed to: " + weapon);
+            if (this.currentWeaponEnum != WeaponEnum.None)
+            {
+                currentWeapon.gameObject.SetActive(false);
+            }
             this.currentWeaponEnum = weapon;
             currentWeapon.gameObject.SetActive(true);
         }
@@ -34,6 +37,7 @@ namespace Kigor.Networking
             var packet = new FPSShootPacket();
             packet.shootDir = NetworkCamera.Instance.transform.forward;
             NetworkTransport.Instance.SendPacketTCP(packet);
+            Debug.Log("Shoot command sent");
         }
 
         private void ProcessClientShoot()

@@ -114,9 +114,9 @@ namespace Kigor.Networking
 
         public override void DecodeMessage(byte[] msg)
         {
-            this.shootDir.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 0));
-            this.shootDir.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 2));
-            this.shootDir.z = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 4));
+            this.shootDir.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 1));
+            this.shootDir.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 3));
+            this.shootDir.z = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 5));
         }
     }
 
@@ -140,7 +140,10 @@ namespace Kigor.Networking
 
         public override void DecodeMessage(byte[] msg)
         {
-            throw new NotImplementedException();
+            this.playerID = msg[1];
+            this.hitPos.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 2));
+            this.hitPos.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 4));
+            this.hitPos.z = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 6));
         }
     }
 }
