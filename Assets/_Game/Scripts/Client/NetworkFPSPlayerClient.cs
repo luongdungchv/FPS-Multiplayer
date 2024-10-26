@@ -28,7 +28,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         if (!this.IsLocalPlayer) return;
         pendingInputPacket.movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         if (!pendingInputPacket.jump) pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
-        if (!pendingInputPacket.shoot) pendingInputPacket.shoot = Input.GetMouseButton(0);
+        pendingInputPacket.shoot = Input.GetMouseButton(0);
 
         this.Controller.PerformRotation();
 
@@ -40,7 +40,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     }
     protected partial void TickUpdate()
     {
-        this.Controller.PerformTickMovement(pendingInputPacket);
+        this.Controller.PerformTickMovement(this.pendingInputPacket);
+        this.WeaponController.HandleInput(this.pendingInputPacket);
 
         if (pendingInputPacket.jump)
         {
@@ -76,6 +77,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.cameraController.transform.localPosition = Vector3.zero;
         this.cameraController.transform.localEulerAngles = Vector3.zero;
 
+        this.WeaponController.ChangeWeapon(WeaponEnum.AK47);
+        
         this.RecursivelyDisableRenderer(this.transform);
     }
     private void RecursivelyDisableRenderer(Transform root)
