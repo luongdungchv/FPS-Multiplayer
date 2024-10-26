@@ -6,6 +6,6 @@ namespace Kigor.Networking
     {
         [SerializeField] private NetworkFPSPlayer player;
 
-        public NetworkFPSPlayer ownerPlayer => this.player;
+        public NetworkFPSPlayer OwnerPlayer => this.player;
     }
 }

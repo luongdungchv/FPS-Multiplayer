@@ -22,8 +22,7 @@ public partial class NetworkFPSPlayer : NetworkPlayer
     private PlayerAvatar Avatar => this.GetComponent<PlayerAvatar>(); 
     private PlayerController Controller => this.GetComponent<PlayerController>();
     private PhysicsController PhysicsController => this.GetComponent<PhysicsController>();
-
-
+    
     private Vector3 CapsuleTop => transform.position + Vector3.up * this.GetComponent<CapsuleCollider>().height / 2 * transform.localScale.y;
     private Vector3 CapsuleBottom => transform.position - Vector3.up * this.GetComponent<CapsuleCollider>().height / 2 * transform.localScale.y;
     public float CapsuleRadius => Mathf.Max(transform.localScale.x, transform.localScale.z) * this.GetComponent<CapsuleCollider>().radius;

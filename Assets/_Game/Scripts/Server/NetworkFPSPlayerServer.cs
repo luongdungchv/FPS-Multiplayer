@@ -8,12 +8,10 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 {
 #if SERVER_BUILD
     private FPSInputPacket pendingInputPacket;
-    private Queue<UnityAction> pendingTickUpdate;
 
     protected partial void Awake()
     {
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
-        this.pendingTickUpdate = new Queue<UnityAction>();
         Debug.Log(statesBuffer[0].init);
 
     }
@@ -27,10 +25,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     }
     protected partial void TickUpdate()
     {
-        if (pendingTickUpdate.Count > 0)
-        {
-            pendingTickUpdate.Dequeue().Invoke();
-        }
+        
     }
 
     public override void Initialize(SocketWrapper socket, NetworkGameRoom room, int id)
@@ -39,7 +34,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
         this.msgHandler.Add(PacketType.FPS_INPUT_PACKET, this.HandleInputPacket);
     }
-
+    #region COMMAND_HANDLING
     private void HandleInputPacket(byte[] data)
     {
         var packet = new FPSInputPacket();
@@ -54,7 +49,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             currentState.horizontalRotation = transform.eulerAngles.y;
 
             this.Controller.PerformMovement(packet);
-            //this.Controller.PerformVerticalMovement(packet);
 
             if (packet.jump)
             {
@@ -66,8 +60,15 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
             lastTick = packet.tick;
         });
-
     }
+
+    private void HandleShootPacket(byte[] data)
+    {
+        var packet = new FPSShootPacket();
+        packet.DecodeMessage(data);
+        
+    }
+    #endregion
 
     private void WriteStateToBuffer(FPSInputPacket packet)
     {
