@@ -15,7 +15,7 @@ namespace Kigor.Networking
             Debug.Log("Shoot packet received from player: " + this.Player.PlayerID);
             var dir = packet.shootDir;
             var physicsScene = this.Player.CurrentPhysicsScene;
-            var shootPos = NetworkCamera.Instance.transform.position;
+            var shootPos = this.GetComponent<PlayerAvatar>().HeadTransform.position;
             var check = physicsScene.Raycast(shootPos, dir, out var hitInfo, 100, this.shootMask);
             if (check)
             {
@@ -24,6 +24,7 @@ namespace Kigor.Networking
                 if (!collider) return;
                 var playerID = collider.OwnerPlayer.PlayerID;
                 this.SendPlayerShotPacket(playerID, hitInfo.point);
+                Debug.Log((playerID, collider));
             }
         }
 

@@ -14,6 +14,7 @@ namespace Kigor.Networking
         
         private void Awake()
         {
+            if (this.weaponMap == null) return;
             foreach (var pair in this.weaponMap)
             {
                 Debug.Log(pair);
