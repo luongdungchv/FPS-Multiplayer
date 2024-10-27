@@ -179,10 +179,6 @@ namespace Kigor.Networking
 
             this.OnRoomStateInitialized?.Invoke(packet);
         }
-        private void Test(PacketData data)
-        {
-            Debug.Log("ditmemay");
-        }
         private void HandlePlayerLeavePacket(byte[] msg)
         {
             var packet = new PlayerLeavePacket();

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Kigor.Networking
 {
@@ -7,6 +8,12 @@ namespace Kigor.Networking
 #if CLIENT_BUILD
         private float timeCounter;
         private Weapon currentWeapon => this.weaponMap[this.currentWeaponEnum];
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.O)) this.SendShootPacket();
+        }
+
         public partial void ChangeWeapon(WeaponEnum weapon)
         {
             Debug.Log("Weapon changed to: " + weapon);
