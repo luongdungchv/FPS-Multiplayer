@@ -200,6 +200,7 @@ namespace Kigor.Networking
         private void TcpReadCallback(IAsyncResult result)
         {
             var dataLength = tcpStream.EndRead(result);
+            Debug.Log(dataLength);
             if (dataLength == 0)
             {
                 //TODO: Handle disconnect
@@ -209,18 +210,26 @@ namespace Kigor.Networking
 
             Debug.Log($"Received {dataLength} bytes");
 
-            var readIndex = 0;
-            var readBytes = new List<byte>();
-            while (readIndex < dataLength)
+            try
             {
-                var msgLength = this.receiveBuffer[readIndex];
-                for (int i = readIndex + 1; i < readIndex + msgLength + 1; i++)
+                var readIndex = 0;
+                var readBytes = new List<byte>();
+                while (readIndex < dataLength)
                 {
-                    readBytes.Add(this.receiveBuffer[i]);
+                    var msgLength = this.receiveBuffer[readIndex];
+                    for (int i = readIndex + 1; i < readIndex + msgLength + 1; i++)
+                    {
+                        readBytes.Add(this.receiveBuffer[i]);
+                    }
+
+                    this.OnTCPDataRead?.Invoke(this, readBytes.ToArray());
+                    readIndex += msgLength + 1;
+                    readBytes.Clear();
                 }
-                this.OnTCPDataRead?.Invoke(this, readBytes.ToArray());
-                readIndex += msgLength + 1;
-                readBytes.Clear();
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
             }
             tcpStream.BeginRead(receiveBuffer, 0, BUFFER_SIZE, new AsyncCallback(TcpReadCallback), null);
         }

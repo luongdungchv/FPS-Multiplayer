@@ -8,7 +8,6 @@ namespace Kigor.Networking
 #if SERVER_BUILD
         public partial void HandleInput(FPSInputPacket packet)
         {
-            
         }
 
         public void HandleShootPacket(FPSShootPacket packet)
@@ -17,18 +16,15 @@ namespace Kigor.Networking
             var dir = packet.shootDir;
             var physicsScene = this.Player.CurrentPhysicsScene;
             var shootPos = NetworkCamera.Instance.transform.position;
-            ThreadManager.ExecuteOnMainThread(() =>
+            var check = physicsScene.Raycast(shootPos, dir, out var hitInfo, 100, this.shootMask);
+            if (check)
             {
-                var check = physicsScene.Raycast(shootPos, dir, out var hitInfo, 100, this.shootMask);
-                if (check)
-                {
-                    // TODO: Damage dealing
-                    var collider = hitInfo.collider.GetComponent<NetworkPlayerCollider>();
-                    if (!collider) return;
-                    var playerID = collider.OwnerPlayer.PlayerID;
-                    this.SendPlayerShotPacket(playerID, hitInfo.point);
-                }
-            });
+                // TODO: Damage dealing
+                var collider = hitInfo.collider.GetComponent<NetworkPlayerCollider>();
+                if (!collider) return;
+                var playerID = collider.OwnerPlayer.PlayerID;
+                this.SendPlayerShotPacket(playerID, hitInfo.point);
+            }
         }
 
         private void SendPlayerShotPacket(int playerID, Vector3 hitPos)
@@ -43,7 +39,6 @@ namespace Kigor.Networking
 
         public partial void ChangeWeapon(WeaponEnum weapon)
         {
-            
         }
 #endif
     }
