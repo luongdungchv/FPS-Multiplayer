@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Kigor.Networking
 {
@@ -7,6 +8,29 @@ namespace Kigor.Networking
 #if CLIENT_BUILD
         private float timeCounter;
         private Weapon currentWeapon => this.weaponMap[this.currentWeaponEnum];
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.O)) this.SendShootPacket();
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                this.timeCounter = 0;
+                return;
+            }
+            if (Input.GetMouseButton(0) && !this.currentWeapon.IsReloading)
+            {
+                if (this.timeCounter == 0)
+                {
+                    this.SendShootPacket();
+                    this.currentWeapon.PerformShoot();
+                }
+                
+                this.timeCounter += Time.deltaTime;
+                if (this.timeCounter > this.currentWeapon.Data.shootInterval) this.timeCounter = 0;
+            }
+        }
+
         public partial void ChangeWeapon(WeaponEnum weapon)
         {
             Debug.Log("Weapon changed to: " + weapon);
@@ -20,16 +44,16 @@ namespace Kigor.Networking
 
         public partial void HandleInput(FPSInputPacket packet)
         {
-            if (packet.shoot)
-            {
-                if (this.timeCounter == 0)
-                {
-                    this.SendShootPacket();
-                }
-
-                this.timeCounter += this.Player.TickScheduler.TickDeltaTime;
-                if (this.timeCounter > this.currentWeapon.Data.shootInterval) this.timeCounter = 0;
-            }
+            // if (packet.shoot)
+            // {
+            //     if (this.timeCounter == 0)
+            //     {
+            //         this.SendShootPacket();
+            //     }
+            //
+            //     this.timeCounter += this.Player.TickScheduler.TickDeltaTime;
+            //     if (this.timeCounter > this.currentWeapon.Data.shootInterval) this.timeCounter = 0;
+            // }
         }
 
         private void SendShootPacket()

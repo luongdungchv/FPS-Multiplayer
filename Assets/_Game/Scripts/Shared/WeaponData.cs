@@ -10,6 +10,8 @@ namespace Kigor.Networking
         public float range;
         public float shootInterval;
         public ShootMode shootMode;
+        public float reloadDuration;
+        public int magazineSize;
     }
 
     public enum ShootMode
