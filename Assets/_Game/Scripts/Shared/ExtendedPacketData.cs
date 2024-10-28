@@ -12,7 +12,9 @@ namespace Kigor.Networking
             FPS_INPUT_PACKET = 15,
             FPS_RECONCILE_PACKET = 16,
             FPS_SHOOT = 17,
-            FPS_PLAYER_SHOT = 18
+            FPS_PLAYER_SHOT = 18,
+            FPS_WEAPON_RELOAD = 19,
+            FPS_WEAPON_CHANGE = 20
         ;
     }
 
@@ -146,6 +148,33 @@ namespace Kigor.Networking
             this.hitPos.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 2));
             this.hitPos.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 4));
             this.hitPos.z = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 6));
+        }
+    }
+
+    public class FPSWeaponReloadPacket : PacketData
+    {
+        public override PacketType PacketType => PacketType.FPS_WEAPON_RELOAD;
+
+        public byte duration;
+        public short sendTimeMili;
+        public byte sendTimeSec;
+
+        public override byte[] EncodeData()
+        {
+            var byteList = new List<byte>();
+            byteList.Add((byte)this.PacketType);
+            byteList.Add(this.duration);
+            byteList.AddRange(BitConverter.GetBytes(this.sendTimeMili));
+            byteList.Add(this.sendTimeSec);
+            byteList.Insert(0, (byte)byteList.Count);
+            return byteList.ToArray();
+        }
+
+        public override void DecodeMessage(byte[] msg)
+        {
+            this.duration = msg[1];
+            this.sendTimeMili = BitConverter.ToInt16(msg, 2);
+            this.sendTimeSec = msg[4];
         }
     }
 }
