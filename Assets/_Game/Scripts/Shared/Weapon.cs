@@ -15,6 +15,7 @@ namespace Kigor.Networking
         
         public bool IsReloading => this.isReloading;
         
+        
         public void SetOwner(NetworkPlayer owner) => this.owner = owner;
 
         protected partial void Awake();

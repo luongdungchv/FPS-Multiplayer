@@ -4,6 +4,7 @@ namespace Kigor.Networking
 {
     public partial class Weapon
     {
+#if CLIENT_BUILD
         private int currentAmmo;
         private int currentReservedAmmo;
 
@@ -46,5 +47,6 @@ namespace Kigor.Networking
             packet.sendTimeSec = (byte)System.DateTime.UtcNow.Second;
             NetworkTransport.Instance.SendPacketTCP(packet);
         }
+#endif
     }
 }

@@ -7,7 +7,6 @@ namespace Kigor.Networking
     {
 #if CLIENT_BUILD
         private float timeCounter;
-        private Weapon currentWeapon => this.weaponMap[this.currentWeaponEnum];
 
         private void Update()
         {

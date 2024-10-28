@@ -155,17 +155,19 @@ namespace Kigor.Networking
     {
         public override PacketType PacketType => PacketType.FPS_WEAPON_RELOAD;
 
-        public byte duration;
-        public short sendTimeMili;
+        public float duration;
+        public ushort sendTimeMili;
         public byte sendTimeSec;
+        public byte playerID;
 
         public override byte[] EncodeData()
         {
             var byteList = new List<byte>();
             byteList.Add((byte)this.PacketType);
-            byteList.Add(this.duration);
+            byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.duration)));
             byteList.AddRange(BitConverter.GetBytes(this.sendTimeMili));
             byteList.Add(this.sendTimeSec);
+            byteList.Add(this.playerID);
             byteList.Insert(0, (byte)byteList.Count);
             return byteList.ToArray();
         }
@@ -173,8 +175,9 @@ namespace Kigor.Networking
         public override void DecodeMessage(byte[] msg)
         {
             this.duration = msg[1];
-            this.sendTimeMili = BitConverter.ToInt16(msg, 2);
-            this.sendTimeSec = msg[4];
+            this.duration = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 2));
+            this.sendTimeMili = BitConverter.ToUInt16(msg, 4);
+            this.sendTimeSec = msg[6];
         }
     }
 }

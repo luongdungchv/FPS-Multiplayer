@@ -34,6 +34,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
         this.msgHandler.Add(PacketType.FPS_INPUT_PACKET, this.HandleInputPacket);
         this.msgHandler.Add(PacketType.FPS_SHOOT, this.HandleShootPacket);
+        this.msgHandler.Add(PacketType.FPS_WEAPON_RELOAD, this.HandleReloadPacket);
     }
     #region COMMAND_HANDLING
     private void HandleInputPacket(byte[] data)
@@ -68,6 +69,13 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         var packet = new FPSShootPacket();
         packet.DecodeMessage(data);
         ThreadManager.ExecuteOnMainThread(() => this.WeaponController.HandleShootPacket(packet));
+    }
+
+    private void HandleReloadPacket(byte[] data)
+    {
+        var packet = new FPSWeaponReloadPacket();
+        packet.DecodeMessage(data);
+        ThreadManager.ExecuteOnMainThread(() => this.WeaponController.HandleReloadPacket(packet));
     }
     #endregion
 

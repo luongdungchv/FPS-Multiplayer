@@ -11,6 +11,7 @@ namespace Kigor.Networking
         private WeaponEnum currentWeaponEnum;
 
         private NetworkFPSPlayer Player => this.GetComponent<NetworkFPSPlayer>();
+        private Weapon currentWeapon => this.weaponMap[this.currentWeaponEnum];
         
         private void Awake()
         {

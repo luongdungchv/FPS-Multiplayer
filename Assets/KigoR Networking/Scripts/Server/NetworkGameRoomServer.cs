@@ -109,6 +109,15 @@ namespace Kigor.Networking
             Debug.Log("Leave msg broadcast done");
         }
 
+        public void BroadcastMessage(byte[] msg)
+        {
+            foreach (var player in this.playerList)
+            {
+                if (player == null) continue;
+                player.Socket.SendDataTCP(msg);
+            }
+        }
+
         public void DisposeRoom()
         {
             Debug.Log($"Disposing room: {this.roomID}");

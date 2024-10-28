@@ -28,6 +28,28 @@ namespace Kigor.Networking
             }
         }
 
+        public void HandleReloadPacket(FPSWeaponReloadPacket packet)
+        {
+            var currentSec = (byte)System.DateTime.Now.Second;
+            var currentMilSec = System.DateTime.Now.Millisecond;
+            var duration = packet.duration;
+            if (currentSec < packet.sendTimeSec) duration += (float)currentMilSec / 1000 + (60 - (float)packet.sendTimeMili / 1000);
+            else duration += (float)(currentMilSec - packet.sendTimeMili) / 1000;
+            this.currentWeapon.Reload(duration);
+        }
+
+        private void BroadcastReloadPacket(float duration, int sendTimeMili, int sendTimeSec)
+        {
+            var packet = new FPSWeaponReloadPacket();
+            packet.playerID = (byte)this.Player.PlayerID;
+            packet.duration = duration;
+            packet.sendTimeMili = (ushort)sendTimeMili;
+            packet.sendTimeSec = (byte)sendTimeSec;
+
+            var msg = packet.EncodeData();
+            this.Player.Room.BroadcastMessage(msg);
+        }
+
         private void SendPlayerShotPacket(int playerID, Vector3 hitPos)
         {
             var packet = new FPSPlayerShotPacket();

@@ -15,6 +15,7 @@ namespace Kigor.Networking
         protected NetworkGameRoom room;
 
         public SocketWrapper Socket => this.socket;
+        public NetworkGameRoom Room => this.room;
 
         protected Dictionary<PacketType, UnityAction<byte[]>> msgHandler;
         ~NetworkPlayer(){
