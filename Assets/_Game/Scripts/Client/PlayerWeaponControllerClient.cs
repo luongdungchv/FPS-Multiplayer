@@ -10,24 +10,32 @@ namespace Kigor.Networking
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.O)) this.SendShootPacket();
-
+            if (this.currentWeapon.IsReloading)
+            {
+                this.timeCounter = 0;
+                return;
+            }
             if (Input.GetMouseButtonUp(0))
             {
                 this.timeCounter = 0;
                 return;
             }
-            if (Input.GetMouseButton(0) && !this.currentWeapon.IsReloading)
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                this.currentWeapon.Reload();
+            }
+            if (Input.GetMouseButton(0))
             {
                 if (this.timeCounter == 0)
                 {
                     this.SendShootPacket();
                     this.currentWeapon.PerformShoot();
                 }
-                
                 this.timeCounter += Time.deltaTime;
                 if (this.timeCounter > this.currentWeapon.Data.shootInterval) this.timeCounter = 0;
             }
+
+            
         }
 
         public partial void ChangeWeapon(WeaponEnum weapon)

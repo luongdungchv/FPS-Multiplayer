@@ -17,6 +17,7 @@ namespace Kigor.Networking
 
         public void Reload()
         {
+            Debug.Log("start reloading");
             if (this.currentReservedAmmo == 0) return;
             this.isReloading = true;
             DL.Utils.CoroutineUtils.Invoke(this, () =>
@@ -45,6 +46,7 @@ namespace Kigor.Networking
             packet.duration = this.data.reloadDuration;
             packet.sendTimeMili = (ushort)System.DateTime.UtcNow.Millisecond;
             packet.sendTimeSec = (byte)System.DateTime.UtcNow.Second;
+            Debug.Log((packet.sendTimeSec, packet.sendTimeMili));
             NetworkTransport.Instance.SendPacketTCP(packet);
         }
 #endif
