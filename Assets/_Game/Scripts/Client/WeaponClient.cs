@@ -42,8 +42,8 @@ namespace Kigor.Networking
         private void SendReloadMsgToServer()
         {
             var packet = new FPSWeaponReloadPacket();
-            packet.duration = (byte)this.data.reloadDuration;
-            packet.sendTimeMili = (short)System.DateTime.UtcNow.Millisecond;
+            packet.duration = this.data.reloadDuration;
+            packet.sendTimeMili = (ushort)System.DateTime.UtcNow.Millisecond;
             packet.sendTimeSec = (byte)System.DateTime.UtcNow.Second;
             NetworkTransport.Instance.SendPacketTCP(packet);
         }
