@@ -8,7 +8,7 @@ namespace Kigor.Networking
     {
         [SerializeField] private Dictionary<WeaponEnum, Weapon> weaponMap;
         [SerializeField] private LayerMask shootMask;
-        private WeaponEnum currentWeaponEnum;
+        [SerializeField] private WeaponEnum currentWeaponEnum;
 
         private NetworkFPSPlayer Player => this.GetComponent<NetworkFPSPlayer>();
         private Weapon currentWeapon => this.weaponMap[this.currentWeaponEnum];
