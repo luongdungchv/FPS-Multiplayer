@@ -77,7 +77,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.cameraController.transform.localPosition = Vector3.zero;
         this.cameraController.transform.localEulerAngles = Vector3.zero;
 
-        this.WeaponController.ChangeWeapon(WeaponEnum.AK47);
+        this.WeaponController.ChangeWeapon(WeaponEnum.M4A1);
         
         this.RecursivelyDisableRenderer(this.transform);
     }

@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5be38bcac5fe4371bedb0336234ad4d8, type: 3}
   m_Name: AK47
   m_EditorClassIdentifier: 
-  damage: 15
+  damage: 35
   range: 100
   shootInterval: 0.25
   shootMode: 0
+  reloadDuration: 2
+  magazineSize: 30
