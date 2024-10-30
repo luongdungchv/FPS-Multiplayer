@@ -17,6 +17,7 @@ namespace Kigor.Networking
 
         public void Reload()
         {
+            Debug.Log("start reloading");
             if (this.currentReservedAmmo == 0) return;
             this.isReloading = true;
             DL.Utils.CoroutineUtils.Invoke(this, () =>
@@ -42,9 +43,10 @@ namespace Kigor.Networking
         private void SendReloadMsgToServer()
         {
             var packet = new FPSWeaponReloadPacket();
-            packet.duration = (byte)this.data.reloadDuration;
-            packet.sendTimeMili = (short)System.DateTime.UtcNow.Millisecond;
+            packet.duration = this.data.reloadDuration;
+            packet.sendTimeMili = (ushort)System.DateTime.UtcNow.Millisecond;
             packet.sendTimeSec = (byte)System.DateTime.UtcNow.Second;
+            Debug.Log((packet.sendTimeSec, packet.sendTimeMili));
             NetworkTransport.Instance.SendPacketTCP(packet);
         }
 #endif
