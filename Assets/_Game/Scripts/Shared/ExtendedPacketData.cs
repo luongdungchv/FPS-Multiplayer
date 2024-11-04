@@ -180,4 +180,19 @@ namespace Kigor.Networking
             this.sendTimeSec = msg[6];
         }
     }
+
+    public class FPSWeaponChangePacket : PacketData
+    {
+        public override PacketType PacketType => PacketType.FPS_WEAPON_CHANGE;
+        public WeaponEnum weapon;
+        public override byte[] EncodeData()
+        {
+            return new byte[] { 2, (byte)this.PacketType, (byte)this.weapon };
+        }
+
+        public override void DecodeMessage(byte[] msg)
+        {
+            this.weapon = (WeaponEnum)msg[1];
+        }
+    }
 }

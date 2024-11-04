@@ -23,7 +23,6 @@ namespace Kigor.Networking
             }
         }
 
-        public partial void HandleInput(FPSInputPacket packet);
 
         public partial void ChangeWeapon(WeaponEnum weapon);
 
