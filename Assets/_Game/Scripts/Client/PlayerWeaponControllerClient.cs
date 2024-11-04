@@ -7,22 +7,39 @@ namespace Kigor.Networking
     {
 #if CLIENT_BUILD
         private float timeCounter;
+        
 
-        private void Update()
+        #region FSM_CALLBACK
+        private partial void NormalStateUpdate()
         {
-            if (this.currentWeapon.IsReloading)
+            Debug.Log("normal update");
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                this.timeCounter = 0;
+                this.currentWeapon.Reload(() => this.FSM.ChangeState(SimpleFSM.StateEnum.Normal));
+                this.FSM.ChangeState(SimpleFSM.StateEnum.Reloading);
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                this.FSM.ChangeState(SimpleFSM.StateEnum.Shooting);
                 return;
             }
+        }
+
+        private partial void ShootStateEnter()
+        {
+            Debug.Log("Start Shooting");    
+            this.ShootStateUpdate();
+        }
+
+        private partial void ShootStateUpdate()
+        {
+            Debug.Log("Shoot update");
             if (Input.GetMouseButtonUp(0))
             {
                 this.timeCounter = 0;
+                this.FSM.ChangeState(SimpleFSM.StateEnum.Normal);
                 return;
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                this.currentWeapon.Reload();
             }
             if (Input.GetMouseButton(0))
             {
@@ -35,6 +52,18 @@ namespace Kigor.Networking
                 if (this.timeCounter > this.currentWeapon.Data.shootInterval) this.timeCounter = 0;
             }
         }
+
+        private partial void ReloadStateEnter()
+        {
+            Debug.Log("Start Reloading");
+            this.timeCounter = 0;
+        }
+
+        private partial void ReloadStateUpdate()
+        {
+            
+        }
+        #endregion
 
         public partial void ChangeWeapon(WeaponEnum weapon)
         {
