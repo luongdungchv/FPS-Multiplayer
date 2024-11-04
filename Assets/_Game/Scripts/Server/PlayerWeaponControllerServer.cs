@@ -6,10 +6,6 @@ namespace Kigor.Networking
     public partial class PlayerWeaponController
     {
 #if SERVER_BUILD
-        public partial void HandleInput(FPSInputPacket packet)
-        {
-        }
-
         public void HandleShootPacket(FPSShootPacket packet)
         {
             Debug.Log("Shoot packet received from player: " + this.Player.PlayerID);
@@ -30,11 +26,12 @@ namespace Kigor.Networking
 
         public void HandleReloadPacket(FPSWeaponReloadPacket packet)
         {
-            var currentSec = (byte)System.DateTime.Now.Second;
-            var currentMilSec = System.DateTime.Now.Millisecond;
+            var currentSec = (byte)System.DateTime.UtcNow.Second;
+            var currentMilSec = System.DateTime.UtcNow.Millisecond;
             var duration = packet.duration;
-            if (currentSec < packet.sendTimeSec) duration += (float)currentMilSec / 1000 + (60 - (float)packet.sendTimeMili / 1000);
-            else duration += (float)(currentMilSec - packet.sendTimeMili) / 1000;
+            Debug.Log((duration, packet.sendTimeMili, packet.sendTimeSec, currentSec, currentMilSec));
+            // if (currentSec < packet.sendTimeSec) duration += (float)currentMilSec / 1000 + (60 - (float)packet.sendTimeMili / 1000);
+            // else duration += (float)(currentMilSec - packet.sendTimeMili) / 1000;
             this.currentWeapon.Reload(duration);
         }
 
@@ -62,6 +59,7 @@ namespace Kigor.Networking
 
         public partial void ChangeWeapon(WeaponEnum weapon)
         {
+            this.currentWeaponEnum = weapon;
         }
 #endif
     }

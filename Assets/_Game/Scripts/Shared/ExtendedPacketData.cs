@@ -174,10 +174,9 @@ namespace Kigor.Networking
 
         public override void DecodeMessage(byte[] msg)
         {
-            this.duration = msg[1];
-            this.duration = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 2));
-            this.sendTimeMili = BitConverter.ToUInt16(msg, 4);
-            this.sendTimeSec = msg[6];
+            this.duration = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 1));
+            this.sendTimeMili = BitConverter.ToUInt16(msg, 3);
+            this.sendTimeSec = msg[5];
         }
     }
 

@@ -35,6 +35,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.msgHandler.Add(PacketType.FPS_INPUT_PACKET, this.HandleInputPacket);
         this.msgHandler.Add(PacketType.FPS_SHOOT, this.HandleShootPacket);
         this.msgHandler.Add(PacketType.FPS_WEAPON_RELOAD, this.HandleReloadPacket);
+
+        this.WeaponController.ChangeWeapon(WeaponEnum.AK47);
     }
     #region COMMAND_HANDLING
     private void HandleInputPacket(byte[] data)

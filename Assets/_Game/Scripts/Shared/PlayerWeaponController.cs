@@ -8,7 +8,7 @@ namespace Kigor.Networking
     {
         [SerializeField] private Dictionary<WeaponEnum, Weapon> localWeaponMap, otherWeaponMap;
         [SerializeField] private LayerMask shootMask;
-        private WeaponEnum currentWeaponEnum;
+        [SerializeField] private WeaponEnum currentWeaponEnum;
 
         private WeaponEnum[] equippedWeapons;
         
