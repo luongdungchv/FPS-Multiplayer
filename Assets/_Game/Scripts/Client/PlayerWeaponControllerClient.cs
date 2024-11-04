@@ -34,8 +34,6 @@ namespace Kigor.Networking
                 this.timeCounter += Time.deltaTime;
                 if (this.timeCounter > this.currentWeapon.Data.shootInterval) this.timeCounter = 0;
             }
-
-            
         }
 
         public partial void ChangeWeapon(WeaponEnum weapon)
@@ -47,28 +45,22 @@ namespace Kigor.Networking
             }
             this.currentWeaponEnum = weapon;
             currentWeapon.gameObject.SetActive(true);
+            this.SendWeaponChangePacket(this.currentWeaponEnum);
         }
-
-        public partial void HandleInput(FPSInputPacket packet)
-        {
-            // if (packet.shoot)
-            // {
-            //     if (this.timeCounter == 0)
-            //     {
-            //         this.SendShootPacket();
-            //     }
-            //
-            //     this.timeCounter += this.Player.TickScheduler.TickDeltaTime;
-            //     if (this.timeCounter > this.currentWeapon.Data.shootInterval) this.timeCounter = 0;
-            // }
-        }
-
+        
         private void SendShootPacket()
         {
             var packet = new FPSShootPacket();
             packet.shootDir = NetworkCamera.Instance.transform.forward;
             NetworkTransport.Instance.SendPacketTCP(packet);
             Debug.Log("Shoot command sent");
+        }
+
+        private void SendWeaponChangePacket(WeaponEnum weapon)
+        {
+            var packet = new FPSWeaponChangePacket();
+            packet.weapon = weapon;
+            NetworkTransport.Instance.SendPacketTCP(packet);
         }
 
         private void ProcessClientShoot()
@@ -85,11 +77,6 @@ namespace Kigor.Networking
                     
                 }
             }
-        }
-
-        private void SendChangeWeaponPacket(WeaponEnum weapon)
-        {
-            
         }
 #endif
     }

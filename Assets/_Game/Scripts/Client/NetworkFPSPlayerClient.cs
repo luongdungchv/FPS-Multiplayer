@@ -41,7 +41,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     protected partial void TickUpdate()
     {
         this.Controller.PerformTickMovement(this.pendingInputPacket);
-        this.WeaponController.HandleInput(this.pendingInputPacket);
 
         if (pendingInputPacket.jump)
         {

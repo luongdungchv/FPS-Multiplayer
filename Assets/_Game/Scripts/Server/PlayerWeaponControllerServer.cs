@@ -6,9 +6,6 @@ namespace Kigor.Networking
     public partial class PlayerWeaponController
     {
 #if SERVER_BUILD
-        public partial void HandleInput(FPSInputPacket packet)
-        {
-        }
         public void HandleShootPacket(FPSShootPacket packet)
         {
             Debug.Log("Shoot packet received from player: " + this.Player.PlayerID);
