@@ -35,6 +35,11 @@ namespace Kigor.Networking
             this.currentWeapon.Reload(duration);
         }
 
+        public void HandleChangeWeaponPacket(FPSWeaponChangePacket packet)
+        {
+            this.ChangeWeapon(packet.weapon);
+        }
+
         private void BroadcastReloadPacket(float duration, int sendTimeMili, int sendTimeSec)
         {
             var packet = new FPSWeaponReloadPacket();

@@ -35,6 +35,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.msgHandler.Add(PacketType.FPS_INPUT_PACKET, this.HandleInputPacket);
         this.msgHandler.Add(PacketType.FPS_SHOOT, this.HandleShootPacket);
         this.msgHandler.Add(PacketType.FPS_WEAPON_RELOAD, this.HandleReloadPacket);
+        this.msgHandler.Add(PacketType.FPS_WEAPON_CHANGE, this.HandleWeaponChangePacket);
 
         this.WeaponController.ChangeWeapon(WeaponEnum.AK47);
     }
@@ -78,6 +79,14 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         var packet = new FPSWeaponReloadPacket();
         packet.DecodeMessage(data);
         ThreadManager.ExecuteOnMainThread(() => this.WeaponController.HandleReloadPacket(packet));
+    }
+
+    private void HandleWeaponChangePacket(byte[] data)
+    {
+        var packet = new FPSWeaponChangePacket();
+        packet.DecodeMessage(data);
+        this.WeaponController.ChangeWeapon(packet.weapon);
+        this.Room.BroadcastMessage(data);
     }
     #endregion
 
