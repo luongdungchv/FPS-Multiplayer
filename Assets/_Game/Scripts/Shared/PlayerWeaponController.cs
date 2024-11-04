@@ -6,16 +6,24 @@ namespace Kigor.Networking
 {
     public partial class PlayerWeaponController : Sirenix.OdinInspector.SerializedMonoBehaviour
     {
-        [SerializeField] private Dictionary<WeaponEnum, Weapon> weaponMap;
+        [SerializeField] private Dictionary<WeaponEnum, Weapon> localWeaponMap, otherWeaponMap;
         [SerializeField] private LayerMask shootMask;
         private WeaponEnum currentWeaponEnum;
 
+        private WeaponEnum[] equippedWeapons;
+        
         private NetworkFPSPlayer Player => this.GetComponent<NetworkFPSPlayer>();
         private Weapon currentWeapon => this.weaponMap[this.currentWeaponEnum];
         public SimpleFSM FSM => this.GetComponent<SimpleFSM>();
+        private Dictionary<WeaponEnum, Weapon> weaponMap => this.Player.IsLocalPlayer ? localWeaponMap : otherWeaponMap;
 
         private void Awake()
         {
+            this.equippedWeapons = new WeaponEnum[2];
+
+            this.equippedWeapons[0] = WeaponEnum.AK47;
+            this.equippedWeapons[1] = WeaponEnum.USP;
+            
             if (this.weaponMap == null) return;
             foreach (var pair in this.weaponMap)
             {
@@ -38,6 +46,7 @@ namespace Kigor.Networking
 
 
         public partial void ChangeWeapon(WeaponEnum weapon);
+        public partial void SwitchWeapon(int weaponIndex);
 
     }
 

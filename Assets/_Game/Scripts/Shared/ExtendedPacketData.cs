@@ -185,9 +185,10 @@ namespace Kigor.Networking
     {
         public override PacketType PacketType => PacketType.FPS_WEAPON_CHANGE;
         public WeaponEnum weapon;
+        public byte playerID;
         public override byte[] EncodeData()
         {
-            return new byte[] { 2, (byte)this.PacketType, (byte)this.weapon };
+            return new byte[] { 3, (byte)this.PacketType, (byte)this.weapon, this.playerID };
         }
 
         public override void DecodeMessage(byte[] msg)

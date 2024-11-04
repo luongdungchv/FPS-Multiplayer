@@ -24,8 +24,20 @@ namespace Kigor.Networking
                 this.FSM.ChangeState(SimpleFSM.StateEnum.Shooting);
                 return;
             }
+            
         }
 
+        private void HandleChangeGun()
+        {
+            if (Input.GetKeyDown(KeyCode.Keypad1))
+            {
+                this.SwitchWeapon(0);
+            }
+            else if (Input.GetKeyDown(KeyCode.Keypad2))
+            {
+                this.SwitchWeapon(1);
+            }
+        }
         private partial void ShootStateEnter()
         {
             Debug.Log("Start Shooting");    
@@ -68,6 +80,7 @@ namespace Kigor.Networking
         public partial void ChangeWeapon(WeaponEnum weapon)
         {
             Debug.Log("Weapon changed to: " + weapon);
+            if (weapon == WeaponEnum.None) return;
             if (this.currentWeaponEnum != WeaponEnum.None)
             {
                 currentWeapon.gameObject.SetActive(false);
@@ -75,6 +88,11 @@ namespace Kigor.Networking
             this.currentWeaponEnum = weapon;
             currentWeapon.gameObject.SetActive(true);
             this.SendWeaponChangePacket(this.currentWeaponEnum);
+        }
+
+        public partial void SwitchWeapon(int weaponIndex)
+        {
+            this.ChangeWeapon(this.equippedWeapons[weaponIndex]);
         }
         
         private void SendShootPacket()
