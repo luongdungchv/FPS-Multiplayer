@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace Kigor.Networking
 {
@@ -15,7 +16,7 @@ namespace Kigor.Networking
             this.currentReservedAmmo = this.currentAmmo * 3;
         }
 
-        public void Reload()
+        public void Reload(UnityAction onComplete = null)
         {
             Debug.Log("start reloading");
             if (this.currentReservedAmmo == 0) return;
@@ -27,6 +28,7 @@ namespace Kigor.Networking
                 var filledAmmo = this.currentAmmo - oldAmmo;
                 this.currentReservedAmmo -= filledAmmo;
                 this.currentAmmo = this.currentReservedAmmo < 0 ? -this.currentReservedAmmo : this.data.magazineSize;
+                onComplete?.Invoke();
             }, this.data.reloadDuration);
             this.SendReloadMsgToServer();
         }
@@ -36,7 +38,8 @@ namespace Kigor.Networking
             this.currentAmmo--;
             if (this.currentAmmo == 0)
             {
-                this.Reload();
+                this.Reload(() => this.owner.GetComponent<PlayerWeaponController>().FSM.ChangeState(SimpleFSM.StateEnum.Normal));
+                this.owner.GetComponent<PlayerWeaponController>().FSM.ChangeState(SimpleFSM.StateEnum.Reloading);
             }
         }
 

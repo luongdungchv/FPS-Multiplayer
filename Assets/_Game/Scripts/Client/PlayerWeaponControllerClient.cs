@@ -7,22 +7,51 @@ namespace Kigor.Networking
     {
 #if CLIENT_BUILD
         private float timeCounter;
+        
 
-        private void Update()
+        #region FSM_CALLBACK
+        private partial void NormalStateUpdate()
         {
-            if (this.currentWeapon.IsReloading)
+            Debug.Log("normal update");
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                this.timeCounter = 0;
+                this.currentWeapon.Reload(() => this.FSM.ChangeState(SimpleFSM.StateEnum.Normal));
+                this.FSM.ChangeState(SimpleFSM.StateEnum.Reloading);
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                this.FSM.ChangeState(SimpleFSM.StateEnum.Shooting);
                 return;
             }
+            
+        }
+
+        private void HandleChangeGun()
+        {
+            if (Input.GetKeyDown(KeyCode.Keypad1))
+            {
+                this.SwitchWeapon(0);
+            }
+            else if (Input.GetKeyDown(KeyCode.Keypad2))
+            {
+                this.SwitchWeapon(1);
+            }
+        }
+        private partial void ShootStateEnter()
+        {
+            Debug.Log("Start Shooting");    
+            this.ShootStateUpdate();
+        }
+
+        private partial void ShootStateUpdate()
+        {
+            Debug.Log("Shoot update");
             if (Input.GetMouseButtonUp(0))
             {
                 this.timeCounter = 0;
+                this.FSM.ChangeState(SimpleFSM.StateEnum.Normal);
                 return;
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                this.currentWeapon.Reload();
             }
             if (Input.GetMouseButton(0))
             {
@@ -36,9 +65,22 @@ namespace Kigor.Networking
             }
         }
 
+        private partial void ReloadStateEnter()
+        {
+            Debug.Log("Start Reloading");
+            this.timeCounter = 0;
+        }
+
+        private partial void ReloadStateUpdate()
+        {
+            
+        }
+        #endregion
+
         public partial void ChangeWeapon(WeaponEnum weapon)
         {
             Debug.Log("Weapon changed to: " + weapon);
+            if (weapon == WeaponEnum.None) return;
             if (this.currentWeaponEnum != WeaponEnum.None)
             {
                 currentWeapon.gameObject.SetActive(false);
@@ -46,6 +88,11 @@ namespace Kigor.Networking
             this.currentWeaponEnum = weapon;
             currentWeapon.gameObject.SetActive(true);
             this.SendWeaponChangePacket(this.currentWeaponEnum);
+        }
+
+        public partial void SwitchWeapon(int weaponIndex)
+        {
+            this.ChangeWeapon(this.equippedWeapons[weaponIndex]);
         }
         
         private void SendShootPacket()

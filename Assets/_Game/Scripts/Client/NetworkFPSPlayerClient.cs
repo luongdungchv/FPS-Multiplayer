@@ -76,7 +76,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.cameraController.transform.localPosition = Vector3.zero;
         this.cameraController.transform.localEulerAngles = Vector3.zero;
 
-        this.WeaponController.ChangeWeapon(WeaponEnum.M4A1);
+        this.WeaponController.SwitchWeapon(0);
         
         this.RecursivelyDisableRenderer(this.transform);
     }
@@ -146,13 +146,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         pendingInputPacket.moveDir = new Vector2(transform.forward.x, transform.forward.z);
         pendingInputPacket.cameraAngle = Avatar.HeadTransform.eulerAngles.x;
         NetworkTransport.Instance.SendPacketUDP(pendingInputPacket);
-    }
-
-    private void SendShootPacket()
-    {
-        var packet = new FPSShootPacket();
-        packet.shootDir = NetworkCamera.Instance.transform.forward;
-        NetworkTransport.Instance.SendPacketTCP(packet);
     }
 
     private void OnDestroy()
