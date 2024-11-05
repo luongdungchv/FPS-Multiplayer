@@ -85,7 +85,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         var packet = new FPSWeaponChangePacket();
         packet.DecodeMessage(data);
-        Debug.Log($"change packet: {packet.playerID} {packet.weapon}");
         ThreadManager.ExecuteOnMainThread(() => this.WeaponController.ChangeWeapon(packet.weapon));
         this.Room.BroadcastMessage(packet.EncodeData());
     }
@@ -126,7 +125,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         {
             var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
             var check = physicsScene.Raycast(lastGroundPos, groundCheckPoint.position - lastGroundPos, out hitInfo, (groundCheckPoint.position - lastGroundPos).magnitude + 0.1f, this.groundMask);
-            //Debug.Log((groundCheckPoint.position.y, lastGroundPos.y, check, tick, lastTick));
             if (check)
             {
                 currentCheck = currentCheck || check;

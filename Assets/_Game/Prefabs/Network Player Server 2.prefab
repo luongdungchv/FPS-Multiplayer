@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: -3082704008919809769}
   - component: {fileID: -8897231001016608195}
   - component: {fileID: 1674889576130262780}
+  - component: {fileID: 8272893904526155984}
   m_Layer: 7
   m_Name: Network Player Server 2
   m_TagString: Untagged
@@ -307,6 +308,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 4397426610974970784}
+  hpManager: {fileID: 0}
+--- !u!114 &8272893904526155984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852545721822174941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecf5ea15d6b4b9a8cfe624eda341612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 100
+  hitBoxes:
+  - {fileID: 1674889576130262780}
 --- !u!1 &4486460555781079288
 GameObject:
   m_ObjectHideFlags: 0
