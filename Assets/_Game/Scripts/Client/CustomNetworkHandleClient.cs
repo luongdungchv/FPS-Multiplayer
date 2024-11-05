@@ -10,9 +10,15 @@ namespace Kigor.Networking
 #if CLIENT_BUILD
         public UnityAction<int, FPSPlayerState> OnReconcilePacketReceived;
         public UnityAction<byte, Vector3> OnPlayerShotPacketReceived;
+        public UnityAction<int, int> OnWeaponChange;
+        public UnityAction<int> OnPlayerDie;
+        
         partial void Initialize(){
             this.udpHandleMap.Add(PacketType.FPS_RECONCILE_PACKET, HandleFPSReconciliation);
+            
             this.tcpHandleMap.Add(PacketType.FPS_PLAYER_SHOT, this.HandlePlayerShot);
+            this.tcpHandleMap.Add(PacketType.FPS_WEAPON_CHANGE, this.HandleWeaponChangePacket);
+            this.tcpHandleMap.Add(PacketType.FPS_PLAYER_DIE, this.HandlePlayerDiePacket);
         }
 
         private void HandleFPSReconciliation(byte[] msg){
@@ -41,6 +47,36 @@ namespace Kigor.Networking
 
             this.OnPlayerShotPacketReceived?.Invoke(packet.playerID, packet.hitPos);
         }
+        private void HandleWeaponChangePacket(byte[] msg)
+        {
+            Debug.Log("Weapon change packet received");
+            var packet = new FPSWeaponChangePacket();
+            try
+            {
+                packet.DecodeMessage(msg);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+            }
+            
+            this.OnWeaponChange?.Invoke(packet.playerID, (int)packet.weapon);
+        }
+
+        private void HandlePlayerDiePacket(byte[] msg)
+        {
+            var packet = new FPSPlayerDiePacket();
+            try
+            {
+                packet.DecodeMessage(msg);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+            }
+            this.OnPlayerDie?.Invoke(packet.playerID);
+        }
+        
 #endif
     }
 }

@@ -121,6 +121,7 @@ namespace Kigor.Networking
         {
             var packet = new FPSShootPacket();
             packet.shootDir = NetworkCamera.Instance.transform.forward;
+            packet.damage = (byte)this.currentWeapon.Data.damage;
             NetworkTransport.Instance.SendPacketTCP(packet);
             Debug.Log("Shoot command sent");
         }

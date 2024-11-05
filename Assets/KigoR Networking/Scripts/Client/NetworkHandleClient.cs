@@ -21,7 +21,7 @@ namespace Kigor.Networking
         public UnityAction<RoomStatePacket> OnRoomStateInitialized;
         public UnityAction<int, PlayerState> OnReconcileStateReceived;
         public UnityAction<int> OnPlayerLeave;
-        public UnityAction<int, int> OnWeaponChange;
+        
 
         partial void Initialize();
 
@@ -34,7 +34,7 @@ namespace Kigor.Networking
                 { PacketType.UDP_CONNECTION_INFO, this.HandleServerUDPInfoPacket },
                 { PacketType.ROOM_STATE, this.HandleInitialRoomStatePacket},
                 { PacketType.PLAYER_LEAVE, this.HandlePlayerLeavePacket},
-                { PacketType.FPS_WEAPON_CHANGE, this.HandleWeaponChangePacket}
+                
 
             };
             this.udpHandleMap = new Dictionary<PacketType, UnityAction<byte[]>>{
@@ -205,22 +205,6 @@ namespace Kigor.Networking
             packet.DecodeMessage(msg);
 
             this.OnReconcileStateReceived?.Invoke(packet.tick, packet.playerState);
-        }
-
-        private void HandleWeaponChangePacket(byte[] msg)
-        {
-            Debug.Log("Weapon change packet received");
-            var packet = new FPSWeaponChangePacket();
-            try
-            {
-                packet.DecodeMessage(msg);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-            
-            this.OnWeaponChange?.Invoke(packet.playerID, (int)packet.weapon);
         }
 #endif
     }

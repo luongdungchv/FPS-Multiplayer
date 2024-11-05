@@ -1459,6 +1459,7 @@ GameObject:
   - component: {fileID: 1825368396947657146}
   - component: {fileID: 5310755750314839709}
   - component: {fileID: 3405071085663496604}
+  - component: {fileID: 128035423780680587}
   m_Layer: 3
   m_Name: Network player client local
   m_TagString: Untagged
@@ -2201,6 +2202,20 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   currentStateEnum: 0
+--- !u!114 &128035423780680587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075961886019792728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecf5ea15d6b4b9a8cfe624eda341612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 100
+  hitBoxes: []
 --- !u!1 &2104030317530544665
 GameObject:
   m_ObjectHideFlags: 0
