@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Kigor.Networking;
 using UnityEngine.UI;
+using NetworkPlayer = Kigor.Networking.NetworkPlayer;
 
 public class UIWaitingRoom : MonoBehaviour
 {
@@ -64,6 +65,7 @@ public class UIWaitingRoom : MonoBehaviour
                     
                     nameHolder.GetComponent<Image>().color = name == this.playerName ? Color.yellow : Color.white;
                     nameHolder.transform.GetChild(1).gameObject.SetActive(ready);
+                    if(name == this.playerName) NetworkPlayer.LocalPlayerID = i;
                 }
 
                 this.textRoomID.text = packet.roomID.ToString();

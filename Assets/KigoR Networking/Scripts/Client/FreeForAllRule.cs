@@ -31,11 +31,7 @@ namespace Kigor.Networking
         public override void Initialize(Dictionary<int, NetworkPlayer> initialPlayers, Scene loadedScene)
         {
             this.players = initialPlayers;
-
-            foreach(var i in initialPlayers) Debug.Log((i.Key, i.Value));
-            Debug.Log(pendingProcessState);
-            foreach(var i in pendingProcessState.playerIDList) Debug.Log(i);
-
+            
             if (pendingProcessState == null) return;
             try
             {
@@ -85,7 +81,6 @@ namespace Kigor.Networking
                 {
                     for (int i = 0; i < packet.playerIDList.Count; i++)
                     {
-                        Debug.Log($"player id: {packet.playerIDList[i]}");
                         var player = this.players[packet.playerIDList[i]];
                         if(player.IsLocalPlayer) continue;
                         player.SetID(packet.playerIDList[i]);

@@ -193,6 +193,7 @@ namespace Kigor.Networking
         public override void DecodeMessage(byte[] msg)
         {
             this.weapon = (WeaponEnum)msg[1];
+            this.playerID = msg[2];
         }
     }
 }

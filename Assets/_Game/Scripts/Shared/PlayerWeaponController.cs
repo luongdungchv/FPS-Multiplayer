@@ -6,7 +6,7 @@ namespace Kigor.Networking
 {
     public partial class PlayerWeaponController : Sirenix.OdinInspector.SerializedMonoBehaviour
     {
-        [SerializeField] private Dictionary<WeaponEnum, Weapon> localWeaponMap, otherWeaponMap;
+        [SerializeField] private Dictionary<WeaponEnum, Weapon> weaponMap;
         [SerializeField] private LayerMask shootMask;
         [SerializeField] private WeaponEnum currentWeaponEnum;
 
@@ -15,27 +15,25 @@ namespace Kigor.Networking
         private NetworkFPSPlayer Player => this.GetComponent<NetworkFPSPlayer>();
         private Weapon currentWeapon => this.weaponMap[this.currentWeaponEnum];
         public SimpleFSM FSM => this.GetComponent<SimpleFSM>();
-        private Dictionary<WeaponEnum, Weapon> weaponMap => this.Player.IsLocalPlayer ? localWeaponMap : otherWeaponMap;
 
         private void Awake()
         {
             this.equippedWeapons = new WeaponEnum[2];
 
             this.equippedWeapons[0] = WeaponEnum.AK47;
-            this.equippedWeapons[1] = WeaponEnum.USP;
+            this.equippedWeapons[1] = WeaponEnum.M4A1;
             
             if (this.weaponMap == null) return;
             foreach (var pair in this.weaponMap)
             {
-                Debug.Log(pair);
                 pair.Value.SetOwner(this.Player);
             }
 
-            this.FSM.GetState(SimpleFSM.StateEnum.Normal).OnStateUpdate.AddListener(this.NormalStateUpdate);
-            this.FSM.GetState(SimpleFSM.StateEnum.Shooting).OnStateEnter.AddListener(this.ShootStateEnter);
-            this.FSM.GetState(SimpleFSM.StateEnum.Shooting).OnStateUpdate.AddListener(this.ShootStateUpdate);
-            this.FSM.GetState(SimpleFSM.StateEnum.Reloading).OnStateEnter.AddListener(this.ReloadStateEnter);
-            this.FSM.GetState(SimpleFSM.StateEnum.Reloading).OnStateUpdate.AddListener(this.ReloadStateUpdate);
+            this.FSM?.GetState(SimpleFSM.StateEnum.Normal).OnStateUpdate.AddListener(this.NormalStateUpdate);
+            this.FSM?.GetState(SimpleFSM.StateEnum.Shooting).OnStateEnter.AddListener(this.ShootStateEnter);
+            this.FSM?.GetState(SimpleFSM.StateEnum.Shooting).OnStateUpdate.AddListener(this.ShootStateUpdate);
+            this.FSM?.GetState(SimpleFSM.StateEnum.Reloading).OnStateEnter.AddListener(this.ReloadStateEnter);
+            this.FSM?.GetState(SimpleFSM.StateEnum.Reloading).OnStateUpdate.AddListener(this.ReloadStateUpdate);
         }
 
         private partial void NormalStateUpdate();

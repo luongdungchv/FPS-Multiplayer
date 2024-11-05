@@ -155,6 +155,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkPlayerPrefab: {fileID: -102130023810790693, guid: 177ac621b3fdbba43bb7a532714b4503,
     type: 3}
+  localPlayerPrefab: {fileID: -102130023810790693, guid: 0501daf5815b78349985b257ab7ead27,
+    type: 3}
   tickSchedulerPrefab: {fileID: -5978668057080476923, guid: aa99aaa8fa95dd240b1fa94ea41f12a6,
     type: 3}
   hostname: 
@@ -1229,7 +1231,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 192.168.1.60
+  m_Text: 192.168.1.58
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -2443,7 +2445,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "192.168.1.60\u200B"
+  m_text: "192.168.1.58\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

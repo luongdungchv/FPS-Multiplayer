@@ -48,13 +48,11 @@ public partial class PlayerController
         var hitNormals = this.PhysicsController.DetectCollision(lastPos, Player.Position, out int hitCount, out var touchGround, out var groundPos, out var touchPos, packet.tick);
         if (hitCount > 0)
         {
-            Debug.Log("Tt");
             if (this.currentJump < 0 && touchGround && this.inAir)
             {
                 this.inAir = false;
                 this.currentJump = 0;
                 lastPos = groundPos;
-                Debug.Log("ground touch");
             }
 
             for (int i = 0; i < hitCount; i++)

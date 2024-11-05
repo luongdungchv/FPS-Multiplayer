@@ -7,12 +7,16 @@ namespace Kigor.Networking
     {
 #if CLIENT_BUILD
         private float timeCounter;
-        
 
+        private void Start()
+        {
+            Debug.Log(";kfdgljdfglhkdflgh");
+            NetworkHandleClient.Instance.OnWeaponChange += this.HandleWeaponChangeMsg;
+        }
         #region FSM_CALLBACK
+
         private partial void NormalStateUpdate()
         {
-            Debug.Log("normal update");
             if (Input.GetKeyDown(KeyCode.R))
             {
                 this.currentWeapon.Reload(() => this.FSM.ChangeState(SimpleFSM.StateEnum.Normal));
@@ -24,23 +28,26 @@ namespace Kigor.Networking
                 this.FSM.ChangeState(SimpleFSM.StateEnum.Shooting);
                 return;
             }
-            
+
+            this.HandleChangeGun();
         }
 
         private void HandleChangeGun()
         {
-            if (Input.GetKeyDown(KeyCode.Keypad1))
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
+                Debug.Log("asdhfas " + this.Player.PlayerID);
                 this.SwitchWeapon(0);
             }
-            else if (Input.GetKeyDown(KeyCode.Keypad2))
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 this.SwitchWeapon(1);
             }
         }
+
         private partial void ShootStateEnter()
         {
-            Debug.Log("Start Shooting");    
+            Debug.Log("Start Shooting");
             this.ShootStateUpdate();
         }
 
@@ -53,6 +60,7 @@ namespace Kigor.Networking
                 this.FSM.ChangeState(SimpleFSM.StateEnum.Normal);
                 return;
             }
+
             if (Input.GetMouseButton(0))
             {
                 if (this.timeCounter == 0)
@@ -60,6 +68,7 @@ namespace Kigor.Networking
                     this.SendShootPacket();
                     this.currentWeapon.PerformShoot();
                 }
+
                 this.timeCounter += Time.deltaTime;
                 if (this.timeCounter > this.currentWeapon.Data.shootInterval) this.timeCounter = 0;
             }
@@ -73,8 +82,8 @@ namespace Kigor.Networking
 
         private partial void ReloadStateUpdate()
         {
-            
         }
+
         #endregion
 
         public partial void ChangeWeapon(WeaponEnum weapon)
@@ -85,16 +94,29 @@ namespace Kigor.Networking
             {
                 currentWeapon.gameObject.SetActive(false);
             }
+
+            Debug.Log(this.weaponMap);
             this.currentWeaponEnum = weapon;
             currentWeapon.gameObject.SetActive(true);
-            this.SendWeaponChangePacket(this.currentWeaponEnum);
+            if(this.Player.IsLocalPlayer) this.SendWeaponChangePacket(this.currentWeaponEnum);
+        }
+
+        private void HandleWeaponChangeMsg(int playerID, int weapon)
+        {
+            Debug.Log((playerID, weapon));
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                if (this.Player.IsLocalPlayer) return;
+                if (playerID != this.Player.PlayerID) return;
+                this.ChangeWeapon((WeaponEnum)weapon);
+            });
         }
 
         public partial void SwitchWeapon(int weaponIndex)
         {
             this.ChangeWeapon(this.equippedWeapons[weaponIndex]);
         }
-        
+
         private void SendShootPacket()
         {
             var packet = new FPSShootPacket();
@@ -107,23 +129,14 @@ namespace Kigor.Networking
         {
             var packet = new FPSWeaponChangePacket();
             packet.weapon = weapon;
+            packet.playerID = (byte)this.Player.PlayerID;
+            Debug.Log($"Sent: {packet.playerID} {packet.weapon}");
             NetworkTransport.Instance.SendPacketTCP(packet);
         }
 
-        private void ProcessClientShoot()
+        private void OnDestroy()
         {
-            var shootDir = NetworkCamera.Instance.transform.forward;
-            var shootPos = NetworkCamera.Instance.transform.position;
-            var physicsScene = this.Player.CurrentPhysicsScene;
-            var shootCheck = physicsScene.Raycast(shootPos, shootDir, out var hitInfo, 100, this.shootMask);
-            if (shootCheck)
-            {
-                var collider = hitInfo.collider.GetComponent<NetworkPlayerCollider>();
-                if (collider)
-                {
-                    
-                }
-            }
+            NetworkHandleClient.Instance.OnWeaponChange -= this.HandleWeaponChangeMsg;
         }
 #endif
     }

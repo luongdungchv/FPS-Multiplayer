@@ -7,7 +7,7 @@ namespace Kigor.Networking
     public partial class NetworkManager : MonoBehaviour
     {
         public static NetworkManager Instance;
-        [SerializeField] private NetworkPlayer networkPlayerPrefab;
+        [SerializeField] private NetworkPlayer networkPlayerPrefab, localPlayerPrefab;
         [SerializeField] private TickScheduler tickSchedulerPrefab;
         
         private ThreadManager threadManager;
@@ -37,6 +37,18 @@ namespace Kigor.Networking
         private void OnEnable(){
             this.handle = new NetworkHandleClient();
             this.transport = new NetworkTransport();
+        }
+        public NetworkPlayer SpawnPlayer(bool isLocalPlayer)
+        {
+            if (isLocalPlayer)
+            {
+                var player = Instantiate(this.localPlayerPrefab);
+                return player;
+            }
+            else
+            {
+                return SpawnPlayer();
+            }
         }
 #endif
     }

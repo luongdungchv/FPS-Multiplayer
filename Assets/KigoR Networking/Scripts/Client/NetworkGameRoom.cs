@@ -45,7 +45,6 @@ namespace Kigor.Networking
         {
             if (this.playersInRoom.ContainsKey(id)) return;
             this.playersInRoom.Add(id, player);
-            Debug.Log(this.rule);
             this.rule.PlayerJoinCallback(player, id);
 
             NetworkTransport.Instance.OnServerCrash += this.HandleServerCrashCallback;

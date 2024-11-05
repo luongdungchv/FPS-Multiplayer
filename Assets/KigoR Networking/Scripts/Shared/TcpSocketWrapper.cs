@@ -208,7 +208,7 @@ namespace Kigor.Networking
                 return;
             }
 
-            Debug.Log($"Received {dataLength} bytes");
+            Debug.Log($"Received {dataLength} bytes, packet: {this.receiveBuffer[1]}");
 
             try
             {

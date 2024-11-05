@@ -12,6 +12,7 @@ namespace Kigor.Networking
         public int CurrentAmmo => this.currentAmmo;
         protected partial void Awake()
         {
+            if (!this.owner.IsLocalPlayer) return;
             this.currentAmmo = this.data.magazineSize;
             this.currentReservedAmmo = this.currentAmmo * 3;
         }

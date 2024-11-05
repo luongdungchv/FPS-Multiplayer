@@ -22,6 +22,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.currentState.position = transform.position;
         this.currentState.horizontalRotation = transform.eulerAngles.y;
         this.currentState.verticalRotation = transform.eulerAngles.x;
+
+        this.WeaponController.SwitchWeapon(0);
     }
     protected partial void Update()
     {
@@ -75,10 +77,9 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.cameraController.transform.SetParent(this.Avatar.HeadTransform);
         this.cameraController.transform.localPosition = Vector3.zero;
         this.cameraController.transform.localEulerAngles = Vector3.zero;
-
-        this.WeaponController.SwitchWeapon(0);
         
         this.RecursivelyDisableRenderer(this.transform);
+        //DL.Utils.CoroutineUtils.Invoke(this, () => this.WeaponController.SwitchWeapon(0), 0);
     }
     private void RecursivelyDisableRenderer(Transform root)
     {
