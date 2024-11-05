@@ -19,9 +19,6 @@ public class UIManager : MonoBehaviour
     {
         Instance = this;
         uiCam = Camera.main;
-
-        NetworkTransport.Instance.OnServerCrash += this.ServerCrashCallback;
-
     }
 
     private void Start()
@@ -30,6 +27,7 @@ public class UIManager : MonoBehaviour
         this.UIWaitingRoom.Init();
 
         NetworkHandleClient.Instance.OnGameStart += this.GameStartCallback;
+        NetworkTransport.Instance.OnServerCrash += this.ServerCrashCallback;
         // NetworkHandleClient.Instance.OnPlayerLeave += this.LocalPlayerLeaveCallback;
     }
 
@@ -50,9 +48,6 @@ public class UIManager : MonoBehaviour
             if (player.Name == NetworkClientInfoHolder.Instance.playerName)
             {
                 player.SetAsLocalPlayer(true);
-                //var cameraController = GameObject.FindObjectOfType<ClientCameraController>();
-                //cameraController.SetTargetPlayer(player);
-                //(player as FPSPlayer).SetCameraController(cameraController);
                 uiCam.gameObject.SetActive(false);
             }
         }

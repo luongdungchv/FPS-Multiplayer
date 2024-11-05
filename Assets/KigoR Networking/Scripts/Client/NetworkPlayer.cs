@@ -22,6 +22,7 @@ namespace Kigor.Networking
 #if CLIENT_BUILD
         private bool isLocalPlayer;
         public static NetworkPlayer localPlayer;
+        public static int LocalPlayerID;
         protected NetworkGameRoom room;
 
         public bool IsLocalPlayer => this.isLocalPlayer;

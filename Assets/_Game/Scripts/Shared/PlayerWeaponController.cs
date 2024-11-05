@@ -21,12 +21,11 @@ namespace Kigor.Networking
             this.equippedWeapons = new WeaponEnum[2];
 
             this.equippedWeapons[0] = WeaponEnum.AK47;
-            this.equippedWeapons[1] = WeaponEnum.USP;
+            this.equippedWeapons[1] = WeaponEnum.M4A1;
             
             if (this.weaponMap == null) return;
             foreach (var pair in this.weaponMap)
             {
-                Debug.Log(pair);
                 pair.Value.SetOwner(this.Player);
             }
 

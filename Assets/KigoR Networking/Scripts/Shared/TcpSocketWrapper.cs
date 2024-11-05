@@ -208,7 +208,7 @@ namespace Kigor.Networking
                 return;
             }
 
-            Debug.Log($"Received {dataLength} bytes from {this.tcpSocket.Client.RemoteEndPoint}");
+            Debug.Log($"Received {dataLength} bytes");
 
             try
             {

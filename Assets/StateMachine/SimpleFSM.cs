@@ -22,7 +22,6 @@ public class SimpleFSM : Sirenix.OdinInspector.SerializedMonoBehaviour
     {
         if (this.currentState != null)
         {
-            Debug.Log(this.currentState.OnStateUpdate);
             this.currentState.OnStateUpdate?.Invoke();
         }
     }
