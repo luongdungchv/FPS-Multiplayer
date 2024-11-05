@@ -85,8 +85,9 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         var packet = new FPSWeaponChangePacket();
         packet.DecodeMessage(data);
-        this.WeaponController.ChangeWeapon(packet.weapon);
-        this.Room.BroadcastMessage(data);
+        Debug.Log($"change packet: {packet.playerID} {packet.weapon}");
+        ThreadManager.ExecuteOnMainThread(() => this.WeaponController.ChangeWeapon(packet.weapon));
+        this.Room.BroadcastMessage(packet.EncodeData());
     }
     #endregion
 

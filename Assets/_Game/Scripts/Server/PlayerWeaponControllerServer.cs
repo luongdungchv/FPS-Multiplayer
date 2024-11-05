@@ -66,6 +66,31 @@ namespace Kigor.Networking
         {
             this.currentWeaponEnum = weapon;
         }
+
+        public partial void SwitchWeapon(int weaponIndex)
+        {
+            this.ChangeWeapon(this.equippedWeapons[weaponIndex]);
+        }
+
+        private partial void NormalStateUpdate()
+        {
+        }
+
+        private partial void ShootStateEnter()
+        {
+        }
+
+        private partial void ShootStateUpdate()
+        {
+        }
+
+        private partial void ReloadStateEnter()
+        {
+        }
+
+        private partial void ReloadStateUpdate()
+        {
+        }
 #endif
     }
 }
