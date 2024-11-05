@@ -14,7 +14,8 @@ namespace Kigor.Networking
             FPS_SHOOT = 17,
             FPS_PLAYER_SHOT = 18,
             FPS_WEAPON_RELOAD = 19,
-            FPS_WEAPON_CHANGE = 20
+            FPS_WEAPON_CHANGE = 20,
+            FPS_PLAYER_DIE = 21
         ;
     }
 
@@ -101,7 +102,7 @@ namespace Kigor.Networking
         public override PacketType PacketType => PacketType.FPS_SHOOT;
 
         public Vector3 shootDir;
-        
+        public byte damage;
         public override byte[] EncodeData()
         {
             var byteList = new List<byte>();
@@ -109,6 +110,7 @@ namespace Kigor.Networking
             byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.shootDir.x)));
             byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.shootDir.y)));
             byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.shootDir.z)));
+            byteList.Add(damage);
             
             byteList.Insert(0, (byte)byteList.Count);
 
@@ -120,6 +122,7 @@ namespace Kigor.Networking
             this.shootDir.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 1));
             this.shootDir.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 3));
             this.shootDir.z = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 5));
+            this.damage = msg[7];
         }
     }
 
@@ -194,6 +197,20 @@ namespace Kigor.Networking
         {
             this.weapon = (WeaponEnum)msg[1];
             this.playerID = msg[2];
+        }
+    }
+    public class FPSPlayerDiePacket : PacketData
+    {
+        public override PacketType PacketType => PacketType.FPS_PLAYER_DIE;
+        public byte playerID;
+        public override byte[] EncodeData()
+        {
+            return new byte[]{2, (byte)this.PacketType, this.playerID};
+        }
+
+        public override void DecodeMessage(byte[] msg)
+        {
+            this.playerID = msg[1];
         }
     }
 }

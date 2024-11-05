@@ -1,10 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Kigor.Networking
 {
     public partial class PlayerHPManager
     {
-#if CLIENT_BUILD
         public partial void TakeDamage(int damage)
         {
             this.currentHP -= damage;
@@ -17,7 +16,15 @@ namespace Kigor.Networking
         public partial void Perish()
         {
             this.gameObject.SetActive(false);
+            this.isDead = true;
+            this.SendPlayerDiePacket();
         }
-#endif
+
+        private void SendPlayerDiePacket()
+        {
+            var packet = new FPSPlayerDiePacket();
+            packet.playerID = (byte)this.Player.PlayerID;
+            this.Player.Socket.SendDataTCP(packet.EncodeData());
+        }
     }
 }

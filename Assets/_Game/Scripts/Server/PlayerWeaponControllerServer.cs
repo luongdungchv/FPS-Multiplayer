@@ -19,6 +19,7 @@ namespace Kigor.Networking
                 var collider = hitInfo.collider.GetComponent<NetworkPlayerCollider>();
                 if (!collider) return;
                 var playerID = collider.OwnerPlayer.PlayerID;
+                collider.TakeDamage(packet.damage);
                 this.SendPlayerShotPacket(playerID, hitInfo.point);
                 Debug.Log((playerID, collider));
             }

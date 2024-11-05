@@ -9,6 +9,7 @@ namespace Kigor.Networking
         [SerializeField] private int maxHP;
         [SerializeField] private List<NetworkPlayerCollider> hitBoxes;
         private int currentHP;
+        private bool isDead;
 
         private NetworkFPSPlayer Player;
 
