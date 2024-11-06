@@ -27,18 +27,26 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     }
     protected partial void Update()
     {
-        if (!this.IsLocalPlayer) return;
-        pendingInputPacket.movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        if (!pendingInputPacket.jump) pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
-        pendingInputPacket.shoot = Input.GetMouseButton(0);
+        if (this.IsLocalPlayer)
+        {
+            pendingInputPacket.movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            if (!pendingInputPacket.jump) pendingInputPacket.jump = Input.GetKeyDown(KeyCode.Space);
+            pendingInputPacket.shoot = Input.GetMouseButton(0);
 
-        this.Controller.PerformRotation();
+            this.Controller.PerformRotation();
 
-        var currentPos = transform.position;
-        currentPos.x = Mathf.Lerp(currentPos.x, this.Position.x, Time.deltaTime * this.smoothSpd);
-        currentPos.z = Mathf.Lerp(currentPos.z, this.Position.z, Time.deltaTime * this.smoothSpd);
-        currentPos.y = Mathf.Lerp(currentPos.y, this.Position.y, Time.deltaTime * (this.smoothSpd + 10));
-        this.transform.position = currentPos;
+            var currentPos = transform.position;
+            currentPos.x = Mathf.Lerp(currentPos.x, this.Position.x, Time.deltaTime * this.smoothSpd);
+            currentPos.z = Mathf.Lerp(currentPos.z, this.Position.z, Time.deltaTime * this.smoothSpd);
+            currentPos.y = Mathf.Lerp(currentPos.y, this.Position.y, Time.deltaTime * (this.smoothSpd + 10));
+            this.transform.position = currentPos;
+        }
+        else
+        {
+            var interpolator = this.TickScheduler.GetInterpolator(out var lastTick, out var nextTick);
+            var state = FPSPlayerState.Interpolate(this.statesBuffer[lastTick], this.statesBuffer[nextTick], interpolator);
+            transform.position = state.position;
+        }
     }
     protected partial void TickUpdate()
     {
@@ -93,35 +101,12 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             RecursivelyDisableRenderer(root.GetChild(i));
         }
     }
-    public bool GroundCheck(out Vector3 groundPos)
-    {
-        var castPoint = this.GetGroundCheckPoint(Position);
-        var currentCheck = Physics.Raycast(castPoint, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
-        groundPos = hitInfo.point;
-        //var lastTick = this.TickScheduler.GetLastTicks(1)[0];
-        var lastState = this.statesBuffer[lastTick];
-        if (lastState.init)
-        {
-            var lastGroundPos = this.GetGroundCheckPoint(lastState.position);
-            var check = Physics.Raycast(lastGroundPos, castPoint - lastGroundPos, out hitInfo, (castPoint - lastGroundPos).magnitude + 0.1f, this.groundMask);
-            Debug.Log((Position.y, castPoint.y, lastGroundPos.y));
-            if (check)
-            {
-                currentCheck = true;
-                groundPos = hitInfo.point;
-            }
-        }
-        return currentCheck;
-    }
 
-    public bool SmoothGroundCheck(out Vector3 groundPos)
+    public void SetNonLocalState(FPSPlayerState state)
     {
-        var startPos = lastSmoothState.position;
-        var endPos = transform.position;
-        var collide = this.PhysicsController.DetectCollision(startPos, endPos, out Vector3 hitNormal, out var groundCheck, out groundPos);
-        return groundCheck;
+        if (this.stateCounter >= TickScheduler.MAX_TICK) this.stateCounter = 0;
+        this.statesBuffer[this.stateCounter] = state;
     }
-
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
     {
@@ -173,5 +158,16 @@ public struct FPSPlayerState
     public static float Difference(FPSPlayerState a, FPSPlayerState b)
     {
         return (a.position - b.position).sqrMagnitude;
+    }
+
+    public static FPSPlayerState Interpolate(FPSPlayerState a, FPSPlayerState b, float t)
+    {
+        FPSPlayerState result = new()
+        {
+            position = Vector3.Lerp(a.position, b.position, t),
+            horizontalRotation = Mathf.Lerp(a.horizontalRotation, b.horizontalRotation, t),
+            verticalRotation = Mathf.Lerp(a.verticalRotation, b.verticalRotation, t),
+        };
+        return result;
     }
 }

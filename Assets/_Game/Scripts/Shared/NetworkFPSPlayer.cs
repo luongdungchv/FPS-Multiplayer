@@ -14,6 +14,7 @@ public partial class NetworkFPSPlayer : NetworkPlayer
 
 
     private FPSPlayerState[] statesBuffer;
+    private int stateCounter;
     private FPSPlayerState currentState;
 
     public TickScheduler TickScheduler => this.room.Rule.TickScheduler;
