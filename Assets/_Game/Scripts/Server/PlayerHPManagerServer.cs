@@ -4,6 +4,7 @@ namespace Kigor.Networking
 {
     public partial class PlayerHPManager
     {
+#if SERVER_BUILD
         public partial void TakeDamage(int damage)
         {
             this.currentHP -= damage;
@@ -27,5 +28,6 @@ namespace Kigor.Networking
             var msg = packet.EncodeData();
             this.Player.Room.BroadcastMessage(msg);
         }
+#endif
     }
 }

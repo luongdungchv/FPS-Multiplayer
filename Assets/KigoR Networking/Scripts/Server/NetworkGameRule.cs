@@ -17,7 +17,8 @@ namespace Kigor.Networking
         public abstract void Initialize(Dictionary<int, NetworkPlayer>  intialPlayers, Scene loadedScene);
         public abstract void Dispose();
 
-        public static void InitCreatorMap(){
+        public static void InitCreatorMap()
+        {
             ruleCreatorMap.Add(GameRule.FREE_FOR_ALL, () => new FreeForAllRule());
             ExtendedInitCreatorMap();
         }
@@ -66,5 +67,6 @@ namespace Kigor.Networking
         #endregion
 
         public static GameRule FREE_FOR_ALL = 1;
+        public static GameRule TEAM_DEATHMATCH = 2;
     }
 }

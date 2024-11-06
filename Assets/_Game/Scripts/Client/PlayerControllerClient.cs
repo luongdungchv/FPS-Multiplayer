@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -142,6 +143,12 @@ public partial class PlayerController
 
     public void PerformRotation()
     {
+        if (Input.GetKey(KeyCode.LeftAlt))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return;
+        }
         var mouseX = Input.GetAxis("Mouse X");
         var mouseY = Input.GetAxis("Mouse Y");
 
@@ -151,6 +158,9 @@ public partial class PlayerController
         this.PerformHeadRotation(mouseY, mouseSen);
 
         transform.eulerAngles = currentRot;
+        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void PerformHeadRotation(float amount, float sensitivity)
@@ -211,6 +221,15 @@ public partial class PlayerController
             return Vector3.up * smoothCurrentJump * Time.deltaTime;
         }
         return Vector3.zero;
+    }
+
+    private void OnDestroy()
+    {
+        if (this.Player.IsLocalPlayer)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 #endif
 }

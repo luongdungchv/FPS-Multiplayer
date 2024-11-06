@@ -16,6 +16,9 @@ public class TickScheduler : MonoBehaviour
     private float tickInterval;
     private float timeCounter;
     private int currentTick;
+    private float maxTimeInBuffer;
+
+    private float rawInterpolator = -0.1f;
 
     public int CurrentTick => this.currentTick;
     public float TickDeltaTime => 1 / this.tickRate;
@@ -27,7 +30,7 @@ public class TickScheduler : MonoBehaviour
     private void Start()
     {
         this.tickInterval = 1 / tickRate;
-
+        this.maxTimeInBuffer = (MAX_TICK) * this.tickInterval;
     }
 
     public void RegisterTickCallback(UnityAction callback)
@@ -55,6 +58,17 @@ public class TickScheduler : MonoBehaviour
             }
             this.timeCounter = this.timeCounter % tickInterval;
         }
+
+        this.rawInterpolator += Time.deltaTime;
+        if (this.rawInterpolator >= this.maxTimeInBuffer) this.rawInterpolator = 0;
+    }
+
+    public float GetInterpolator(out int lastTick, out int nextTick)
+    {
+        lastTick = (int)(this.rawInterpolator / this.tickInterval);
+        nextTick = lastTick == MAX_TICK - 1 ? 0 : lastTick + 1;
+        var lastTickTime = lastTick * this.tickInterval;
+        return this.rawInterpolator - lastTickTime;
     }
 
     public List<int> GetLastTicks(int count)
