@@ -105,7 +105,7 @@ public class UIWaitingRoom : MonoBehaviour
     }
     private void StartBtnClick(){
         var packet = new StartGamePacket();
-        packet.rule = GameRule.FREE_FOR_ALL;
+        packet.rule = GameRule.TEAM_DEATHMATCH;
         NetworkTransport.Instance.SendPacketTCP(packet, () => {
             var sceneName = packet.mapName;
             //TODO: Scene loading
