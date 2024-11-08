@@ -9,6 +9,10 @@ namespace Kigor.Networking
         public void HandleShootPacket(FPSShootPacket packet)
         {
             Debug.Log("Shoot packet received from player: " + this.Player.PlayerID);
+
+            var currentRule = this.Player.Room.Rule as IPlayersHaveState;
+            currentRule.RevertAllPlayerStates(this.Player.TickScheduler.CurrentTick - this.Player.CurrentClientTick);
+            
             var dir = packet.shootDir;
             var physicsScene = this.Player.CurrentPhysicsScene;
             var shootPos = this.GetComponent<PlayerAvatar>().HeadTransform.position;
@@ -23,6 +27,8 @@ namespace Kigor.Networking
                 this.SendPlayerShotPacket(playerID, hitInfo.point);
                 Debug.Log((playerID, collider));
             }
+
+            currentRule.RestoreAllPlayerStates();
         }
 
         public void HandleReloadPacket(FPSWeaponReloadPacket packet)

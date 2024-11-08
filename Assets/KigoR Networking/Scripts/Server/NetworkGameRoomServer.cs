@@ -95,7 +95,6 @@ namespace Kigor.Networking
 
             rule.Initialize(dict, loadedScene);
         }
-
         public void BroadcastPlayerLeaveMessage(int playerID)
         {
             var packet = new PlayerLeavePacket();
@@ -131,8 +130,6 @@ namespace Kigor.Networking
                 player.UnbindRoom();
                 playerList[i] = null;
             }
-
-
         }
 
 

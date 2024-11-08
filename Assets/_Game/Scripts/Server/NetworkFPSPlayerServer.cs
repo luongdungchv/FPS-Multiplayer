@@ -7,7 +7,8 @@ using UnityEngine.Events;
 public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 {
 #if SERVER_BUILD
-    private FPSInputPacket pendingInputPacket;
+    private int currentClientTick;
+    public int CurrentClientTick => this.currentClientTick;
 
     protected partial void Awake()
     {
@@ -44,8 +45,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         var packet = new FPSInputPacket();
         packet.DecodeMessage(data);
-        this.pendingInputPacket = packet;
-
+        this.currentClientTick = packet.tick;
         ThreadManager.ExecuteOnMainThread(() =>
         {
             this.Controller.PerformRotation(packet);
@@ -71,6 +71,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         var packet = new FPSShootPacket();
         packet.DecodeMessage(data);
+        var weaponController = this.WeaponController;
         ThreadManager.ExecuteOnMainThread(() => this.WeaponController.HandleShootPacket(packet));
     }
 
@@ -87,6 +88,19 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         packet.DecodeMessage(data);
         ThreadManager.ExecuteOnMainThread(() => this.WeaponController.ChangeWeapon(packet.weapon));
         this.Room.BroadcastMessage(packet.EncodeData());
+    }
+
+    public void RevertState(int tickCount)
+    {
+        var targetTick = this.currentClientTick - tickCount;
+        if (targetTick < 0) targetTick = TickScheduler.MAX_TICK + targetTick;
+        var targetState = this.statesBuffer[targetTick];
+        transform.position = targetState.position;
+    }
+
+    public void RestoreState()
+    {
+        this.transform.position = this.Position;
     }
     #endregion
 
@@ -107,31 +121,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.currentState = state;
 
         this.statesBuffer[packet.tick] = state;
-    }
-
-
-
-    public bool GroundCheck(int tick, out Vector3 groundPos)
-    {
-        var physicsScene = this.room.PhysicsScene;
-        var currentCheck = physicsScene.Raycast(groundCheckPoint.position, Vector3.down, out var hitInfo, 0.1f, this.groundMask);
-        groundPos = hitInfo.point;
-
-        var lastTick = this.lastTick;
-        if (lastTick == -1) return false;
-
-        var lastState = this.statesBuffer[lastTick];
-        if (lastState.init)
-        {
-            var lastGroundPos = lastState.position + VectorUtils.Multiply(groundCheckPoint.localPosition, transform.localScale);
-            var check = physicsScene.Raycast(lastGroundPos, groundCheckPoint.position - lastGroundPos, out hitInfo, (groundCheckPoint.position - lastGroundPos).magnitude + 0.1f, this.groundMask);
-            if (check)
-            {
-                currentCheck = currentCheck || check;
-                groundPos = hitInfo.point;
-            }
-        }
-        return currentCheck;
     }
 
     private void SendReconcilePacket(byte tick)
