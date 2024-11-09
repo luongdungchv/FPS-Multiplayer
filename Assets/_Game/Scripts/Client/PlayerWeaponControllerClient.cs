@@ -7,7 +7,9 @@ namespace Kigor.Networking
     {
 #if CLIENT_BUILD
         private float timeCounter;
-
+        private ClientRecoilManager recoilManager => this.GetComponent<ClientRecoilManager>();
+        public WeaponData CurrentWeaponData => this.currentWeapon.Data;
+        
         private void Start()
         {
             Debug.Log(";kfdgljdfglhkdflgh");
@@ -58,6 +60,7 @@ namespace Kigor.Networking
             {
                 this.timeCounter = 0;
                 this.FSM.ChangeState(SimpleFSM.StateEnum.Normal);
+                this.recoilManager.StopRecoil();    
                 return;
             }
 
@@ -67,6 +70,7 @@ namespace Kigor.Networking
                 {
                     this.SendShootPacket();
                     this.currentWeapon.PerformShoot();
+                    this.recoilManager.ApplyRecoil();
                 }
 
                 this.timeCounter += Time.deltaTime;

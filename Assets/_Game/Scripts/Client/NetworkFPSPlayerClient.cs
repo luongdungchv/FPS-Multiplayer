@@ -88,7 +88,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.TickScheduler.RegisterTickCallback(this.TickUpdate);
         NetworkHandleClient.Instance.OnReconcilePacketReceived += this.ServerReconciliation;
 
-        this.cameraController.transform.SetParent(this.Avatar.HeadTransform);
+        this.cameraController.transform.SetParent(this.Avatar.CamHolder);
         this.cameraController.transform.localPosition = Vector3.zero;
         this.cameraController.transform.localEulerAngles = Vector3.zero;
         
