@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19eb3ecf-9675-4c0f-b745-843650d6342b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/TeamDMRuleServer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/TeamDMRuleServer.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/KigoR Networking/Scripts/Server/NetworkGameRoomServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KigoR Networking/Scripts/Server/NetworkGameRoomServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/NetworkFPSPlayerServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/NetworkFPSPlayerServer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KigoR Networking/Scripts/Shared/TeamDMRuleMapInfo.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KigoR Networking/Scripts/Shared/TeamDMRuleMapInfo.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.FPS-Multiplayer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FPS-Multiplayer/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/FR2_Cache.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/FR2_Cache.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/TeamDMRuleServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/TeamDMRuleServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,6 +101,7 @@
       <workItem from="1730274924957" duration="1357000" />
       <workItem from="1730300590960" duration="670000" />
       <workItem from="1730720619188" duration="25443000" />
+      <workItem from="1731206957877" duration="2389000" />
     </task>
     <servers />
   </component>

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -320,10 +320,57 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkPlayerPrefab: {fileID: 0}
+  localPlayerPrefab: {fileID: 0}
   tickSchedulerPrefab: {fileID: 0}
   hostname: 
   ipAddress: 
   portClusters: []
+--- !u!1 &387113245
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 387113247}
+  - component: {fileID: 387113246}
+  m_Layer: 0
+  m_Name: Team DM Info
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &387113246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387113245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0e4a3d51f5b411db7ad48012bc6e9ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstTeamSpawnPoints: []
+  secondTeamSpawnPoints: []
+--- !u!4 &387113247
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387113245}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11, y: 0.6161594, z: 23}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,6 +570,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkPlayerPrefab: {fileID: 4397426610974970784, guid: e1404679058e6294e957d80a45225c11,
     type: 3}
+  localPlayerPrefab: {fileID: 0}
   tickSchedulerPrefab: {fileID: -5978668057080476923, guid: aa99aaa8fa95dd240b1fa94ea41f12a6,
     type: 3}
   hostname: 
@@ -564,3 +612,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 29084254}
   - {fileID: 1814587924}
+  - {fileID: 387113247}

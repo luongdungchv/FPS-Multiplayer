@@ -15,6 +15,8 @@ namespace Kigor.Networking
         ~TeamDMRule(){
             Debug.Log("Rule resource released: team dm");
         }
+
+        private Vector3[] firstSideSpawnPositions, secondSideSpawnPositions;
         //private TickScheduler tickScheduler;
         //public override TickScheduler TickScheduler => this.tickScheduler;
         public override void PlayerJoinCallback(NetworkPlayer newPlayer, int id)
@@ -35,6 +37,8 @@ namespace Kigor.Networking
         public override void Initialize(Dictionary<int, NetworkPlayer> intialPlayers, Scene loadedScene)
         {
             this.players = intialPlayers;
+            this.firstSideSpawnPositions = TeamDMRuleMapInfo.Instance.GetFirstTeamSpawnPositions();
+            this.secondSideSpawnPositions = TeamDMRuleMapInfo.Instance.GetSecondTeamSpawnPositions();
 
             this.tickScheduler = NetworkManager.Instance.CreateTickScheduler();
             SceneManager.MoveGameObjectToScene(tickScheduler.gameObject, loadedScene);
@@ -45,11 +49,19 @@ namespace Kigor.Networking
             {
                 var player = players[id];
                 if (player == null) continue;
-
-                var x = Random.Range(0f, 20f);
-                var z = Random.Range(0f, 20f);
-                var pos = new Vector3(-11, 1, 23);
-                player.transform.position = pos;
+                
+                // var pos = new Vector3(-11, 1, 23);
+                // player.transform.position = pos;
+                if (id % 2 == 1)
+                {
+                    var pos = this.secondSideSpawnPositions[id / 2 + 1];
+                    player.transform.position = pos;
+                }
+                else
+                {
+                    var pos = this.firstSideSpawnPositions[id / 2];
+                    player.transform.position = pos;
+                }
 
                 packet.playerPositionList.Add(player.transform.position);
                 packet.playerRotationList.Add(player.transform.eulerAngles);
