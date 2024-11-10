@@ -32,15 +32,9 @@ namespace Kigor.Networking
                 {
                     var player = this.players[pendingProcessState.playerIDList[i]];
                     player.SetID(pendingProcessState.playerIDList[i]);
-                    var playerFPS = (player as NetworkFPSPlayer);
-                    // player.transform.position = pendingProcessState.playerPositionList[i];
-                    // player.transform.eulerAngles = pendingProcessState.playerRotationList[i];
-                    playerFPS.SetNonLocalState(new FPSPlayerState()
-                    {
-                        position = pendingProcessState.playerPositionList[i],
-                        horizontalRotation = this.pendingProcessState.playerRotationList[i].y,
-                        verticalRotation = this.pendingProcessState.playerRotationList[i].x
-                    });
+                    player.transform.position = pendingProcessState.playerPositionList[i];
+                    player.transform.eulerAngles = pendingProcessState.playerRotationList[i];
+                    
                 }
             }
             catch (Exception e)
@@ -82,8 +76,14 @@ namespace Kigor.Networking
                         var player = this.players[packet.playerIDList[i]];
                         if(player.IsLocalPlayer) continue;
                         player.SetID(packet.playerIDList[i]);
-                        player.transform.position = packet.playerPositionList[i];
-                        player.transform.eulerAngles = packet.playerRotationList[i];
+                        
+                        var playerFPS = (player as NetworkFPSPlayer);
+                        playerFPS.SetNonLocalState(new FPSPlayerState()
+                        {
+                            position = packet.playerPositionList[i],
+                            horizontalRotation = packet.playerRotationList[i].y,
+                            verticalRotation = packet.playerRotationList[i].x
+                        });
                     }
                 });
             }

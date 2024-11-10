@@ -15,6 +15,7 @@ namespace Kigor.Networking
             if (!this.owner.IsLocalPlayer) return;
             this.currentAmmo = this.data.magazineSize;
             this.currentReservedAmmo = this.currentAmmo * 3;
+            this.data.ConstructRecoilDirections();
         }
 
         public void Reload(UnityAction onComplete = null)
@@ -22,6 +23,7 @@ namespace Kigor.Networking
             Debug.Log("start reloading");
             if (this.currentReservedAmmo == 0) return;
             this.isReloading = true;
+            this.owner.GetComponent<ClientRecoilManager>().StopRecoil();
             DL.Utils.CoroutineUtils.Invoke(this, () =>
             {
                 var oldAmmo = this.currentAmmo;

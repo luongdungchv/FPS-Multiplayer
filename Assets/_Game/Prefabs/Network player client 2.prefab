@@ -1411,6 +1411,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   headTransform: {fileID: 2910723984026904940}
+  camHolder: {fileID: 2910723984026904940}
 --- !u!114 &1825368396947657146
 MonoBehaviour:
   m_ObjectHideFlags: 0

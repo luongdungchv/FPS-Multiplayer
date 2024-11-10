@@ -15,6 +15,7 @@ namespace DL.Utils
 {
     public static class MathUtils
     {
+        public static float EValue = 2.71828f;
         public static float GetDistanceToCircle(Vector3 position, Vector3 direction, Vector3 center, float radius)
         {
             var viewDir = direction;
@@ -96,6 +97,31 @@ namespace DL.Utils
             => (from - to).sqrMagnitude;
         public static float Square(this float target){
             return target * target;
+        }
+
+        public static class LogarithInterpolator
+        {
+            public static float GetTime(float S, float x, float m)
+            {
+                return Mathf.Log(Mathf.Abs(S - x)) / -m;
+            }
+
+            public static float EvaluateSpeed(float S, float x0, float x1, float t)
+            {
+                if (x0 > x1 && x1 > S)
+                {
+                    var a = Mathf.Log(x0 - S);
+                    var b = Mathf.Log(x1 - S);
+                    return (a - b) / t;
+                }
+                else if (x0 < x1 && x1 < S)
+                {
+                    var a = Mathf.Log(S - x0);
+                    var b = Mathf.Log(S - x1);
+                    return (a - b) / t;
+                }
+                else return 0;
+            }
         }
     }
 }

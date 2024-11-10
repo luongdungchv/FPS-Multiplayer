@@ -44,8 +44,14 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         else
         {
             var interpolator = this.TickScheduler.GetInterpolator(out var lastTick, out var nextTick);
+            if (interpolator < 0) return;
             var state = FPSPlayerState.Interpolate(this.statesBuffer[lastTick], this.statesBuffer[nextTick], interpolator);
+            
             transform.position = state.position;
+            var currentRot = transform.eulerAngles;
+            currentRot.x = state.verticalRotation;  
+            currentRot.y = state.horizontalRotation;
+            this.transform.eulerAngles = currentRot;
         }
     }
     protected partial void TickUpdate()
@@ -82,7 +88,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.TickScheduler.RegisterTickCallback(this.TickUpdate);
         NetworkHandleClient.Instance.OnReconcilePacketReceived += this.ServerReconciliation;
 
-        this.cameraController.transform.SetParent(this.Avatar.HeadTransform);
+        this.cameraController.transform.SetParent(this.Avatar.CamHolder);
         this.cameraController.transform.localPosition = Vector3.zero;
         this.cameraController.transform.localEulerAngles = Vector3.zero;
         
@@ -106,6 +112,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         if (this.stateCounter >= TickScheduler.MAX_TICK) this.stateCounter = 0;
         this.statesBuffer[this.stateCounter] = state;
+        this.stateCounter++;
     }
 
     public void ServerReconciliation(int tick, FPSPlayerState state)
