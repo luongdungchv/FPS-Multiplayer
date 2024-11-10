@@ -8,7 +8,7 @@ using NetworkPlayer = Kigor.Networking.NetworkPlayer;
 
 namespace Kigor.Networking
 {
-    public partial class TeamDMRule : NetworkGameRule
+    public partial class TeamDMRule : NetworkGameRule, IPlayersHaveState
     {
         [SerializeField] private Dictionary<int, NetworkPlayer> players;
         [SerializeField] private int maxAllowed;

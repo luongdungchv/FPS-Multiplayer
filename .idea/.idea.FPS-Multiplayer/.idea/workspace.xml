@@ -5,13 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19eb3ecf-9675-4c0f-b745-843650d6342b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Assets/KigoR Networking/Scripts/Shared/TeamDMRuleMapInfo.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KigoR Networking/Scripts/Shared/TeamDMRuleMapInfo.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FPS-Multiplayer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FPS-Multiplayer/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/FR2_Cache.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/FR2_Cache.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Sirenix/Demos/Custom Attribute Processors.unitypackage.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Sirenix/Demos/Custom Drawers.unitypackage.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Sirenix/Demos/Editor Windows.unitypackage.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Sirenix/Demos/Sample - RPG Editor.unitypackage.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/TeamDMRuleServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/TeamDMRuleServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +21,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock://D:/MyProjects/Unity Projects/FPS/FPS-Multiplayer/Assets/_Game/Scripts/Shared/NetworkFPSPlayer.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/MyProjects/Unity Projects/FPS/FPS-Multiplayer/Assets/_Game/Scripts/Shared/NetworkFPSPlayer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/MyProjects/Unity Projects/FPS/FPS-Multiplayer/Assets/KigoR Networking/Scripts/Shared/TcpSocketWrapper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/MyProjects/Unity Projects/FPS/FPS-Multiplayer/Assets/KigoR Networking/Scripts/Shared/TcpSocketWrapper.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
@@ -101,6 +100,8 @@
       <workItem from="1730157966254" duration="618000" />
       <workItem from="1730274924957" duration="1357000" />
       <workItem from="1730300590960" duration="670000" />
+      <workItem from="1730720619188" duration="25443000" />
+      <workItem from="1731206957877" duration="2389000" />
     </task>
     <servers />
   </component>

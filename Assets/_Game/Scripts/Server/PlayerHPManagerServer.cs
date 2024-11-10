@@ -18,14 +18,15 @@ namespace Kigor.Networking
         {
             this.gameObject.SetActive(false);
             this.isDead = true;
-            this.SendPlayerDiePacket();
+            this.BroadcastPlayerDiePacket();
         }
 
-        private void SendPlayerDiePacket()
+        private void BroadcastPlayerDiePacket()
         {
             var packet = new FPSPlayerDiePacket();
             packet.playerID = (byte)this.Player.PlayerID;
-            this.Player.Socket.SendDataTCP(packet.EncodeData());
+            var msg = packet.EncodeData();
+            this.Player.Room.BroadcastMessage(msg);
         }
 #endif
     }

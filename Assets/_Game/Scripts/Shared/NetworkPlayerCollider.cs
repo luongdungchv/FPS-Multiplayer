@@ -13,6 +13,7 @@ namespace Kigor.Networking
 
         public void TakeDamage(int inputDamage)
         {
+            Debug.Log("take damage");
             this.hpManager.TakeDamage(inputDamage);
         }
     }
