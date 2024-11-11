@@ -33,6 +33,7 @@ namespace Kigor.Networking
             
             this.camHolder.transform.localEulerAngles = Vector3.Lerp(currentRot, Vector3.zero, speedFactor * 2 * Time.deltaTime);
             this.recoilValue = Mathf.Lerp(this.recoilValue, 0, speedFactor * 2 * Time.deltaTime);
+            if (this.recoilValue < 0.006f) this.recoilValue = 0;
             //var targetRotation = Quaternion.euler
         }
 
@@ -42,9 +43,10 @@ namespace Kigor.Networking
             var recoilIndex = Mathf.CeilToInt(this.recoilValue) - 1;
             if (!this.isShooting) this.shootCount = recoilIndex;
             this.shootCount++;
-                
+
+            //Debug.Log((this.shootCount, recoilIndex));
             var recoilDir = this.head.TransformDirection(this.weaponData.GetRecoilDirection(this.shootCount - 1)).normalized;
-            Debug.Log((recoilValue, recoilIndex, this.shootCount, recoilDir));
+            //Debug.Log((recoilValue, recoilIndex, this.shootCount, recoilDir));
             var rotation = Quaternion.LookRotation(recoilDir);
             
             var currentRot = this.camHolder.transform.localEulerAngles;

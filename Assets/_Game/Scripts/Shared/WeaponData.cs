@@ -19,7 +19,7 @@ namespace Kigor.Networking
         [SerializeField] private float recoilCalcDist;
         public float recoilIncrement;
         public float recoilReturnSpd;
-        private Vector3[] recoilDirections;
+        private Vector3[] recoilDirections, recoilShootDirections;
         
 
         public Vector3 GetRecoilDirection(int index)
