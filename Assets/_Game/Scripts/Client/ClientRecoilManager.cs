@@ -46,6 +46,7 @@ namespace Kigor.Networking
 
             //Debug.Log((this.shootCount, recoilIndex));
             var recoilDir = this.head.TransformDirection(this.weaponData.GetRecoilDirection(this.shootCount - 1)).normalized;
+            if (recoilDir == Vector3.zero) return;
             //Debug.Log((recoilValue, recoilIndex, this.shootCount, recoilDir));
             var rotation = Quaternion.LookRotation(recoilDir);
             

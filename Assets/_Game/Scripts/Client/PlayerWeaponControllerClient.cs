@@ -83,11 +83,9 @@ namespace Kigor.Networking
                     var shootPos = this.currentWeapon.ShootPosition;
                     var isHit = physicsScene.Raycast(NetworkCamera.Instance.transform.position, shootDir, out var hitInfo, 100,
                         this.shootMask);
-                    Debug.Log(Vector3.Angle(shootDir, camDir));
                     if (isHit)
                     {
                         this.traceManager.ShowTrace(shootPos, hitInfo.point);
-                        //this.test.transform.position = hitInfo.point;
                     }
                     else
                     {

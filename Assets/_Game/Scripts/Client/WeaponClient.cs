@@ -6,11 +6,17 @@ namespace Kigor.Networking
     public partial class Weapon
     {
 #if CLIENT_BUILD
-        private int currentAmmo;
+        [SerializeField] private int currentAmmo;
         private int currentReservedAmmo;
 
+        private ClientMuzzleFlashManager muzzleFlashManager => this.GetComponent<ClientMuzzleFlashManager>();
         public int CurrentAmmo => this.currentAmmo;
+
         protected partial void Awake()
+        {
+        }
+
+        private void Start()
         {
             if (!this.owner.IsLocalPlayer) return;
             this.currentAmmo = this.data.magazineSize;
@@ -39,9 +45,12 @@ namespace Kigor.Networking
         public void PerformShoot()
         {
             this.currentAmmo--;
+            this.muzzleFlashManager.PlayMuzzle();
+            Debug.Log(this.currentAmmo);
             if (this.currentAmmo == 0)
             {
-                this.Reload(() => this.owner.GetComponent<PlayerWeaponController>().FSM.ChangeState(SimpleFSM.StateEnum.Normal));
+                this.Reload(() =>
+                    this.owner.GetComponent<PlayerWeaponController>().FSM.ChangeState(SimpleFSM.StateEnum.Normal));
                 this.owner.GetComponent<PlayerWeaponController>().FSM.ChangeState(SimpleFSM.StateEnum.Reloading);
             }
         }

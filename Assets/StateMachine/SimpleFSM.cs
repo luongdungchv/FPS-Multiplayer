@@ -44,6 +44,7 @@ public class SimpleFSM : Sirenix.OdinInspector.SerializedMonoBehaviour
 
     public void ChangeState(StateEnum destState)
     {
+        Debug.Log($"changing state to: {destState}");
         if (this.currentStateEnum == destState) return;
         this.currentState.OnStateExit?.Invoke();
         this.currentState = this.GetState(destState);
