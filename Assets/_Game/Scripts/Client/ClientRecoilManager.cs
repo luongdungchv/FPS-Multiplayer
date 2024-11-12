@@ -32,7 +32,7 @@ namespace Kigor.Networking
             var speedFactor = DL.Utils.MathUtils.LogarithInterpolator.EvaluateSpeed(rotationTargetDir.magnitude,0 , rotationTargetDir.magnitude - 0.01f, returnTime);
             
             this.camHolder.transform.localEulerAngles = Vector3.Lerp(currentRot, Vector3.zero, speedFactor * 2 * Time.deltaTime);
-            this.recoilValue = Mathf.Lerp(this.recoilValue, 0, speedFactor * 2 * Time.deltaTime);
+            this.recoilValue = Mathf.Lerp(this.recoilValue, 0, speedFactor * 3.5f * Time.deltaTime);
             if (this.recoilValue < 0.006f) this.recoilValue = 0;
             //var targetRotation = Quaternion.euler
         }
@@ -44,7 +44,7 @@ namespace Kigor.Networking
             if (!this.isShooting) this.shootCount = recoilIndex;
             this.shootCount++;
 
-            //Debug.Log((this.shootCount, recoilIndex));
+            Debug.Log((this.shootCount, recoilIndex));
             var recoilDir = this.head.TransformDirection(this.weaponData.GetRecoilDirection(this.shootCount - 1)).normalized;
             if (recoilDir == Vector3.zero) return;
             //Debug.Log((recoilValue, recoilIndex, this.shootCount, recoilDir));
@@ -60,6 +60,7 @@ namespace Kigor.Networking
 
         public void StopRecoil()
         {
+            Debug.Log("recoil stop");
             this.isShooting = false;
         }
     }

@@ -27,7 +27,7 @@ namespace Kigor.Networking
         public void Reload(UnityAction onComplete = null)
         {
             Debug.Log("start reloading");
-            if (this.currentReservedAmmo == 0) return;
+            //if (this.currentReservedAmmo == 0) return;
             this.isReloading = true;
             this.owner.GetComponent<ClientRecoilManager>().StopRecoil();
             DL.Utils.CoroutineUtils.Invoke(this, () =>
@@ -46,7 +46,6 @@ namespace Kigor.Networking
         {
             this.currentAmmo--;
             this.muzzleFlashManager.PlayMuzzle();
-            Debug.Log(this.currentAmmo);
             if (this.currentAmmo == 0)
             {
                 this.Reload(() =>
@@ -61,7 +60,6 @@ namespace Kigor.Networking
             packet.duration = this.data.reloadDuration;
             packet.sendTimeMili = (ushort)System.DateTime.UtcNow.Millisecond;
             packet.sendTimeSec = (byte)System.DateTime.UtcNow.Second;
-            Debug.Log((packet.sendTimeSec, packet.sendTimeMili));
             NetworkTransport.Instance.SendPacketTCP(packet);
         }
 #endif

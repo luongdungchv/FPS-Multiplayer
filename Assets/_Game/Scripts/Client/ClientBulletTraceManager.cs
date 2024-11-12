@@ -8,16 +8,10 @@ namespace Kigor.Networking
     public class ClientBulletTraceManager : Sirenix.OdinInspector.SerializedMonoBehaviour
     {
         [SerializeField] private Queue<GameObject> tracesQueue;
+        [SerializeField] private Queue<ParticleSystem> hitFXQueue;
         [SerializeField] private Transform traceContainer;
         [SerializeField] private float traceSpeed;
-
-        private void Awake()
-        {
-            // foreach (var trace in this.tracesQueue)
-            // {
-            //     trace.GetComponent<TrailRenderer>().enabled = false;
-            // }
-        }
+        
         
         public void ShowTrace(Vector3 startPos, Vector3 endPos)
         {
@@ -36,20 +30,33 @@ namespace Kigor.Networking
                     trace.transform.DOMove(endPos, time).OnComplete((() =>
                     {
                         trace.gameObject.SetActive(false);
-                        //trace.transform.position = this.GetComponent<PlayerWeaponController>();
                         trace.transform.SetParent(this.traceContainer);
                         trace.transform.localPosition = Vector3.zero;
                         tracesQueue.Enqueue(trace);
                     }));
                 }, 0);
-                // trace.transform.DOMove(endPos, time).OnComplete((() =>
-                // {
-                //     trace.gameObject.SetActive(false);
-                //     //trace.transform.position = this.GetComponent<PlayerWeaponController>();
-                //     trace.transform.SetParent(this.traceContainer);
-                //     trace.transform.localPosition = Vector3.zero;
-                //     tracesQueue.Enqueue(trace);
-                // }));
+
+            }
+        }
+
+        public void ShowHitFX(Vector3 position, Vector3 lookDir)
+        {
+            if (this.hitFXQueue.Count > 0)
+            {
+                var fx = this.hitFXQueue.Dequeue();
+                fx.gameObject.SetActive(true);
+                fx.transform.SetParent(null);
+
+                fx.transform.position = position + lookDir.normalized * 0.01f;
+                fx.transform.rotation = Quaternion.LookRotation(lookDir);
+                
+                fx.Play();
+                var duration = fx.main.duration;
+                DL.Utils.CoroutineUtils.Invoke(this, () =>
+                {
+                    fx.gameObject.SetActive(false);
+                    this.hitFXQueue.Enqueue(fx);
+                }, duration);
             }
         }
     }

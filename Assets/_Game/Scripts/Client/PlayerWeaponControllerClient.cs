@@ -76,8 +76,8 @@ namespace Kigor.Networking
                     shootDir.Normalize();
                     
                     this.SendShootPacket(shootDir);
-                    this.currentWeapon.PerformShoot();
                     this.recoilManager.ApplyRecoil();
+                    this.currentWeapon.PerformShoot();
 
                     var physicsScene = this.Player.CurrentPhysicsScene;
                     var shootPos = this.currentWeapon.ShootPosition;
@@ -86,6 +86,7 @@ namespace Kigor.Networking
                     if (isHit)
                     {
                         this.traceManager.ShowTrace(shootPos, hitInfo.point);
+                        this.traceManager.ShowHitFX(hitInfo.point, hitInfo.normal);
                     }
                     else
                     {

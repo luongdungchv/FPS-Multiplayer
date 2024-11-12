@@ -616,8 +616,8 @@ MonoBehaviour:
   range: 100
   shootInterval: 0.1
   shootMode: 0
-  reloadDuration: 2
+  reloadDuration: 3.5
   magazineSize: 30
   recoilCalcDist: 145
   recoilIncrement: 1.7
-  recoilReturnSpd: 0.25
+  recoilReturnSpd: 0.265
