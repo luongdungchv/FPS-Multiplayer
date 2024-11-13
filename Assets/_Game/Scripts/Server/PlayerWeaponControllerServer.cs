@@ -27,7 +27,6 @@ namespace Kigor.Networking
                 this.SendPlayerShotPacket(playerID, hitInfo.point);
                 Debug.Log((playerID, collider));
             }
-
             currentRule.RestoreAllPlayerStates();
         }
 

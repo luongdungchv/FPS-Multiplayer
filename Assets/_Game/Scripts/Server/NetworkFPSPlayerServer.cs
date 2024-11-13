@@ -71,6 +71,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         var packet = new FPSShootPacket();
         packet.DecodeMessage(data);
+        this.Room.BroadcastMessage(packet.EncodeData());
         var weaponController = this.WeaponController;
         ThreadManager.ExecuteOnMainThread(() => this.WeaponController.HandleShootPacket(packet));
     }

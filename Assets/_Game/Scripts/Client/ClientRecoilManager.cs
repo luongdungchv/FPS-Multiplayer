@@ -5,6 +5,7 @@ namespace Kigor.Networking
 {
     public class ClientRecoilManager : Sirenix.OdinInspector.SerializedMonoBehaviour
     {
+#if CLIENT_BUILD
         [SerializeField] private Transform head;
         [SerializeField] private bool[,] test;
         [SerializeField] private float recoilValue;
@@ -29,9 +30,11 @@ namespace Kigor.Networking
 
             var rotationTargetDir = Vector3.zero - currentRot;
             var returnTime = this.weaponData.recoilReturnSpd * this.shootCount;
-            var speedFactor = DL.Utils.MathUtils.LogarithInterpolator.EvaluateSpeed(rotationTargetDir.magnitude,0 , rotationTargetDir.magnitude - 0.01f, returnTime);
+            var speedFactor =
+ DL.Utils.MathUtils.LogarithInterpolator.EvaluateSpeed(rotationTargetDir.magnitude,0 , rotationTargetDir.magnitude - 0.01f, returnTime);
             
-            this.camHolder.transform.localEulerAngles = Vector3.Lerp(currentRot, Vector3.zero, speedFactor * 2 * Time.deltaTime);
+            this.camHolder.transform.localEulerAngles =
+ Vector3.Lerp(currentRot, Vector3.zero, speedFactor * 2 * Time.deltaTime);
             this.recoilValue = Mathf.Lerp(this.recoilValue, 0, speedFactor * 2 * Time.deltaTime);
             //var targetRotation = Quaternion.euler
         }
@@ -43,7 +46,8 @@ namespace Kigor.Networking
             if (!this.isShooting) this.shootCount = recoilIndex;
             this.shootCount++;
                 
-            var recoilDir = this.head.TransformDirection(this.weaponData.GetRecoilDirection(this.shootCount - 1)).normalized;
+            var recoilDir =
+ this.head.TransformDirection(this.weaponData.GetRecoilDirection(this.shootCount - 1)).normalized;
             Debug.Log((recoilValue, recoilIndex, this.shootCount, recoilDir));
             var rotation = Quaternion.LookRotation(recoilDir);
             
@@ -59,5 +63,6 @@ namespace Kigor.Networking
         {
             this.isShooting = false;
         }
+#endif
     }
 }
