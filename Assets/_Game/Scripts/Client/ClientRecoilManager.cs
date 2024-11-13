@@ -5,6 +5,7 @@ namespace Kigor.Networking
 {
     public class ClientRecoilManager : Sirenix.OdinInspector.SerializedMonoBehaviour
     {
+#if CLIENT_BUILD
         [SerializeField] private Transform head;
         [SerializeField] private bool[,] test;
         [SerializeField] private float recoilValue;
@@ -29,9 +30,11 @@ namespace Kigor.Networking
 
             var rotationTargetDir = Vector3.zero - currentRot;
             var returnTime = this.weaponData.recoilReturnSpd * this.shootCount;
-            var speedFactor = DL.Utils.MathUtils.LogarithInterpolator.EvaluateSpeed(rotationTargetDir.magnitude,0 , rotationTargetDir.magnitude - 0.01f, returnTime);
+            var speedFactor =
+ DL.Utils.MathUtils.LogarithInterpolator.EvaluateSpeed(rotationTargetDir.magnitude,0 , rotationTargetDir.magnitude - 0.01f, returnTime);
             
-            this.camHolder.transform.localEulerAngles = Vector3.Lerp(currentRot, Vector3.zero, speedFactor * 2 * Time.deltaTime);
+            this.camHolder.transform.localEulerAngles =
+ Vector3.Lerp(currentRot, Vector3.zero, speedFactor * 2 * Time.deltaTime);
             this.recoilValue = Mathf.Lerp(this.recoilValue, 0, speedFactor * 3.5f * Time.deltaTime);
             if (this.recoilValue < 0.006f) this.recoilValue = 0;
             //var targetRotation = Quaternion.euler
@@ -45,7 +48,8 @@ namespace Kigor.Networking
             this.shootCount++;
 
             Debug.Log((this.shootCount, recoilIndex));
-            var recoilDir = this.head.TransformDirection(this.weaponData.GetRecoilDirection(this.shootCount - 1)).normalized;
+            var recoilDir =
+ this.head.TransformDirection(this.weaponData.GetRecoilDirection(this.shootCount - 1)).normalized;
             if (recoilDir == Vector3.zero) return;
             //Debug.Log((recoilValue, recoilIndex, this.shootCount, recoilDir));
             var rotation = Quaternion.LookRotation(recoilDir);
@@ -63,5 +67,6 @@ namespace Kigor.Networking
             Debug.Log("recoil stop");
             this.isShooting = false;
         }
+#endif
     }
 }
