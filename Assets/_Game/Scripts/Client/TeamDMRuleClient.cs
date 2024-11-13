@@ -7,7 +7,7 @@ namespace Kigor.Networking
 {
     public partial class TeamDMRule
     {
-        #if CLIENT_BUILD
+#if CLIENT_BUILD
         private RoomStatePacket pendingProcessState;
 
         public TeamDMRule()
@@ -16,6 +16,7 @@ namespace Kigor.Networking
             NetworkHandleClient.Instance.OnRoomStateReceived += RoomStateReceivedCallback;
             this.players = new();
         }
+
         public override void PlayerJoinCallback(NetworkPlayer newPlayer, int id)
         {
             this.players.Add(id, newPlayer);
@@ -24,7 +25,7 @@ namespace Kigor.Networking
         public override void Initialize(Dictionary<int, NetworkPlayer> initialPlayers, Scene loadedScene)
         {
             this.players = initialPlayers;
-            
+
             if (pendingProcessState == null) return;
             try
             {
@@ -34,7 +35,6 @@ namespace Kigor.Networking
                     player.SetID(pendingProcessState.playerIDList[i]);
                     player.transform.position = pendingProcessState.playerPositionList[i];
                     player.transform.eulerAngles = pendingProcessState.playerRotationList[i];
-                    
                 }
             }
             catch (Exception e)
@@ -45,7 +45,6 @@ namespace Kigor.Networking
 
         public override void PlayerLeaveCallback(int id)
         {
-            
         }
 
         public override void Dispose()
@@ -65,7 +64,8 @@ namespace Kigor.Networking
             if (players == null || players.Count == 0) return;
         }
 
-        private void RoomStateReceivedCallback(RoomStatePacket packet){
+        private void RoomStateReceivedCallback(RoomStatePacket packet)
+        {
             Debug.Log("RoomStateReceivedCallback");
             try
             {
@@ -74,9 +74,9 @@ namespace Kigor.Networking
                     for (int i = 0; i < packet.playerIDList.Count; i++)
                     {
                         var player = this.players[packet.playerIDList[i]];
-                        if(player.IsLocalPlayer) continue;
+                        if (player.IsLocalPlayer) continue;
                         player.SetID(packet.playerIDList[i]);
-                        
+
                         var playerFPS = (player as NetworkFPSPlayer);
                         playerFPS.SetNonLocalState(new FPSPlayerState()
                         {
@@ -92,6 +92,16 @@ namespace Kigor.Networking
                 Debug.LogError(e);
             }
         }
-        #endif
+
+        public void RevertAllPlayerStates(int tickCount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RestoreAllPlayerStates()
+        {
+            throw new NotImplementedException();
+        }
+#endif
     }
 }

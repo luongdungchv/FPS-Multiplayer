@@ -7,9 +7,11 @@ namespace Kigor.Networking
     {
         [SerializeField] private WeaponEnum weaponEnum;
         [SerializeField] private WeaponData data;
-        [SerializeField] private Transform weaponRoot;
+        [SerializeField] private Transform weaponRoot, shootPoint;
 
         public WeaponData Data => this.data;
+        public Vector3 ShootPosition => this.shootPoint.transform.position;
+        
         private NetworkPlayer owner;
         [SerializeField] private bool isReloading;
         

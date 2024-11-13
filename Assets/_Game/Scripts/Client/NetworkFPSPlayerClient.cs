@@ -98,6 +98,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     private void RecursivelyDisableRenderer(Transform root)
     {
         if (root.name == "Gun Holder Local") return;
+        if (root.name == "Hit Impact Container") return;
+        if (root.name == "Traces Container") return;
 
         var renderer = root.GetComponent<Renderer>();
         if (renderer)

@@ -7,8 +7,10 @@ namespace Kigor.Networking
     {
 #if CLIENT_BUILD
         private float timeCounter;
+        [SerializeField] private GameObject test;
         private ClientRecoilManager recoilManager => this.GetComponent<ClientRecoilManager>();
         public WeaponData CurrentWeaponData => this.currentWeapon.Data;
+        private ClientBulletTraceManager traceManager => this.GetComponent<ClientBulletTraceManager>();
         
         private void Start()
         {
@@ -68,9 +70,28 @@ namespace Kigor.Networking
             {
                 if (this.timeCounter == 0)
                 {
-                    this.SendShootPacket();
-                    this.currentWeapon.PerformShoot();
+                    var camDir = NetworkCamera.Instance.transform.forward;
+                    var headDir = this.GetComponent<PlayerAvatar>().HeadTransform.forward;
+                    var shootDir = camDir * Vector3.Dot(camDir, headDir) * 2 - headDir;
+                    shootDir.Normalize();
+                    
+                    this.SendShootPacket(shootDir);
                     this.recoilManager.ApplyRecoil();
+                    this.currentWeapon.PerformShoot();
+
+                    var physicsScene = this.Player.CurrentPhysicsScene;
+                    var shootPos = this.currentWeapon.ShootPosition;
+                    var isHit = physicsScene.Raycast(NetworkCamera.Instance.transform.position, shootDir, out var hitInfo, 100,
+                        this.shootMask);
+                    if (isHit)
+                    {
+                        this.traceManager.ShowTrace(shootPos, hitInfo.point);
+                        this.traceManager.ShowHitFX(hitInfo.point, hitInfo.normal);
+                    }
+                    else
+                    {
+                        this.traceManager.ShowTrace(shootPos, shootPos + shootDir * 100);
+                    }
                 }
 
                 this.timeCounter += Time.deltaTime;
@@ -121,10 +142,10 @@ namespace Kigor.Networking
             this.ChangeWeapon(this.equippedWeapons[weaponIndex]);
         }
 
-        private void SendShootPacket()
+        private void SendShootPacket(Vector3 shootDir)
         {
             var packet = new FPSShootPacket();
-            packet.shootDir = NetworkCamera.Instance.transform.forward;
+            packet.shootDir = shootDir;
             packet.damage = (byte)this.currentWeapon.Data.damage;
             NetworkTransport.Instance.SendPacketTCP(packet);
             Debug.Log("Shoot command sent");

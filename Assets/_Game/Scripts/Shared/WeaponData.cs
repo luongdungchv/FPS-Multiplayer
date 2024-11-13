@@ -19,7 +19,7 @@ namespace Kigor.Networking
         [SerializeField] private float recoilCalcDist;
         public float recoilIncrement;
         public float recoilReturnSpd;
-        private Vector3[] recoilDirections;
+        private Vector3[] recoilDirections, recoilShootDirections;
         
 
         public Vector3 GetRecoilDirection(int index)
@@ -28,6 +28,7 @@ namespace Kigor.Networking
             {
                 this.ConstructRecoilDirections();
             }
+            if(index >= this.recoilDirections.Length) return Vector3.zero;
 
             // Debug.Log((index, this.recoilDirections.Length, this.recoilDirections[index]));
             return this.recoilDirections[index];

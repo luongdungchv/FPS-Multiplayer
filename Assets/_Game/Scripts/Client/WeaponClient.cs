@@ -6,11 +6,17 @@ namespace Kigor.Networking
     public partial class Weapon
     {
 #if CLIENT_BUILD
-        private int currentAmmo;
+        [SerializeField] private int currentAmmo;
         private int currentReservedAmmo;
 
+        private ClientMuzzleFlashManager muzzleFlashManager => this.GetComponent<ClientMuzzleFlashManager>();
         public int CurrentAmmo => this.currentAmmo;
+
         protected partial void Awake()
+        {
+        }
+
+        private void Start()
         {
             if (!this.owner.IsLocalPlayer) return;
             this.currentAmmo = this.data.magazineSize;
@@ -21,7 +27,7 @@ namespace Kigor.Networking
         public void Reload(UnityAction onComplete = null)
         {
             Debug.Log("start reloading");
-            if (this.currentReservedAmmo == 0) return;
+            //if (this.currentReservedAmmo == 0) return;
             this.isReloading = true;
             this.owner.GetComponent<ClientRecoilManager>().StopRecoil();
             DL.Utils.CoroutineUtils.Invoke(this, () =>
@@ -39,9 +45,11 @@ namespace Kigor.Networking
         public void PerformShoot()
         {
             this.currentAmmo--;
+            this.muzzleFlashManager.PlayMuzzle();
             if (this.currentAmmo == 0)
             {
-                this.Reload(() => this.owner.GetComponent<PlayerWeaponController>().FSM.ChangeState(SimpleFSM.StateEnum.Normal));
+                this.Reload(() =>
+                    this.owner.GetComponent<PlayerWeaponController>().FSM.ChangeState(SimpleFSM.StateEnum.Normal));
                 this.owner.GetComponent<PlayerWeaponController>().FSM.ChangeState(SimpleFSM.StateEnum.Reloading);
             }
         }
@@ -52,7 +60,6 @@ namespace Kigor.Networking
             packet.duration = this.data.reloadDuration;
             packet.sendTimeMili = (ushort)System.DateTime.UtcNow.Millisecond;
             packet.sendTimeSec = (byte)System.DateTime.UtcNow.Second;
-            Debug.Log((packet.sendTimeSec, packet.sendTimeMili));
             NetworkTransport.Instance.SendPacketTCP(packet);
         }
 #endif
