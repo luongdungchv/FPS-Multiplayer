@@ -15,7 +15,8 @@ namespace Kigor.Networking
             FPS_PLAYER_SHOT = 18,
             FPS_WEAPON_RELOAD = 19,
             FPS_WEAPON_CHANGE = 20,
-            FPS_PLAYER_DIE = 21
+            FPS_PLAYER_DIE = 21,
+            FPS_SERVER_RESPOND_SHOT = 22
         ;
     }
 
@@ -211,6 +212,36 @@ namespace Kigor.Networking
         public override void DecodeMessage(byte[] msg)
         {
             this.playerID = msg[1];
+        }
+    }
+
+    public class FPSServerRespondShotPacket : PacketData
+    {
+        public override PacketType PacketType => PacketType.FPS_SERVER_RESPOND_SHOT;
+
+        public byte playerID;
+        public Vector3 endPos;
+        
+        public override byte[] EncodeData()
+        {
+            var result = new byte[9];
+            result[0] = 8;
+            result[1] = (byte)this.PacketType;
+            Array.Copy(BitConverter.GetBytes(Mathf.FloatToHalf(this.endPos.x)), 0, result, 2, 2);
+            Array.Copy(BitConverter.GetBytes(Mathf.FloatToHalf(this.endPos.y)), 0, result, 4, 2);
+            Array.Copy(BitConverter.GetBytes(Mathf.FloatToHalf(this.endPos.z)), 0, result, 6, 2);   
+            return result;
+        }
+
+        public override void DecodeMessage(byte[] msg)
+        {
+            this.playerID = msg[0];
+            
+            endPos.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 1));
+            endPos.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 3));
+            endPos.z = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 5));
+            
+            
         }
     }
 }
