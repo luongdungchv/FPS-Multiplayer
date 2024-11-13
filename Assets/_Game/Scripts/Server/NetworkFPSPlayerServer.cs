@@ -93,7 +93,9 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     public void RevertState(int tickCount)
     {
         var targetTick = this.currentClientTick - tickCount;
+        Debug.Log("asdf " + targetTick);
         if (targetTick < 0) targetTick = TickScheduler.MAX_TICK + targetTick;
+        Debug.Log((targetTick, this.currentClientTick));
         var targetState = this.statesBuffer[targetTick];
         transform.position = targetState.position;
     }

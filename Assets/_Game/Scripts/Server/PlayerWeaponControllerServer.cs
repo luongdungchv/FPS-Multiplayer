@@ -11,7 +11,15 @@ namespace Kigor.Networking
             Debug.Log("Shoot packet received from player: " + this.Player.PlayerID);
 
             var currentRule = this.Player.Room.Rule as IPlayersHaveState;
-            currentRule.RevertAllPlayerStates(this.Player.TickScheduler.CurrentTick - this.Player.CurrentClientTick);
+            Debug.Log(("LOGGG", this.Player.TickScheduler.CurrentTick, this.Player.CurrentClientTick));
+            var diff = this.Player.TickScheduler.CurrentTick - this.Player.CurrentClientTick;
+            if (Mathf.Abs(diff) > 75)
+            {
+                var smaller = Mathf.Min(this.Player.TickScheduler.CurrentTick, this.Player.CurrentClientTick);
+                var bigger = Mathf.Max(this.Player.TickScheduler.CurrentTick, this.Player.CurrentClientTick);
+                diff = smaller + (255 - bigger);
+            }
+            currentRule.RevertAllPlayerStates(diff);
             
             var dir = packet.shootDir;
             var physicsScene = this.Player.CurrentPhysicsScene;

@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="19eb3ecf-9675-4c0f-b745-843650d6342b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FPS-Multiplayer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FPS-Multiplayer/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Client/CustomNetworkHandleClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Client/CustomNetworkHandleClient.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Client/PlayerWeaponControllerClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Client/PlayerWeaponControllerClient.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/NetworkFPSPlayerServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/NetworkFPSPlayerServer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/PlayerWeaponControllerServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/PlayerWeaponControllerServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Shared/ExtendedPacketData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Shared/ExtendedPacketData.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +33,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Merging Server-dev",
+    "git-widget-placeholder": "Server-dev",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -104,7 +101,7 @@
       <workItem from="1731206957877" duration="4180000" />
       <workItem from="1731329836578" duration="592000" />
       <workItem from="1731425058449" duration="1814000" />
-      <workItem from="1731487730045" duration="2592000" />
+      <workItem from="1731487730045" duration="5562000" />
     </task>
     <servers />
   </component>
