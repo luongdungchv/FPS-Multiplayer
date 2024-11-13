@@ -227,21 +227,19 @@ namespace Kigor.Networking
             var result = new byte[9];
             result[0] = 8;
             result[1] = (byte)this.PacketType;
-            Array.Copy(BitConverter.GetBytes(Mathf.FloatToHalf(this.endPos.x)), 0, result, 2, 2);
-            Array.Copy(BitConverter.GetBytes(Mathf.FloatToHalf(this.endPos.y)), 0, result, 4, 2);
-            Array.Copy(BitConverter.GetBytes(Mathf.FloatToHalf(this.endPos.z)), 0, result, 6, 2);   
+            result[2] = this.playerID;
+            Array.Copy(BitConverter.GetBytes(Mathf.FloatToHalf(this.endPos.x)), 0, result, 3, 2);
+            Array.Copy(BitConverter.GetBytes(Mathf.FloatToHalf(this.endPos.y)), 0, result, 5, 2);
+            Array.Copy(BitConverter.GetBytes(Mathf.FloatToHalf(this.endPos.z)), 0, result, 7, 2);   
             return result;
         }
 
         public override void DecodeMessage(byte[] msg)
         {
-            this.playerID = msg[0];
-            
-            endPos.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 1));
-            endPos.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 3));
-            endPos.z = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 5));
-            
-            
+            this.playerID = msg[1];
+            endPos.x = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 2));
+            endPos.y = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 4));
+            endPos.z = Mathf.HalfToFloat(BitConverter.ToUInt16(msg, 6));
         }
     }
 }

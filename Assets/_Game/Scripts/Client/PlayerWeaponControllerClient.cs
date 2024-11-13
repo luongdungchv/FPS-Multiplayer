@@ -162,12 +162,16 @@ namespace Kigor.Networking
 
         private void HandleServerRespondShotMessage(int playerID, Vector3 endPos)
         {
-            if (playerID == this.Player.PlayerID)
+            Debug.Log((playerID, endPos));
+            ThreadManager.ExecuteOnMainThread(() =>
             {
-                if (this.Player.IsLocalPlayer) return;
-                var shootStartPos = this.currentWeapon.ShootPosition;
-                this.traceManager.ShowTrace(shootStartPos, endPos);
-            }
+                if (playerID == this.Player.PlayerID)
+                {
+                    if (this.Player.IsLocalPlayer) return;
+                    var shootStartPos = this.currentWeapon.ShootPosition;
+                    this.traceManager.ShowTrace(shootStartPos, endPos);
+                }
+            });
         }
 
         private void OnDestroy()
