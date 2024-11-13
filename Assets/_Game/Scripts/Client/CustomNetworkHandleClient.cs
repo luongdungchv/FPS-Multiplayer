@@ -12,6 +12,7 @@ namespace Kigor.Networking
         public UnityAction<byte, Vector3> OnPlayerShotPacketReceived;
         public UnityAction<int, int> OnWeaponChange;
         public UnityAction<int> OnPlayerDie;
+        public UnityAction<int, Vector3> OnShotMessageReceived;
         
         partial void Initialize(){
             this.udpHandleMap.Add(PacketType.FPS_RECONCILE_PACKET, HandleFPSReconciliation);
@@ -19,6 +20,7 @@ namespace Kigor.Networking
             this.tcpHandleMap.Add(PacketType.FPS_PLAYER_SHOT, this.HandlePlayerShot);
             this.tcpHandleMap.Add(PacketType.FPS_WEAPON_CHANGE, this.HandleWeaponChangePacket);
             this.tcpHandleMap.Add(PacketType.FPS_PLAYER_DIE, this.HandlePlayerDiePacket);
+            this.tcpHandleMap.Add(PacketType.FPS_SERVER_RESPOND_SHOT, this.HandleShotPacket);
         }
 
         private void HandleFPSReconciliation(byte[] msg){
@@ -75,6 +77,20 @@ namespace Kigor.Networking
                 Debug.LogError(e);
             }
             this.OnPlayerDie?.Invoke(packet.playerID);
+        }
+
+        private void HandleShotPacket(byte[] msg)
+        {
+            var packet = new FPSServerRespondShotPacket();
+            try
+            {
+                packet.DecodeMessage(msg);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e);
+            }
+            this.OnShotMessageReceived?.Invoke(packet.playerID, packet.endPos);
         }
         
 #endif

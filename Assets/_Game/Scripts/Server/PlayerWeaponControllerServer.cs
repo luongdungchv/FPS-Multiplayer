@@ -19,13 +19,20 @@ namespace Kigor.Networking
             var check = physicsScene.Raycast(shootPos, dir, out var hitInfo, 100, this.shootMask);
             if (check)
             {
-                // TODO: Damage dealing
                 var collider = hitInfo.collider.GetComponent<NetworkPlayerCollider>();
-                if (!collider) return;
-                var playerID = collider.OwnerPlayer.PlayerID;
-                collider.TakeDamage(packet.damage);
-                this.SendPlayerShotPacket(playerID, hitInfo.point);
-                Debug.Log((playerID, collider));
+                if (collider)
+                {
+                    var playerID = collider.OwnerPlayer.PlayerID;
+                    collider.TakeDamage(packet.damage);
+                    this.SendPlayerShotPacket(playerID, hitInfo.point);
+                }
+
+                this.SendShotRespondPacket(this.Player.PlayerID, hitInfo.point);
+            }
+            else
+            {
+                var endPos = shootPos + dir * 100;
+                this.SendShotRespondPacket(this.Player.PlayerID, endPos);
             }
             currentRule.RestoreAllPlayerStates();
         }
@@ -66,6 +73,16 @@ namespace Kigor.Networking
 
             var msg = packet.EncodeData();
             this.Player.Socket.SendDataTCP(msg);
+        }
+
+        private void SendShotRespondPacket(int playerID, Vector3 endPos)
+        {
+            var resPacket = new FPSServerRespondShotPacket();
+            resPacket.playerID = (byte)playerID;
+            resPacket.endPos = endPos;
+            var msg = resPacket.EncodeData();
+            
+            this.Player.Room.BroadcastMessage(msg);
         }
 
         public partial void ChangeWeapon(WeaponEnum weapon)

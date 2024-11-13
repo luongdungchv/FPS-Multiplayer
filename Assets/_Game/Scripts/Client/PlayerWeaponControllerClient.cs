@@ -14,8 +14,8 @@ namespace Kigor.Networking
         
         private void Start()
         {
-            Debug.Log(";kfdgljdfglhkdflgh");
             NetworkHandleClient.Instance.OnWeaponChange += this.HandleWeaponChangeMsg;
+            NetworkHandleClient.Instance.OnShotMessageReceived += this.HandleServerRespondShotMessage;
         }
         #region FSM_CALLBACK
 
@@ -158,6 +158,16 @@ namespace Kigor.Networking
             packet.playerID = (byte)this.Player.PlayerID;
             Debug.Log($"Sent: {packet.playerID} {packet.weapon}");
             NetworkTransport.Instance.SendPacketTCP(packet);
+        }
+
+        private void HandleServerRespondShotMessage(int playerID, Vector3 endPos)
+        {
+            if (playerID == this.Player.PlayerID)
+            {
+                if (this.Player.IsLocalPlayer) return;
+                var shootStartPos = this.currentWeapon.ShootPosition;
+                this.traceManager.ShowTrace(shootStartPos, endPos);
+            }
         }
 
         private void OnDestroy()
