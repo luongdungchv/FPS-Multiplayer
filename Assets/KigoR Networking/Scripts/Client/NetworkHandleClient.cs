@@ -94,6 +94,7 @@ namespace Kigor.Networking
                 Debug.Log("game start");
                 SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive).completed += (op) =>
                 {
+                    var tickScheduler = NetworkManager.Instance.CreateTickScheduler();
                     DL.Utils.CoroutineUtils.Invoke(NetworkManager.Instance, () =>
                     {
                         try
@@ -104,8 +105,7 @@ namespace Kigor.Networking
 
                             room.SetScene(loadedScene);
                             room.SetRule(rule);
-
-                            var tickScheduler = NetworkManager.Instance.CreateTickScheduler();
+                            
                             SceneManager.MoveGameObjectToScene(tickScheduler.gameObject, loadedScene);
                             rule.SetTickScheduler(tickScheduler);
 
