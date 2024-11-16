@@ -170,6 +170,7 @@ namespace Kigor.Networking
                     if (this.Player.IsLocalPlayer) return;
                     var shootStartPos = this.currentWeapon.ShootPosition;
                     this.traceManager.ShowTrace(shootStartPos, endPos);
+                    this.currentWeapon.GetComponent<ClientMuzzleFlashManager>().PlayMuzzle();
                 }
             });
         }

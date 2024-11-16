@@ -9,7 +9,7 @@ using NetworkPlayer = Kigor.Networking.NetworkPlayer;
 public partial class NetworkFPSPlayer : NetworkPlayer
 {
     [SerializeField] protected Transform groundCheckPoint;
-    [SerializeField] private MeshRenderer bodyMesh;
+    [SerializeField] private Renderer bodyMesh;
     [SerializeField] private LayerMask groundMask;
 
 

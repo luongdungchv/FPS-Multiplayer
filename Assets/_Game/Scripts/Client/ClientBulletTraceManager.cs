@@ -12,7 +12,6 @@ namespace Kigor.Networking
         [SerializeField] private Transform traceContainer;
         [SerializeField] private float traceSpeed;
         
-        
         public void ShowTrace(Vector3 startPos, Vector3 endPos)
         {
             if (this.tracesQueue.Count > 0)
