@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19eb3ecf-9675-4c0f-b745-843650d6342b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.FPS-Multiplayer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FPS-Multiplayer/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/NetworkFPSPlayerServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/NetworkFPSPlayerServer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/PlayerWeaponControllerServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/PlayerWeaponControllerServer.cs" afterDir="false" />
     </list>
@@ -101,7 +100,7 @@
       <workItem from="1731206957877" duration="4180000" />
       <workItem from="1731329836578" duration="592000" />
       <workItem from="1731425058449" duration="1814000" />
-      <workItem from="1731487730045" duration="5562000" />
+      <workItem from="1731487730045" duration="6284000" />
     </task>
     <servers />
   </component>

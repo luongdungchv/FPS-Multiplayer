@@ -11,7 +11,6 @@ namespace Kigor.Networking
             Debug.Log("Shoot packet received from player: " + this.Player.PlayerID);
 
             var currentRule = this.Player.Room.Rule as IPlayersHaveState;
-            Debug.Log(("LOGGG", this.Player.TickScheduler.CurrentTick, this.Player.CurrentClientTick));
             var diff = this.Player.TickScheduler.CurrentTick - this.Player.CurrentClientTick;
             if (Mathf.Abs(diff) > 75)
             {

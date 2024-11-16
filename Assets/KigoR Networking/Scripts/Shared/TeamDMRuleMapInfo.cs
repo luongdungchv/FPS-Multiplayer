@@ -19,7 +19,7 @@ namespace Kigor.Networking
         }
         public Vector3[] GetSecondTeamSpawnPositions()
         {
-            return this.firstTeamSpawnPoints.Select(x => x.position).ToArray();
+            return this.secondTeamSpawnPoints.Select(x => x.position).ToArray();
         }
     }
 }
