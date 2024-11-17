@@ -6,6 +6,7 @@ using UnityEngine;
 public partial class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpd, mouseSen, jumpSpd, gravity;
+    [SerializeField] private string[] animationStates;
 
     private NetworkFPSPlayer Player => this.GetComponent<NetworkFPSPlayer>();
     private PlayerAvatar Avatar => this.GetComponent<PlayerAvatar>();

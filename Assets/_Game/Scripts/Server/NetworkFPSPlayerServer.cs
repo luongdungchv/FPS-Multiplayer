@@ -8,25 +8,28 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 {
 #if SERVER_BUILD
     private int currentClientTick;
+    private PlayerAnimationController animationController;
     public int CurrentClientTick => this.currentClientTick;
 
     protected partial void Awake()
     {
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
+        this.animationController = this.GetComponent<PlayerAnimationController>();
         Debug.Log(statesBuffer[0].init);
-
     }
+
     protected partial void Update()
     {
         this.currentState.position = transform.position;
     }
+
     protected void Start()
     {
         this.TickScheduler.RegisterTickCallback(this.TickUpdate);
     }
+
     protected partial void TickUpdate()
     {
-        
     }
 
     public override void Initialize(SocketWrapper socket, NetworkGameRoom room, int id)
@@ -40,11 +43,15 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
         this.WeaponController.ChangeWeapon(WeaponEnum.AK47);
     }
+
     #region COMMAND_HANDLING
+
     private void HandleInputPacket(byte[] data)
     {
         var packet = new FPSInputPacket();
         packet.DecodeMessage(data);
+        int tickOffset = packet.tick - this.currentClientTick;
+        if (tickOffset < 0) tickOffset += TickScheduler.MAX_TICK;
         this.currentClientTick = packet.tick;
         ThreadManager.ExecuteOnMainThread(() =>
         {
@@ -60,11 +67,13 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
                 this.Controller.PerformJump(packet);
             }
 
+            this.animationController.UpdateAnimation(tickOffset * this.TickScheduler.TickDeltaTime);
+
             this.SendReconcilePacket(packet.tick);
             this.WriteStateToBuffer(packet);
 
             lastTick = packet.tick;
-        });
+        }, ExecuteFunction.Update);
     }
 
     private void HandleShootPacket(byte[] data)
@@ -102,6 +111,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         this.transform.position = this.Position;
     }
+
     #endregion
 
     private void WriteStateToBuffer(FPSInputPacket packet)
@@ -117,6 +127,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             vertRot -= 360;
         state.verticalRotation = vertRot;
         state.init = true;
+        
+        this.Controller.HandleAnimation(packet, ref state);
 
         this.currentState = state;
 
@@ -137,5 +149,13 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.socket.SendDataUDP(data);
     }
 
+#endif
+}
+
+public partial struct FPSPlayerState
+{
+#if SERVER_BUILD
+    public float animStateTime;
+    public int animStateIndex;
 #endif
 }
