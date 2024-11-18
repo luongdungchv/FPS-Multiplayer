@@ -33,6 +33,9 @@ public class PlayerAnimationController : MonoBehaviour
         this.rightHandAim.data.sourceObjects = sources;
         this.chestAim.data.sourceObjects = sources;
         this.rigBuilder.Build();
+
+        this.rigBuilder.graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
+        this.rigBuilder.enabled = false;
     }
 
     private void OnEnable()
@@ -60,6 +63,15 @@ public class PlayerAnimationController : MonoBehaviour
 
         var directionIndicator = this.GetComponent<PlayerAvatar>().DirectionIndicator;
         this.aimTargetPoint.position = directionIndicator.transform.position + directionIndicator.forward * 1000;
+
+        this.rigBuilder.graph.Evaluate(Time.deltaTime);
+    }
+
+    private void Update()
+    {
+        this.animator.speed = 1;
+        this.animator.Update(Time.deltaTime);
+        this.animator.speed = 0;
     }
 
     public void ChangeAnimationState(int stateIndex)

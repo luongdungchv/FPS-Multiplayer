@@ -104,6 +104,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         var targetTick = this.currentClientTick - tickCount;
         if (targetTick < 0) targetTick = TickScheduler.MAX_TICK + targetTick;
         var targetState = this.statesBuffer[targetTick];
+        
         transform.position = targetState.position;
     }
 
