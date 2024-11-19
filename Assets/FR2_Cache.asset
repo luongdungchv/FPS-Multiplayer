@@ -125742,6 +125742,19 @@ MonoBehaviour:
       ids: 15000000
     - guid: b3c36ff7a23ac4144b5ef73209041d4b
       ids: 15000000
+  - guid: c54c63a3fa6f8f94fbcebee7027d5450
+    type: 2
+    m_fileInfoHash: 1614.cs
+    m_assetbundle: 
+    m_addressable: 
+    m_atlas: 
+    m_fileSize: 1614
+    m_assetChangeTS: 1731993111
+    m_fileInfoReadTS: 1731993116
+    m_fileWriteTS: 1731993110
+    m_cachefileWriteTS: 1731993110
+    refreshStamp: 2
+    UseGUIDsList: []
   setting:
     alternateColor: 1
     excludeTypes: 0
