@@ -848,7 +848,7 @@ Transform:
   m_GameObject: {fileID: 3203021629678690696}
   serializedVersion: 2
   m_LocalRotation: {x: -0.19234818, y: -0.86560696, z: -0.4158133, w: -0.20205463}
-  m_LocalPosition: {x: 0.262, y: 0.128, z: -0.06}
+  m_LocalPosition: {x: 0.298, y: 0.152, z: -0.059}
   m_LocalScale: {x: 0.06060604, y: 0.06060604, z: 0.06060604}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -997,6 +997,7 @@ Transform:
   - {fileID: 3556189239367922769}
   - {fileID: 1614911160808582530}
   - {fileID: 5653435672098048995}
+  - {fileID: 6773684214774585692}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4397426610974970784
@@ -1221,12 +1222,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'leftArm1_LoResUpperArm'\n\tTransform 'leftArm1_LoResLowerArm'\n\tTransform
-    'leftArm1_LoResHand'\n\tTransform 'leftArm1_LoResUpperArm'\n\tTransform 'leftArm1_LoResLowerArm'\n\tTransform
-    'leftArm1_LoResHand'\n\tTransform 'leftArm1_LoResUpperArm'\n\tTransform 'leftArm1_LoResLowerArm'\n\tTransform
-    'leftArm1_LoResHand'"
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -1246,8 +1242,7 @@ MonoBehaviour:
   animationStates:
   - Idle
   - Walk
-  rightHandAim: {fileID: 8178780575992059280}
-  chestAim: {fileID: 6215992630102218958}
+  riggingConstraints: []
 --- !u!114 &1869278989752926122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2034,6 +2029,64 @@ Transform:
   - {fileID: 3773175047335206193}
   m_Father: {fileID: 1886647345816851523}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5534857873240076766
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6773684214774585692}
+  - component: {fileID: 1201641377097151741}
+  m_Layer: 7
+  m_Name: Left Hand IK
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6773684214774585692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5534857873240076766}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4991928342630073526}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1201641377097151741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5534857873240076766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf3c798ee7a04dfcaea40440a78ff81e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  root: {fileID: 1152799817936499839}
+  arm: {fileID: 8092189414838839196}
+  hand: {fileID: 609680613460429340}
+  target: {fileID: 1656133040774031012}
+  hint: {fileID: 3347628728455697275}
+  lengths:
+  - 0
+  - 0
+  sqrLengths:
+  - 0
+  - 0
+  positions:
+  - {x: -0.3726871, y: -1.2768831, z: -0.09728215}
+  - {x: -0.80773866, y: -1.5608715, z: -0.10797802}
 --- !u!1 &5678830646182486619
 GameObject:
   m_ObjectHideFlags: 0
