@@ -13,8 +13,8 @@ namespace Kigor.Networking
         public void Reload(float duration)
         {
             Debug.Log($"Reload received: duration: {duration}");
-            this.isReloading = true;
-            DL.Utils.CoroutineUtils.Invoke(this, () => this.isReloading = false, duration);
+            //this.isReloading = true;
+            //DL.Utils.CoroutineUtils.Invoke(this, () => this.isReloading = false, duration);
         }
 #endif
     }

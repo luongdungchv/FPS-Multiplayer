@@ -3,21 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
-using UnityEngine.Animations.Rigging;
 using UnityEngine.Playables;
 using Kigor.Rigging;
 
 public class PlayerAnimationController : MonoBehaviour
 {
     [SerializeField] private string[] animationStates;
-    [SerializeField] private List<RiggingConstraint> riggingConstraints;
+    [SerializeField] private AimConstraint rightHandConstraint;
+    [SerializeField] private CustomTwoBonesIK leftHandConstraint;
     private Transform aimTargetPoint;
     private Animator animator;
 
     private int currentStateIndex;
     private PlayableGraph playableGraph;
 
-    private RigBuilder rigBuilder => this.GetComponent<RigBuilder>();
 
     private void Awake()
     {
@@ -26,12 +25,17 @@ public class PlayerAnimationController : MonoBehaviour
         this.animator.enabled = true;
     }
 
+    private void LateUpdate()
+    {
+        // var directionIndicator = this.GetComponent<PlayerAvatar>().DirectionIndicator;
+        // var targetPos = directionIndicator.position + directionIndicator.forward * 1000;
+    }
 
-    public void ChangeAnimationState(int stateIndex)
+    public void ChangeAnimationState(int stateIndex, float normalizedTime = 0)
     {
         if (this.currentStateIndex == stateIndex) return;
         this.currentStateIndex = stateIndex;
-        this.animator.Play(this.animationStates[this.currentStateIndex]);
+        this.animator.Play(this.animationStates[this.currentStateIndex], -1, normalizedTime);
     }
 
     public float GetCurrentStateTime()
@@ -44,7 +48,11 @@ public class PlayerAnimationController : MonoBehaviour
     {
         this.animator.speed = 1;
         this.animator.Update(deltaTime);
-        this.riggingConstraints.ForEach(x => x.SolveIK());
+
+        // this.rightHandConstraint.SolveIK();
+        // this.leftHandConstraint.SolveIK();
+        
         this.animator.speed = 0;
     }
+    
 }

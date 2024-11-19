@@ -106,6 +106,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         var targetState = this.statesBuffer[targetTick];
         
         transform.position = targetState.position;
+        this.animationController.ChangeAnimationState(targetState.animStateIndex, targetState.animStateTime);
     }
 
     public void RestoreState()

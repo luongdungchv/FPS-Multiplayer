@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Kigor.Rigging;
 
-public class AimConstraint : MonoBehaviour
+public class AimConstraint : RiggingConstraint
 {
     [SerializeField] private Transform aimTarget, root;
     
     [SerializeField] private AlignAxis alignAxis, upAxis;
+    
 
-
-    private void LateUpdate()
+    public override void SolveIK()
     {
         var worldAlignDir = root.TransformDirection(this.GetAxisVector(this.alignAxis));
         var dirToTarget = (this.aimTarget.position - this.root.position);
@@ -17,8 +18,6 @@ public class AimConstraint : MonoBehaviour
 
         var rotation = Quaternion.FromToRotation(worldAlignDir, dirToTarget);
         this.root.rotation = rotation * this.root.rotation;
-        
-        
     }
 
     private Vector3 GetAxisVector(AlignAxis axis)
@@ -52,7 +51,11 @@ public class AimConstraint : MonoBehaviour
             default: return Vector3.zero;
         };
     }
-    
+
+    public void SetTargetPosition(Vector3 pos)
+    {
+        this.aimTarget.position = pos;
+    }
 }
 
 public enum AlignAxis

@@ -19,29 +19,33 @@ namespace Kigor.Networking
                 diff = smaller + (255 - bigger);
             }
             currentRule.RevertAllPlayerStates(diff);
-            
-            var dir = packet.shootDir;
-            var physicsScene = this.Player.CurrentPhysicsScene;
-            var shootPos = this.GetComponent<PlayerAvatar>().HeadTransform.position;
-            var check = physicsScene.Raycast(shootPos, dir, out var hitInfo, 100, this.shootMask);
-            if (check)
+
+            ThreadManager.ExecuteOnMainThread(() =>
             {
-                var collider = hitInfo.collider.GetComponent<NetworkPlayerCollider>();
-                if (collider)
+                var dir = packet.shootDir;
+                var physicsScene = this.Player.CurrentPhysicsScene;
+                var shootPos = this.GetComponent<PlayerAvatar>().HeadTransform.position;
+                var check = physicsScene.Raycast(shootPos, dir, out var hitInfo, 100, this.shootMask);
+                if (check)
                 {
-                    var playerID = collider.OwnerPlayer.PlayerID;
-                    collider.TakeDamage(packet.damage);
-                    this.SendPlayerShotPacket(playerID, hitInfo.point);
+                    var collider = hitInfo.collider.GetComponent<NetworkPlayerCollider>();
+                    if (collider)
+                    {
+                        var playerID = collider.OwnerPlayer.PlayerID;
+                        collider.TakeDamage(packet.damage);
+                        this.SendPlayerShotPacket(playerID, hitInfo.point);
+                    }
+
+                    this.SendShotRespondPacket(this.Player.PlayerID, hitInfo.point);
+                }
+                else
+                {
+                    var endPos = shootPos + dir * 100;
+                    this.SendShotRespondPacket(this.Player.PlayerID, endPos);
                 }
 
-                this.SendShotRespondPacket(this.Player.PlayerID, hitInfo.point);
-            }
-            else
-            {
-                var endPos = shootPos + dir * 100;
-                this.SendShotRespondPacket(this.Player.PlayerID, endPos);
-            }
-            currentRule.RestoreAllPlayerStates();
+                currentRule.RestoreAllPlayerStates();
+            }, ExecuteFunction.LateUpdate);
         }
 
         public void HandleReloadPacket(FPSWeaponReloadPacket packet)

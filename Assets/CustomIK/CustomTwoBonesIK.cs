@@ -38,11 +38,7 @@ namespace Kigor.Rigging
             this.totalSqrLength = this.lengths[0] * this.lengths[0] + this.lengths[1] * this.lengths[1];
             this.totalLength = this.lengths[0] + this.lengths[1];
         }
-
-        private void LateUpdate()
-        {
-            this.SolveIK();
-        }
+        
 
         public override void SolveIK()
         {
