@@ -67,7 +67,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
                 this.Controller.PerformJump(packet);
             }
 
-            this.animationController.UpdateAnimation(tickOffset * this.TickScheduler.TickDeltaTime);
+            //this.animationController.UpdateAnimation(tickOffset * this.TickScheduler.TickDeltaTime);
 
             this.SendReconcilePacket(packet.tick);
             this.WriteStateToBuffer(packet);

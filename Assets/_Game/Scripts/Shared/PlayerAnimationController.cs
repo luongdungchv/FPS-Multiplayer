@@ -33,9 +33,9 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void ChangeAnimationState(int stateIndex, float normalizedTime = 0)
     {
-        if (this.currentStateIndex == stateIndex) return;
-        this.currentStateIndex = stateIndex;
-        this.animator.Play(this.animationStates[this.currentStateIndex], -1, normalizedTime);
+        // if (this.currentStateIndex == stateIndex) return;
+        // this.currentStateIndex = stateIndex;
+        // this.animator.Play(this.animationStates[this.currentStateIndex], -1, normalizedTime);
     }
 
     public float GetCurrentStateTime()
@@ -46,13 +46,10 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void UpdateAnimation(float deltaTime)
     {
-        this.animator.speed = 1;
-        this.animator.Update(deltaTime);
-
-        // this.rightHandConstraint.SolveIK();
-        // this.leftHandConstraint.SolveIK();
-        
-        this.animator.speed = 0;
+        // this.animator.speed = 1;
+        // this.animator.Update(deltaTime);
+        //
+        // this.animator.speed = 0;
     }
     
 }
