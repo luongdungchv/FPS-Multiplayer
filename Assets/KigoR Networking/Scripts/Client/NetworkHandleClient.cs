@@ -162,7 +162,7 @@ namespace Kigor.Networking
             {
                 Debug.Log(e);
             }
-
+            
             this.OnRoomStateReceived?.Invoke(packet);
         }
 

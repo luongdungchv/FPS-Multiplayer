@@ -66,7 +66,6 @@ namespace Kigor.Networking
 
         private void RoomStateReceivedCallback(RoomStatePacket packet)
         {
-            Debug.Log("RoomStateReceivedCallback");
             try
             {
                 ThreadManager.ExecuteOnMainThread(() =>

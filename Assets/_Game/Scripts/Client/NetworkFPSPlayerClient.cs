@@ -12,6 +12,8 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     private FPSInputPacket pendingInputPacket;
     private FPSPlayerState lastSmoothState;
 
+    private float rawInterpolator;
+    
     protected partial void Awake()
     {
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
@@ -22,6 +24,9 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.currentState.position = transform.position;
         this.currentState.horizontalRotation = transform.eulerAngles.y;
         this.currentState.verticalRotation = transform.eulerAngles.x;
+
+        this.stateCounter = 0;
+        this.rawInterpolator = 0;
 
         this.WeaponController.SwitchWeapon(0);
     }
@@ -43,7 +48,27 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         }
         else
         {
-            var interpolator = this.TickScheduler.GetInterpolator(out var lastTick, out var nextTick);
+            var maxTimeCounter = this.stateCounter * this.TickScheduler.TickDeltaTime;
+            var maxTimeBuffered = (TickScheduler.MAX_TICK) * this.TickScheduler.TickDeltaTime;
+            Debug.Log((0, this.rawInterpolator, this.stateCounter, maxTimeCounter));
+            // Debug.Log((0, (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter < 2),
+            //     this.rawInterpolator < maxTimeCounter, this.rawInterpolator == maxTimeCounter));
+            if (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter < 2 * this.TickScheduler.TickDeltaTime) 
+                this.rawInterpolator = maxTimeCounter;
+            else if(this.rawInterpolator < maxTimeCounter || (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter > 250 * this.TickScheduler.TickDeltaTime))
+            {
+                this.rawInterpolator += Time.deltaTime;
+                if (this.rawInterpolator > maxTimeBuffered) this.rawInterpolator = 0;
+            }
+            else if (this.rawInterpolator == maxTimeCounter) return;
+            
+            
+            var lastTick = (int)(this.rawInterpolator / this.TickScheduler.TickDeltaTime);
+            var nextTick = lastTick == TickScheduler.MAX_TICK - 1 ? 0 : lastTick + 1;
+            var lastTickTime = lastTick * this.TickScheduler.TickDeltaTime;
+            var interpolator = Mathf.InverseLerp(0, this.TickScheduler.TickDeltaTime, this.rawInterpolator - lastTickTime);
+            Debug.Log((1, this.rawInterpolator, this.stateCounter, maxTimeCounter, this.statesBuffer[lastTick].position, this.statesBuffer[nextTick].position, lastTick, nextTick));
+            // var interpolator = this.TickScheduler.GetInterpolator(out var lastTick, out var nextTick);
             if (interpolator < 0) return;
             var state = FPSPlayerState.Interpolate(this.statesBuffer[lastTick], this.statesBuffer[nextTick], interpolator);
             
@@ -80,7 +105,6 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         lastTick = this.TickScheduler.CurrentTick;
         this.SendInputPacket();
         pendingInputPacket.jump = false;
-
     }
 
     protected override void LocalPlayerSetPostAction()
@@ -112,9 +136,15 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     public void SetNonLocalState(FPSPlayerState state)
     {
+        this.stateCounter++;
         if (this.stateCounter >= TickScheduler.MAX_TICK) this.stateCounter = 0;
         this.statesBuffer[this.stateCounter] = state;
-        this.stateCounter++;
+        
+        // transform.position = state.position;
+        // var currentRot = transform.eulerAngles;
+        // currentRot.x = state.verticalRotation;  
+        // currentRot.y = state.horizontalRotation;
+        // this.transform.eulerAngles = currentRot;
     }
 
     public void ServerReconciliation(int tick, FPSPlayerState state)

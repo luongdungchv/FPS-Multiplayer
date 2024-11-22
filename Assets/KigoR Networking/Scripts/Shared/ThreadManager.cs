@@ -47,6 +47,7 @@ public class ThreadManager
     {
         if (updateExec)
         {
+            Debug.Log(toBeExecutedOnMainThreadsUpdate.Count);
             lock (toBeExecutedOnMainThreadsUpdate)
             {
                 try

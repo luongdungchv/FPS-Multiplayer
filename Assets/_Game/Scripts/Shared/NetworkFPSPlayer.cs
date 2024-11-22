@@ -13,7 +13,7 @@ public partial class NetworkFPSPlayer : NetworkPlayer
     [SerializeField] private LayerMask groundMask;
 
 
-    private FPSPlayerState[] statesBuffer;
+    [SerializeField] private FPSPlayerState[] statesBuffer;
     private int stateCounter;
     private FPSPlayerState currentState;
 
