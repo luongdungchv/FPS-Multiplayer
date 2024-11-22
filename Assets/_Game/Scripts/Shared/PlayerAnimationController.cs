@@ -33,9 +33,11 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void ChangeAnimationState(int stateIndex, float normalizedTime = 0)
     {
+        this.animator.speed = 1;
         if (this.currentStateIndex == stateIndex) return;
         this.currentStateIndex = stateIndex;
         this.animator.Play(this.animationStates[this.currentStateIndex], -1, normalizedTime);
+        this.animator.speed = 0;
     }
 
     public float GetCurrentStateTime()
@@ -53,6 +55,12 @@ public class PlayerAnimationController : MonoBehaviour
         // this.leftHandConstraint.SolveIK();
         
         this.animator.speed = 0;
+    }
+
+    public void ManuallyUpdateIK()
+    {
+        this.rightHandConstraint.SolveIK();
+        this.leftHandConstraint.SolveIK();
     }
     
 }

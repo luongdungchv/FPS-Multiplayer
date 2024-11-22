@@ -101,17 +101,23 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
     public void RevertState(int tickCount)
     {
-        var targetTick = this.currentClientTick - tickCount;
-        if (targetTick < 0) targetTick = TickScheduler.MAX_TICK + targetTick;
-        var targetState = this.statesBuffer[targetTick];
+        lock (transform)
+        {
+            var targetTick = this.currentClientTick - tickCount;
+            if (targetTick < 0) targetTick = TickScheduler.MAX_TICK + targetTick;
+            var targetState = this.statesBuffer[targetTick];
         
-        transform.position = targetState.position;
-        this.animationController.ChangeAnimationState(targetState.animStateIndex, targetState.animStateTime);
+            this.animationController.ChangeAnimationState(targetState.animStateIndex, targetState.animStateTime);
+            transform.position = targetState.position;
+        }
     }
 
     public void RestoreState()
     {
-        this.transform.position = this.Position;
+        lock (transform)
+        {
+            this.transform.position = this.Position;
+        }
     }
 
     #endregion

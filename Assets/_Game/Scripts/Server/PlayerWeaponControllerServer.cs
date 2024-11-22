@@ -18,10 +18,12 @@ namespace Kigor.Networking
                 var bigger = Mathf.Max(this.Player.TickScheduler.CurrentTick, this.Player.CurrentClientTick);
                 diff = smaller + (255 - bigger);
             }
-            currentRule.RevertAllPlayerStates(diff);
+            currentRule.RevertAllPlayerStates(diff, this.Player);
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
+                this.GetComponent<PlayerAnimationController>().ManuallyUpdateIK();
+                Physics.SyncTransforms();
                 var dir = packet.shootDir;
                 var physicsScene = this.Player.CurrentPhysicsScene;
                 var shootPos = this.GetComponent<PlayerAvatar>().HeadTransform.position;
