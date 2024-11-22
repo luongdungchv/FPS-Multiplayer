@@ -101,13 +101,12 @@ namespace Kigor.Networking
             }
         }
         
-        public void RevertAllPlayerStates(int tickCount, NetworkFPSPlayer excluded)
+        public void RevertAllPlayerStates(int tickCount)
         {
             foreach (var pair in this.players)
             {
                 var player = pair.Value as NetworkFPSPlayer;
                 if (player == null) continue;
-                if(player == excluded) continue;
                 player.RevertState(tickCount);
             }
 

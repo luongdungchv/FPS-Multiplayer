@@ -6,6 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="19eb3ecf-9675-4c0f-b745-843650d6342b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FPS-Multiplayer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FPS-Multiplayer/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CustomIK/AimConstraint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CustomIK/AimConstraint.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CustomIK/CustomTwoBonesIK.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CustomIK/CustomTwoBonesIK.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CustomIK/RiggingConstraint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CustomIK/RiggingConstraint.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/FR2_Cache.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/FR2_Cache.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KigoR Networking/Scripts/Shared/ThreadManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KigoR Networking/Scripts/Shared/ThreadManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KigoR Networking/Scripts/Shared/ThreadManagerHolder.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KigoR Networking/Scripts/Shared/ThreadManagerHolder.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Game/Prefabs/Network Player Server 2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Prefabs/Network Player Server 2.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/NetworkFPSPlayerServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/NetworkFPSPlayerServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/PlayerWeaponControllerServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Server/PlayerWeaponControllerServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Shared/PlayerAnimationController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Shared/PlayerAnimationController.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,7 +113,7 @@
       <workItem from="1731425058449" duration="1814000" />
       <workItem from="1731487730045" duration="6284000" />
       <workItem from="1731668512721" duration="10893000" />
-      <workItem from="1731844309791" duration="35864000" />
+      <workItem from="1731844309791" duration="34100000" />
     </task>
     <servers />
   </component>
