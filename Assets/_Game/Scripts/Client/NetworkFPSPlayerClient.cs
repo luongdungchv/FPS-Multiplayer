@@ -73,10 +73,13 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             var state = FPSPlayerState.Interpolate(this.statesBuffer[lastTick], this.statesBuffer[nextTick], interpolator);
             
             transform.position = state.position;
+            
             var currentRot = transform.eulerAngles;
             currentRot.x = state.verticalRotation;  
             currentRot.y = state.horizontalRotation;
             this.transform.eulerAngles = currentRot;
+            
+            //var currentHeadRot = this.Avatar.Di
         }
     }
     protected partial void TickUpdate()
