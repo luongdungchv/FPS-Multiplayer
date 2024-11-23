@@ -70,3 +70,33 @@ public partial class NetworkFPSPlayer : NetworkPlayer
     }
 
 }
+[System.Serializable]
+public partial struct FPSPlayerState
+{
+    public Vector3 position;
+    public float horizontalRotation, verticalRotation;
+
+    public Vector2 rotation => new Vector2(horizontalRotation, verticalRotation);
+    public bool init;
+
+    public static bool IsEqual(FPSPlayerState a, FPSPlayerState b)
+    {
+        bool posCheck = (a.position - b.position).sqrMagnitude <= 0.021f;
+        return posCheck;
+    }
+    public static float Difference(FPSPlayerState a, FPSPlayerState b)
+    {
+        return (a.position - b.position).sqrMagnitude;
+    }
+
+    public static FPSPlayerState Interpolate(FPSPlayerState a, FPSPlayerState b, float t)
+    {
+        FPSPlayerState result = new()
+        {
+            position = Vector3.Lerp(a.position, b.position, t),
+            horizontalRotation = Mathf.Lerp(a.horizontalRotation, b.horizontalRotation, t),
+            verticalRotation = Mathf.Lerp(a.verticalRotation, b.verticalRotation, t),
+        };
+        return result;
+    }
+}

@@ -108,10 +108,13 @@ namespace Kigor.Networking
         {
             var byteList = new List<byte>();
             byteList.Add((byte)this.PacketType);
+            
             byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.shootDir.x)));
             byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.shootDir.y)));
             byteList.AddRange(BitConverter.GetBytes(Mathf.FloatToHalf(this.shootDir.z)));
+            
             byteList.Add(damage);
+            
             
             byteList.Insert(0, (byte)byteList.Count);
 

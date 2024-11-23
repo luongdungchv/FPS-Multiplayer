@@ -8,6 +8,7 @@ public class ThreadManager
     private static List<Action> toBeExecutedOnMainThreadsUpdate = new List<Action>();
     private static List<Action> toBeExecutedOnMainThreadsFixedUpdate = new List<Action>();
     private static List<Action> toBeExecutedOnMainThreadsLateUpdate = new List<Action>();
+    private static List<ExecuteSequence> pendingExecuteSequences = new List<ExecuteSequence>();
     private static bool updateExec = false;
     private static bool fixedUpdateExec = false;
     private static bool lateUpdateExec = false;
@@ -43,6 +44,16 @@ public class ThreadManager
             }
         }
     }
+
+    public static void AddExecuteSequence(Action fixedUpdate, Action update, Action lateUpdate)
+    {
+        var execSeq = new ExecuteSequence();
+        execSeq.fixedUpdate = fixedUpdate;
+        execSeq.update = update;
+        execSeq.lateUpdate = lateUpdate;
+        pendingExecuteSequences.Add(execSeq);
+    }
+    
     public static void Update()
     {
         if (updateExec)
@@ -116,4 +127,9 @@ public class ThreadManager
 public enum ExecuteFunction
 {
     FixedUpdate, Update, LateUpdate
+}
+
+public struct ExecuteSequence
+{
+    public Action fixedUpdate, update, lateUpdate;
 }

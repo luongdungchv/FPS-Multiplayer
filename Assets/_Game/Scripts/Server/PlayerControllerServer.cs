@@ -6,17 +6,19 @@ using Kigor.Networking;
 public partial class PlayerController
 {
 #if SERVER_BUILD
+    private PlayerAnimationController animationController;
+
     protected partial void Awake()
     {
-
+        this.animationController = this.GetComponent<PlayerAnimationController>();
     }
+
     protected partial void TickUpdate()
     {
-
     }
+
     protected partial void Update()
     {
-
     }
 
     public void PerformMovement(FPSInputPacket packet)
@@ -37,7 +39,8 @@ public partial class PlayerController
         var lastPos = transform.position;
         transform.position += vel;
 
-        var hitNormals = this.PhysicsController.DetectCollision(lastPos, transform.position, out int hitCount, out var touchGround, out var groundPos, out var firstTouchPos);
+        var hitNormals = this.PhysicsController.DetectCollision(lastPos, transform.position, out int hitCount,
+            out var touchGround, out var groundPos, out var firstTouchPos);
         if (hitCount > 0)
         {
             if (this.currentJump < 0 && touchGround && this.inAir)
@@ -55,6 +58,7 @@ public partial class PlayerController
                 var cross = Vector3.Cross(normal, vel);
                 vel = Vector3.Cross(cross, normal);
             }
+
             lastPos += vel;
             transform.position = lastPos;
         }
@@ -75,16 +79,29 @@ public partial class PlayerController
         currentRot.y = characterAngle;
         transform.eulerAngles = currentRot;
 
-        var currentHeadRot = Avatar.HeadTransform.localEulerAngles;
+        var currentHeadRot = Avatar.DirectionIndicator.localEulerAngles;
         currentHeadRot.x = cameraAngle;
-        Avatar.HeadTransform.localEulerAngles = currentHeadRot;
-
+        Avatar.DirectionIndicator.localEulerAngles = currentHeadRot;
     }
 
-    private void PerformFall(){
+    public void HandleAnimation(FPSInputPacket packet, ref FPSPlayerState state)
+    {
+        var animStateIndex = -1;
+        if (packet.movement == Vector2.zero) animStateIndex = 0;
+        else animStateIndex = 1;
+
+        this.animationController.ChangeAnimationState(animStateIndex);
+        
+        state.animStateIndex = animStateIndex;
+        state.animStateTime = this.animationController.GetCurrentStateTime();
+    }
+
+    private void PerformFall()
+    {
         this.currentJump = 0;
         this.inAir = true;
     }
+
     public void PerformJump(FPSInputPacket packet)
     {
         if (!inAir)
@@ -92,15 +109,18 @@ public partial class PlayerController
             this.inAir = true;
             this.currentJump = this.jumpSpd;
         }
+
         packet.jump = false;
     }
+
     public Vector3 PerformVerticalMovement(FPSInputPacket packet)
     {
-         if (inAir)
+        if (inAir)
         {
             this.currentJump -= gravity * this.TickScheduler.TickDeltaTime;
             return Vector3.up * currentJump * this.TickScheduler.TickDeltaTime;
         }
+
         return Vector3.zero;
     }
 #endif
