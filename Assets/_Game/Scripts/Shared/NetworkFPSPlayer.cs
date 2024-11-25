@@ -94,8 +94,8 @@ public partial struct FPSPlayerState
         FPSPlayerState result = new()
         {
             position = Vector3.Lerp(a.position, b.position, t),
-            horizontalRotation = Mathf.Lerp(a.horizontalRotation, b.horizontalRotation, t),
-            verticalRotation = Mathf.Lerp(a.verticalRotation, b.verticalRotation, t),
+            horizontalRotation = Mathf.LerpAngle(a.horizontalRotation, b.horizontalRotation, t),
+            verticalRotation = Mathf.LerpAngle(a.verticalRotation, b.verticalRotation, t),
         };
         return result;
     }

@@ -80,8 +80,8 @@ namespace Kigor.Networking
                         playerFPS.SetNonLocalState(new FPSPlayerState()
                         {
                             position = packet.playerPositionList[i],
-                            horizontalRotation = packet.playerRotationList[i].y,
-                            verticalRotation = packet.playerRotationList[i].x
+                            horizontalRotation = packet.playerRotationList[i].x,
+                            verticalRotation = packet.playerRotationList[i].y
                         });
                     }
                 });
@@ -92,7 +92,8 @@ namespace Kigor.Networking
             }
         }
 
-        public void RevertAllPlayerStates(int tickCount)
+        public void RevertAllPlayerStates(int tickCount, NetworkFPSPlayer excludedPlayer
+        )
         {
             throw new NotImplementedException();
         }

@@ -50,36 +50,46 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         {
             var maxTimeCounter = this.stateCounter * this.TickScheduler.TickDeltaTime;
             var maxTimeBuffered = (TickScheduler.MAX_TICK) * this.TickScheduler.TickDeltaTime;
-            Debug.Log((0, this.rawInterpolator, this.stateCounter, maxTimeCounter));
+            // Debug.Log((0, this.rawInterpolator, this.stateCounter, maxTimeCounter));
             // Debug.Log((0, (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter < 2),
             //     this.rawInterpolator < maxTimeCounter, this.rawInterpolator == maxTimeCounter));
-            if (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter < 2 * this.TickScheduler.TickDeltaTime) 
-                this.rawInterpolator = maxTimeCounter;
-            else if(this.rawInterpolator < maxTimeCounter || (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter > 250 * this.TickScheduler.TickDeltaTime))
+            
+            if(this.rawInterpolator < maxTimeCounter || (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter > 250 * this.TickScheduler.TickDeltaTime))
             {
                 this.rawInterpolator += Time.deltaTime;
                 if (this.rawInterpolator > maxTimeBuffered) this.rawInterpolator = 0;
             }
-            else if (this.rawInterpolator == maxTimeCounter) return;
-            
+            if (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter < 2 * this.TickScheduler.TickDeltaTime) 
+                this.rawInterpolator = maxTimeCounter;
+            if (this.rawInterpolator == maxTimeCounter)
+            {
+                this.GetComponent<PlayerAnimationController>().ChangeAnimationState(0);
+                return;
+            }
             
             var lastTick = (int)(this.rawInterpolator / this.TickScheduler.TickDeltaTime);
             var nextTick = lastTick == TickScheduler.MAX_TICK - 1 ? 0 : lastTick + 1;
             var lastTickTime = lastTick * this.TickScheduler.TickDeltaTime;
             var interpolator = Mathf.InverseLerp(0, this.TickScheduler.TickDeltaTime, this.rawInterpolator - lastTickTime);
-            Debug.Log((1, this.rawInterpolator, this.stateCounter, maxTimeCounter, this.statesBuffer[lastTick].position, this.statesBuffer[nextTick].position, lastTick, nextTick));
+            // Debug.Log((1, this.rawInterpolator, this.stateCounter, maxTimeCounter, this.statesBuffer[lastTick].position, this.statesBuffer[nextTick].position, lastTick, nextTick));
             // var interpolator = this.TickScheduler.GetInterpolator(out var lastTick, out var nextTick);
             if (interpolator < 0) return;
             var state = FPSPlayerState.Interpolate(this.statesBuffer[lastTick], this.statesBuffer[nextTick], interpolator);
+
+            var posDiff = FPSPlayerState.Difference(this.statesBuffer[lastTick], this.statesBuffer[nextTick]);
+            if(posDiff < 0.05f) this.GetComponent<PlayerAnimationController>().ChangeAnimationState(0);
+            else this.GetComponent<PlayerAnimationController>().ChangeAnimationState(1);
             
             transform.position = state.position;
             
             var currentRot = transform.eulerAngles;
-            currentRot.x = state.verticalRotation;  
             currentRot.y = state.horizontalRotation;
             this.transform.eulerAngles = currentRot;
-            
-            //var currentHeadRot = this.Avatar.Di
+
+            Debug.Log(state.verticalRotation);
+            var currentHeadRot = this.Avatar.DirectionIndicator.localEulerAngles;
+            currentHeadRot.x = state.verticalRotation;
+            this.Avatar.DirectionIndicator.localEulerAngles = currentHeadRot;
         }
     }
     protected partial void TickUpdate()

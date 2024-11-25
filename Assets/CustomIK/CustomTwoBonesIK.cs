@@ -62,9 +62,7 @@ namespace Kigor.Rigging
 
                 var cross = Vector3.Cross(dirToTarget, this.hint.position - projection);
                 var midJointDir = Vector3.Cross(cross, dirToTarget).normalized;
-
-                Debug.Log((cosAngle, projection, height));
-
+                
                 this.positions[0] = projection + midJointDir * height;
                 this.positions[1] = this.root.position + dirToTarget * distToTarget;
             }

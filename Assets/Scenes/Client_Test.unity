@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ff93c1954474cc40a5a38d4ed70c237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkPlayerPrefab: {fileID: -102130023810790693, guid: 177ac621b3fdbba43bb7a532714b4503,
+  networkPlayerPrefab: {fileID: 3639922094660171479, guid: 339e531167576a7469599d644ccdbd4d,
     type: 3}
   localPlayerPrefab: {fileID: -102130023810790693, guid: 0501daf5815b78349985b257ab7ead27,
     type: 3}
