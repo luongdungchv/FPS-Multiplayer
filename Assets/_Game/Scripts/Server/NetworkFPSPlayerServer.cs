@@ -117,6 +117,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         lock (transform)
         {
             this.transform.position = this.Position;
+            this.animationController.ChangeAnimationState(this.currentState.animStateIndex, this.currentState.animStateTime);
         }
     }
 

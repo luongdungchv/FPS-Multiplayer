@@ -9,24 +9,27 @@ namespace Kigor.Networking
     {
         public void Test()
         {
-
         }
 #if SERVER_BUILD
-        ~TeamDMRule(){
+        ~TeamDMRule()
+        {
             Debug.Log("Rule resource released: team dm");
         }
 
         private Vector3[] firstSideSpawnPositions, secondSideSpawnPositions;
+
         //private TickScheduler tickScheduler;
         //public override TickScheduler TickScheduler => this.tickScheduler;
         public override void PlayerJoinCallback(NetworkPlayer newPlayer, int id)
         {
             this.players.Add(id, newPlayer);
         }
+
         public override void PlayerLeaveCallback(int id)
         {
             this.players.Remove(id);
         }
+
         public override void Dispose()
         {
             this.players = null;
@@ -49,7 +52,7 @@ namespace Kigor.Networking
             {
                 var player = players[id];
                 if (player == null) continue;
-                
+
                 // var pos = new Vector3(-11, 1, 23);
                 // player.transform.position = pos;
                 if (id % 2 == 1)
@@ -67,6 +70,7 @@ namespace Kigor.Networking
                 packet.playerRotationList.Add(player.transform.eulerAngles);
                 packet.playerIDList.Add(id);
             }
+
             var data = packet.EncodeDataTCP();
             foreach (var pair in this.players)
             {
@@ -81,6 +85,7 @@ namespace Kigor.Networking
         {
             this.BroadcastRoomStatePacket();
         }
+
         private void BroadcastRoomStatePacket()
         {
             var packet = new RoomStatePacket();
@@ -89,9 +94,15 @@ namespace Kigor.Networking
                 var player = players[i];
                 if (!player) continue;
                 packet.playerPositionList.Add(player.transform.position);
-                packet.playerRotationList.Add(player.transform.eulerAngles);
+                packet.playerRotationList.Add(
+                    new Vector3(
+                        player.transform.eulerAngles.y,
+                        player.GetComponent<PlayerAvatar>().DirectionIndicator.localEulerAngles.x,
+                        0
+                        ));
                 packet.playerIDList.Add(i);
             }
+
             var data = packet.EncodeData();
             foreach (var pair in this.players)
             {
@@ -100,17 +111,16 @@ namespace Kigor.Networking
                 player.Socket.SendDataUDP(data);
             }
         }
-        
+
         public void RevertAllPlayerStates(int tickCount, NetworkFPSPlayer excludedPlayer)
         {
             foreach (var pair in this.players)
             {
                 var player = pair.Value as NetworkFPSPlayer;
                 if (player == null) continue;
-                if(player == excludedPlayer) continue;
+                if (player == excludedPlayer) continue;
                 player.RevertState(tickCount);
             }
-
         }
 
         public void RestoreAllPlayerStates()
@@ -123,6 +133,5 @@ namespace Kigor.Networking
             }
         }
 #endif
-
     }
 }
