@@ -436,7 +436,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3556189239367922769
 Transform:
   m_ObjectHideFlags: 0
@@ -905,7 +905,7 @@ GameObject:
   - component: {fileID: 8806053149455086229}
   - component: {fileID: 7330798396208805465}
   m_Layer: 7
-  m_Name: Network Player Server 2
+  m_Name: Network Player Server 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -920,7 +920,7 @@ Transform:
   m_GameObject: {fileID: 3852545721822174941}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1068.6932, y: 619.95245, z: 4.2628427}
   m_LocalScale: {x: 1.65, y: 1.65, z: 1.65}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -952,7 +952,6 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
-  statesBuffer: []
   smoothSpd: 0
 --- !u!114 &3073252296201660322
 MonoBehaviour:
@@ -1106,7 +1105,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  test: {fileID: 0}
   shootMask:
     serializedVersion: 2
     m_Bits: 128
@@ -1938,7 +1936,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &659555928064277072
 Transform:
   m_ObjectHideFlags: 0
@@ -2015,7 +2013,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1614911160808582530
 Transform:
   m_ObjectHideFlags: 0

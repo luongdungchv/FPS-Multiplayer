@@ -277,7 +277,7 @@ Transform:
   m_GameObject: {fileID: 891246082953694872}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: -1.000015, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -955,7 +955,7 @@ GameObject:
   - component: {fileID: 8293414304268794230}
   - component: {fileID: 3478014470683525363}
   m_Layer: 0
-  m_Name: Network Player Other 2
+  m_Name: Network Player Othe 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -974,9 +974,9 @@ Transform:
   m_LocalScale: {x: 1.65, y: 1.65, z: 1.65}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4683648299197001052}
   - {fileID: 2031795258667173394}
   - {fileID: 7978792155758889158}
-  - {fileID: 4683648299197001052}
   - {fileID: 3110447152837623039}
   - {fileID: 1271734076235260121}
   - {fileID: 739984784666379645}
@@ -994,9 +994,9 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: f3aa36c2aed114223bc6a264d9f9018c, type: 3}
   m_Controller: {fileID: 9100000, guid: 69efabcdfbb4a424e9973865a20e8bfe, type: 2}
-  m_CullingMode: 2
+  m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -2188,7 +2188,7 @@ Transform:
   m_GameObject: {fileID: 6105914469718673744}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
