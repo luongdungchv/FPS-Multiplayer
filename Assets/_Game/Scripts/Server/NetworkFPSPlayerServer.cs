@@ -107,7 +107,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             if (targetTick < 0) targetTick = TickScheduler.MAX_TICK + targetTick;
             var targetState = this.statesBuffer[targetTick];
         
-            this.animationController.ChangeAnimationState(targetState.animStateIndex, targetState.animStateTime);
+            //this.animationController.ChangeAnimationState(targetState.animStateIndex, targetState.animStateTime);
             transform.position = targetState.position;
         }
     }
@@ -117,7 +117,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         lock (transform)
         {
             this.transform.position = this.Position;
-            this.animationController.ChangeAnimationState(this.currentState.animStateIndex, this.currentState.animStateTime);
+            //this.animationController.ChangeAnimationState(this.currentState.animStateIndex, this.currentState.animStateTime);
         }
     }
 

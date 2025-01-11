@@ -22,7 +22,7 @@ namespace Kigor.Networking
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
-                this.GetComponent<PlayerAnimationController>().ManuallyUpdateIK();
+                //this.GetComponent<PlayerAnimationController>().ManuallyUpdateIK();
                 Physics.SyncTransforms();
                 var dir = packet.shootDir;
                 var physicsScene = this.Player.CurrentPhysicsScene;
