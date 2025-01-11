@@ -8,17 +8,18 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 {
 #if CLIENT_BUILD
     private NetworkCamera cameraController => NetworkCamera.Instance;
-    
+
     private FPSInputPacket pendingInputPacket;
     private FPSPlayerState lastSmoothState;
 
     private float rawInterpolator;
-    
+
     protected partial void Awake()
     {
         statesBuffer = new FPSPlayerState[TickScheduler.MAX_TICK];
         pendingInputPacket = new FPSInputPacket();
     }
+
     private void Start()
     {
         this.currentState.position = transform.position;
@@ -30,6 +31,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
 
         this.WeaponController.SwitchWeapon(0);
     }
+
     protected partial void Update()
     {
         if (this.IsLocalPlayer)
@@ -53,35 +55,41 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             // Debug.Log((0, this.rawInterpolator, this.stateCounter, maxTimeCounter));
             // Debug.Log((0, (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter < 2),
             //     this.rawInterpolator < maxTimeCounter, this.rawInterpolator == maxTimeCounter));
-            
-            if(this.rawInterpolator < maxTimeCounter || (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter > 250 * this.TickScheduler.TickDeltaTime))
+
+            if (this.rawInterpolator < maxTimeCounter || (this.rawInterpolator > maxTimeCounter &&
+                                                          this.rawInterpolator - maxTimeCounter >
+                                                          250 * this.TickScheduler.TickDeltaTime))
             {
                 this.rawInterpolator += Time.deltaTime;
                 if (this.rawInterpolator > maxTimeBuffered) this.rawInterpolator = 0;
             }
-            if (this.rawInterpolator > maxTimeCounter && this.rawInterpolator - maxTimeCounter < 2 * this.TickScheduler.TickDeltaTime) 
+
+            if (this.rawInterpolator > maxTimeCounter &&
+                this.rawInterpolator - maxTimeCounter < 2 * this.TickScheduler.TickDeltaTime)
                 this.rawInterpolator = maxTimeCounter;
             if (this.rawInterpolator == maxTimeCounter)
             {
                 this.GetComponent<PlayerAnimationController>().ChangeAnimationState(0);
                 return;
             }
-            
+
             var lastTick = (int)(this.rawInterpolator / this.TickScheduler.TickDeltaTime);
             var nextTick = lastTick == TickScheduler.MAX_TICK - 1 ? 0 : lastTick + 1;
             var lastTickTime = lastTick * this.TickScheduler.TickDeltaTime;
-            var interpolator = Mathf.InverseLerp(0, this.TickScheduler.TickDeltaTime, this.rawInterpolator - lastTickTime);
+            var interpolator =
+                Mathf.InverseLerp(0, this.TickScheduler.TickDeltaTime, this.rawInterpolator - lastTickTime);
             // Debug.Log((1, this.rawInterpolator, this.stateCounter, maxTimeCounter, this.statesBuffer[lastTick].position, this.statesBuffer[nextTick].position, lastTick, nextTick));
             // var interpolator = this.TickScheduler.GetInterpolator(out var lastTick, out var nextTick);
             if (interpolator < 0) return;
-            var state = FPSPlayerState.Interpolate(this.statesBuffer[lastTick], this.statesBuffer[nextTick], interpolator);
+            var state = FPSPlayerState.Interpolate(this.statesBuffer[lastTick], this.statesBuffer[nextTick],
+                interpolator);
 
             var posDiff = FPSPlayerState.Difference(this.statesBuffer[lastTick], this.statesBuffer[nextTick]);
-            if(posDiff < 0.05f) this.GetComponent<PlayerAnimationController>().ChangeAnimationState(0);
+            if (posDiff < 0.05f) this.GetComponent<PlayerAnimationController>().ChangeAnimationState(0);
             else this.GetComponent<PlayerAnimationController>().ChangeAnimationState(1);
-            
+
             transform.position = state.position;
-            
+
             var currentRot = transform.eulerAngles;
             currentRot.y = state.horizontalRotation;
             this.transform.eulerAngles = currentRot;
@@ -92,6 +100,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
             this.Avatar.DirectionIndicator.localEulerAngles = currentHeadRot;
         }
     }
+
     protected partial void TickUpdate()
     {
         this.Controller.PerformTickMovement(this.pendingInputPacket);
@@ -128,10 +137,11 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.cameraController.transform.SetParent(this.Avatar.CamHolder);
         this.cameraController.transform.localPosition = Vector3.zero;
         this.cameraController.transform.localEulerAngles = Vector3.zero;
-        
+
         this.RecursivelyDisableRenderer(this.transform);
         //DL.Utils.CoroutineUtils.Invoke(this, () => this.WeaponController.SwitchWeapon(0), 0);
     }
+
     private void RecursivelyDisableRenderer(Transform root)
     {
         if (root.name == "Gun Holder Local") return;
@@ -152,7 +162,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
         this.stateCounter++;
         if (this.stateCounter >= TickScheduler.MAX_TICK) this.stateCounter = 0;
         this.statesBuffer[this.stateCounter] = state;
-        
+
         // transform.position = state.position;
         // var currentRot = transform.eulerAngles;
         // currentRot.x = state.verticalRotation;  
@@ -164,7 +174,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     {
         var savedState = this.statesBuffer[tick];
         if (!savedState.init) return;
-        
+
         if (!FPSPlayerState.IsEqual(savedState, state))
         {
             this.room.Rule.TickScheduler.SetTick(tick);
@@ -176,6 +186,7 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
                 this.Position = state.position;
             });
         }
+        //ThreadManager.ExecuteOnMainThread(() => { transform.position = state.position; });
     }
 
     private void SendInputPacket()
@@ -192,5 +203,3 @@ public partial class NetworkFPSPlayer : Kigor.Networking.NetworkPlayer
     }
 #endif
 }
-
-
